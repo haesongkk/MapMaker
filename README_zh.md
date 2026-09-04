@@ -2,7 +2,7 @@
 
 <h1>HY-World 2.0：A Multi-Modal World Model for Reconstructing, Generating, and Simulating 3D Worlds</h1>
 
-[English](README.md) | [简体中文](README_zh.md)
+[English](README_UPSTREAM.md) | [简体中文](README_zh.md)
 
 <p align="center">
   <img src="assets/teaser.png" width="95%" alt="HY-World-2.0 Teaser">

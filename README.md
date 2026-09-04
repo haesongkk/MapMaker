@@ -1,533 +1,413 @@
+# MapMaker — HY-World 2.0 single-GPU RunPod workflow
 
+이 저장소는 Tencent의 HY-World 2.0을 RunPod 단일 NVIDIA GPU에서 설치하고 실행하기 위한 개인 fork입니다. RTX PRO 6000 Blackwell에서 이미지 한 장으로 파노라마, 탐색 경로, WorldStereo/WorldMirror, 3D Gaussian Splatting과 메시를 만드는 전체 과정을 검증했습니다.
 
-<h1>HY-World 2.0: A Multi-Modal World Model for Reconstructing, Generating, and Simulating 3D Worlds</h1>
+> 공식 배포판이 아닙니다. 프로젝트 소개, 모델 구조, 라이선스와 인용 정보는 [원본 영문 README](README_UPSTREAM.md) 또는 [중문 README](README_zh.md)를 확인하세요.
 
-[English](README.md) | [简体中文](README_zh.md)
+## 이 fork의 변경 사항
 
-<p align="center">
-  <img src="assets/teaser.png" width="95%" alt="HY-World-2.0 Teaser">
-</p>
+- WorldStereo 종료 후 GPU 메모리를 해제하고 WorldMirror 실행
+- 기존 비디오로 정렬과 내보내기만 재개하는 `--postprocess_only`
+- 누락된 WorldMirror `name_map.json` completion marker 복구
+- Hugging Face 캐시 경로 환경변수 지원
+- 오프라인 WorldStereo T5 tokenizer 로딩 수정
+- 단일 GPU 학습 종료 시 잘못된 distributed barrier 방지
+- 검증된 RunPod 실행 스크립트와 패키지 버전 보관
 
-<div align="center">
-  <a href=https://3d.hunyuan.tencent.com/sceneTo3D target="_blank"><img src=https://img.shields.io/badge/Official%20Site-333399.svg?logo=homepage height=22px></a>
-  <a href=https://huggingface.co/tencent/HY-World-2.0 target="_blank"><img src=https://img.shields.io/badge/%F0%9F%A4%97%20Models-d96902.svg height=22px></a>
-  <a href=https://3d-models.hunyuan.tencent.com/world/ target="_blank"><img src= https://img.shields.io/badge/Page-bb8a2e.svg?logo=github height=22px></a>
-  <a href=https://arxiv.org/abs/2604.14268 target="_blank"><img src=https://img.shields.io/badge/Report-b5212f.svg?logo=arxiv height=22px></a>
-   <a href=https://modelscope.cn/models/Tencent-Hunyuan/HY-World-2.0 target="_blank"><img src=https://img.shields.io/badge/ModelScope-Models-624aff.svg height=22px></a>
-  <a href=https://discord.gg/dNBrdrGGMa target="_blank"><img src= https://img.shields.io/badge/Discord-white.svg?logo=discord height=22px></a>
-  <a href=https://x.com/TencentHunyuan target="_blank"><img src=https://img.shields.io/badge/Tencent%20HY-black.svg?logo=x height=22px></a>
- <a href="#community-resources" target="_blank"><img src=https://img.shields.io/badge/Community-lavender.svg?logo=homeassistantcommunitystore height=22px></a>
-</div>
+## 검증 환경
 
-<br>
-<p align="center">
-  <i>"What Is Now Proved Was Once Only Imagined"</i>
-</p>
+| 항목 | 버전 |
+|---|---|
+| OS | Ubuntu 24.04.3 LTS |
+| GPU | NVIDIA RTX PRO 6000 Blackwell Server Edition, 97,887 MiB |
+| CUDA / GCC | CUDA 12.8.93 / GCC 13.3.0 |
+| 메인 환경 | Python 3.11.13, PyTorch 2.7.1+cu128 |
+| VLM 환경 | Python 3.12.3, PyTorch 2.11.0+cu128, vLLM 0.26.0 |
+| uv | 0.9.0 |
+| upstream 기준 | `df9988efb87bfc0f4947eb3889411cf957478b06` |
 
-## 🎥 Video
-https://github.com/user-attachments/assets/b56f4750-25c9-48fb-83ff-d58526711463
+다른 GPU 세대에서는 FlashAttention과 custom gsplat CUDA 확장을 해당 compute capability에 맞게 다시 빌드해야 합니다. 아래 명령은 GPU 0 하나를 사용합니다.
 
-## 🔥 News
-- **[July, 2026]**: 🤗 Update HY World 2.1! Try [our product](https://3d.hunyuan.tencent.com/sceneTo3D). 
-- **[May 18, 2026]**: 🤗 Open-source World Generation inference code and WorldStereo 2.0 model weights!
-- **[May 11, 2026]**: 🤗 Open-source HY-Pano 2.0 inference code and model weights!
-- **[April 16, 2026]**: 🚀 Release HY-World 2.0 technical report & partial codes!
-- **[April 16, 2026]**: 🤗 Open-source WorldMirror 2.0 inference code and model weights!
+# 설치
 
+같은 저장소 볼륨을 다시 연결했다면 재설치하지 말고 [빠른 재실행](#빠른-재실행)으로 이동하세요.
 
-## 📋 Table of Contents
-- [📖 Introduction](#-introduction)
-- [✨ Highlights](#-highlights)
-- [🧩 Architecture](#-architecture)
-- [📝 Open-Source Plan](#-open-source-plan)
-- [🎁 Model Zoo](#-model-zoo)
-- [🤗 Get Started](#-get-started)
-- [🔮 Performance](#-performance)
-- [🎬 More Examples](#-more-examples)
-- [📚 Citation](#-citation)
-
-
-## 📖 Introduction
-
-**HY-World 2.0** is a multi-modal world model framework for **world generation** and **world reconstruction**. It accepts diverse input modalities — text, single-view images, multi-view images, and videos — and produces 3D world representations (meshes / Gaussian Splattings). It offers two core capabilities:
-
-- **World Generation** (text / single image &rarr; 3D world): syntheses high-fidelity, navigable 3D scenes through a four-stage method —— a) ![Panorama Generation](https://img.shields.io/badge/Panorama_Generation-4285F4?style=flat-square) with HY-Pano 2.0, b) ![Trajectory Planning](https://img.shields.io/badge/Trajectory_Planning-EA4335?style=flat-square) with WorldNav, c) ![World Expansion](https://img.shields.io/badge/World_Expansion-FBBC05?style=flat-square) with WorldStereo 2.0, and d) ![World Composition](https://img.shields.io/badge/World_Composition-34A853?style=flat-square) with WorldMirror 2.0 & 3DGS learning.
-- **World Reconstruction** (multi-view images / video &rarr; 3D): Powered by WorldMirror 2.0, a unified feed-forward model that simultaneously predicts depth, surface normals, camera parameters, 3D point clouds, and 3DGS attributes in a single forward pass.
-
-HY-World 2.0 is an **open-source state-of-the-art** world model.  We released all model weights, code, and technical details to facilitate reproducibility and advance research in this field.
-
-### Why 3D World Models?
-
-Existing world models, such as Genie 3, Cosmos, and HY-World 1.5 (WorldPlay+WorldCompass), generate pixel-level videos — essentially "watching a movie" that vanishes once playback ends. **HY-World 2.0 takes a fundamentally different approach**: it directly produces editable, persistent 3D assets (meshes / 3DGS) that can be imported into game engines like Blender/Unity/Unreal Engine/Isaac Sim — more like "building a playable game" than recording a clip. This paradigm shift natively resolves many long-standing pain points of video world models:
-
-|  | Video World Models | 3D World Model (HY-World 2.0) |
-|--|---|---|
-| **Output** | Pixel videos (non-editable) | Real 3D assets — meshes / 3DGS (fully editable) |
-| **Playable Duration** | Limited (typically 1 min) | Unlimited — assets persist permanently |
-| **3D Consistency** | No (flickering, artifacts across views) | Native — inherently consistent in 3D |
-| **Real-Time Rendering** | Requires per-frame inference; high latency | Consumer GPUs can render in real time |
-| **Controllability** | Weak (imprecise character control, no real physics) | Precise — zero-error control, real physics collision, accurate lighting |
-| **Inference Cost** | Accumulates with every interaction | One-time generation; rendering cost ≈ 0 |
-| **Engine Compatibility** | ✗ Video files only | ✓ Directly importable into Blender / UE / Isaac Engine |
-| | $\color{IndianRed}{\textsf{Watch a video, then it's gone}}$ | $\color{RoyalBlue}{\textbf{Build a world, keep it forever}}$ |
-
-
-<table align="center" style="border: none;">
-  <tr>
-    <td align="center" width="50%"><img src="assets/screenshot_1.gif" width="100%"></td>
-    <td align="center" width="50%"><img src="assets/screenshot_2.gif" width="100%"></td>
-  </tr>
-  <tr>
-    <td align="center" width="50%"><img src="assets/screenshot_7.gif" width="100%"></td>
-    <td align="center" width="50%"><img src="assets/screenshot_8.gif" width="100%"></td>
-  </tr>
-</table>
-
-<p align="center"><em>All above are <strong>real 3D assets</strong> (not generated videos) and entirely created by HY-World 2.0 -- captured from live real-time interaction.</em></p>
-
-## ✨ Highlights
-
-- **Real 3D Worlds, Not Just Videos**
-
-  Unlike video-only world models (e.g., Genie 3, HY World 1.5), HY-World 2.0 generates **real 3D assets** — 3DGS, meshes, and point clouds — that are freely explorable, editable, and directly importable into **Unity / Unreal Engine / Isaac**. From a single text prompt or image, create navigable 3D worlds with diverse styles: realistic, cartoon, game, and more.
-
-<p align="center">
-  <img src="assets/mesh_en.gif" width="95%">
-</p>
-
-
-- **Instant 3D Reconstruction from Photos & Videos**
-
-  Powered by **WorldMirror 2.0**, a unified feed-forward model that predicts dense point clouds, depth maps, surface normals, camera parameters, and 3DGS from multi-view images or casual videos in a single forward pass. Supports flexible-resolution inference (50K–500K pixels) with SOTA accuracy. Capture a video, get a digital twin.
-
-<p align="center">
-  <img src="assets/recon_en.gif" width="95%">
-</p>
-
-- **Interactive Character Exploration**
-
-  Go beyond viewing — **play inside your generated worlds**. HY-World 2.0 supports first-person navigation and third-person character mode, enabling users to freely explore AI-generated streets, buildings, and landscapes with physics-based collision.  Go to [our product page](https://3d.hunyuan.tencent.com/sceneTo3D) for free try. 
-
-<p align="center">
-  <img src="assets/interactive.gif" width="95%">
-</p>
-
-
-## 🧩 Architecture
-- **Refer to our tech report for more details**
-
-  A systematic pipeline of HY-World 2.0 — *Panorama Generation* (HY-Pano-2.0) &rarr; *Trajectory Planning* (WorldNav) &rarr; *World Expansion* (WorldStereo 2.0) &rarr; *World Composition* (WorldMirror 2.0 + Splattings Learning) — that automatically transforms text or a single image into a high-fidelity, navigable 3D world (3DGS/mesh outputs).
-
-<p align="center">
-  <img src="assets/overview.png" width="95%">
-</p>
-
-
-## 📝 Open-Source Plan
-
-- [x] Technical Report
-- [x] WorldMirror 2.0 Code & Model Checkpoints
-- [x] Full Inference Code for World Generation (WorldNav + WorldStereo + World Composition)
-- [x] Panorama Generation (HY-Pano 2.0) Model & Code
-- [x] World Expansion (WorldStereo 2.0) Model & Code
-
-
-## 🎁 Model Zoo
-
-### World Reconstruction — WorldMirror Series
-
-| Model | Description | Params | Date | Hugging Face |
-|-------|-------------|--------|------|--------------|
-| WorldMirror-2 [new] | Multi-view / video &rarr; 3D reconstruction | ~1.2B | 2026 | [Download](https://huggingface.co/tencent/HY-World-2.0/tree/main/HY-WorldMirror-2.0) |
-| WorldMirror-1 | Multi-view / video &rarr; 3D reconstruction (legacy) | ~1.2B | 2025 | [Download](https://huggingface.co/tencent/HunyuanWorld-Mirror/tree/main) |
-
-### Panorama Generation — HY-Pano Series
-
-| Model | Description | Params | Date | Hugging Face |
-|-------|-------------|--------|------|--------------|
-| HY-Pano-2 [new] | Text / image → 360° panorama | ~80B | 2026 | [Download](https://huggingface.co/tencent/HY-World-2.0/tree/main/HY-Pano-2.0) |
-| HY-Pano-2-Qwen [new] | Text / image → 360° panorama | ~425M | 2026 | [Download](https://huggingface.co/tencent/HY-World-2.0/blob/main/HY-Pano-2.0/pytorch_lora_weights.safetensors) |
-
-### World Expansion — WorldStereo Series
-
-| Model           | Description | Params | Date | Hugging Face |
-|-----------------|-------------|-----|------|--------------|
-| WorldStereo-2 [new] | Panorama &rarr;  3DGS world |  ~17B  | 2026 | [Download](https://huggingface.co/hanshanxue/WorldStereo/tree/main) |
-
-We recommend referring to our previous works, [WorldStereo](https://github.com/FuchengSu/WorldStereo) and [WorldMirror](https://github.com/Tencent-Hunyuan/HunyuanWorld-Mirror), for background knowledge on 3D world generation and reconstruction. 
-
-## 🤗 Get Started
-
-### Install Requirements
-
-We recommend **CUDA 12.8** and **Python 3.11+**. The easiest path is to prepare one shared environment, first make **World Reconstruction (WorldMirror 2.0)** work, and then install the extra components required by **World Generation**.
-
-#### 1. Create the shared environment
+## 1. 저장소와 디렉터리 준비
 
 ```bash
-git clone https://github.com/Tencent-Hunyuan/HY-World-2.0
-cd HY-World-2.0
-
-conda create -n hyworld2 python=3.11.15
-conda activate hyworld2
-```
-
-#### 2. Install World Reconstruction dependencies
-
-After this step, the environment is ready for **worldrecon / WorldMirror 2.0**.
-
-```bash
-# Base dependencies shared by worldrecon and worldgen
-pip install -r requirements.txt
-
-# Recommended: install the custom gsplat variant once for both worldrecon and worldgen
-cd hyworld2/worldgen/third_party/gsplat_maskgaussian
-pip install -e . --no-build-isolation
-cd ../../../../
-```
-
-If you only need **worldrecon** and want a simpler fallback, official `gsplat` is also supported:
-
-```bash
-pip install git+https://github.com/nerfstudio-project/gsplat.git
-```
-
-Install **one** FlashAttention backend:
-
-```bash
-# Recommended for Hopper GPUs: FlashAttention-3
-git clone https://github.com/Dao-AILab/flash-attention.git
-cd flash-attention/hopper
-python setup.py install
-cd ../../
-rm -rf flash-attention
-```
-
-```bash
-# Simpler alternative: FlashAttention-2
-pip install flash-attn --no-build-isolation
-```
-
-#### 3. Add extra World Generation dependencies
-
-Run the following extra steps only if you need **worldgen**. These commands assume the shared `hyworld2` environment above is already active.
-
-```bash
-# Git-based dependencies require torch/CUDA to be installed first
-pip install --no-build-isolation -r requirements_git.txt
-
-# recastnavigation is managed as a git submodule
+git clone --recursive https://github.com/haesongkk/MapMaker.git
+cd MapMaker
 git submodule update --init --recursive
+source scripts/mapmaker-env.sh
 
-# Recast navmesh extension for trajectory planning
-cd hyworld2/worldgen/third_party/navmesh
-pip install . --no-build-isolation
-cd ../../../../
 ```
 
-For **HY-Pano-2** installation, please refer to **[hyworld2/panogen/README.md](hyworld2/panogen/README.md)**.
-
-### Code Usage — Panorama Generation (HY-Pano-2)
-
-For full documentation and CLI reference, see **[hyworld2/panogen/README.md](hyworld2/panogen/README.md)**.
-
-We provide a `diffusers`-like Python API for HY-Pano 2.0. Model weights are automatically downloaded from Hugging Face on first run.
-
-```python
-from pipeline import HunyuanPanoPipeline
-
-pipeline = HunyuanPanoPipeline.from_pretrained('tencent/HY-World-2.0')
-output = pipeline('input.png')
-output.save('output_panorama.png')
-```
-
-### Code Usage — World Generation (WorldNav, WorldStereo-2, and 3DGS)
-
-The world Generation pipeline turns a panorama scene into a navigable 3D world through five stages:
-
-| Stage | Script | Description |
-|-------|--------|-------------|
-| 1. Trajectory Planning | `traj_generate.py` | VLM-guided camera trajectory planning with obstacle-aware navigation |
-| 2. Trajectory Rendering | `traj_render.py` | Multi-GPU point-cloud rendering along planned trajectories |
-| 3. World Expansion | `video_gen.py` | WorldStereo-2 keyframe generation with memory-guided consistency |
-| 4. GS Data Preparation | `gen_gs_data.py` | Extract frames, aligned depth, normals, and cameras for 3DGS training |
-| 5. 3DGS Training | `world_gs_trainer.py` | Optimize and export the final Gaussian Splatting world |
-
-For full documentation, prerequisites, and CLI arguments, see **[hyworld2/worldgen/README.md](hyworld2/worldgen/README.md)**.
-
-### Code Usage — WorldMirror 2.0
-WorldMirror 2.0 supports the following usage modes:
-
-- [Code Usage](#code-usage--worldmirror-20)
-- [Gradio App](#gradio-app--worldmirror-20)
-
-We provide a `diffusers`-like Python API for WorldMirror 2.0. Model weights are automatically downloaded from Hugging Face on first run.
-
-```python
-from hyworld2.worldrecon.pipeline import WorldMirrorPipeline
-
-pipeline = WorldMirrorPipeline.from_pretrained('tencent/HY-World-2.0')
-result = pipeline('path/to/images')
-```
-
-**With Prior Injection (Camera & Depth):**
-
-```python
-result = pipeline(
-    'path/to/images',
-    prior_cam_path='path/to/prior_camera.json',
-    prior_depth_path='path/to/prior_depth/',
-)
-```
-
-> For the detailed structure of camera/depth priors and how to prepare them, see [Prior Preparation Guide](DOCUMENTATION.md#prior-injection).
-
-**CLI:**
+실행 권한을 확인합니다.
 
 ```bash
-# Single GPU
-python -m hyworld2.worldrecon.pipeline --input_path path/to/images
-
-# Multi-GPU
-torchrun --nproc_per_node=2 -m hyworld2.worldrecon.pipeline \
-    --input_path path/to/images \
-    --use_fsdp --enable_bf16
+chmod +x scripts/*.sh
 ```
 
-> **Important:** In multi-GPU mode, the number of input images must be **>= the number of GPUs**. For example, with `--nproc_per_node=8`, provide at least 8 images.
+## 2. uv와 Python 준비
 
-### Gradio App — WorldMirror 2.0
-
-We provide an interactive [Gradio](https://www.gradio.app/) web demo for WorldMirror 2.0. Upload images or videos and visualize 3DGS, point clouds, depth maps, normal maps, and camera parameters in your browser.
+RunPod 이미지에 `uv`가 없다면 설치합니다. 시스템에 Python 3.11과 3.12가 있어야 합니다.
 
 ```bash
-# Single GPU
-python -m hyworld2.worldrecon.gradio_app
-
-# Multi-GPU
-torchrun --nproc_per_node=2 -m hyworld2.worldrecon.gradio_app \
-    --use_fsdp --enable_bf16
+curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR="$MAPMAKER_TOOLS_DIR/bin" UV_NO_MODIFY_PATH=1 sh
+export PATH="$MAPMAKER_TOOLS_DIR/bin:$PATH"
+uv --version
+python3.11 --version
+python3.12 --version
 ```
 
-For the full list of Gradio app arguments (port, share, local checkpoints, etc.), see [DOCUMENTATION.md](DOCUMENTATION.md#gradio-app).
+## 3. 메인 환경 설치
 
+```bash
+uv venv --python /usr/bin/python3.11 $MAPMAKER_MAIN_VENV
 
+uv pip install --python $MAPMAKER_MAIN_VENV/bin/python \
+  torch==2.7.1 torchvision==0.22.1 \
+  --index-url https://download.pytorch.org/whl/cu128
 
-## 🔮 Performance
+uv pip install --python $MAPMAKER_MAIN_VENV/bin/python \
+  -r $MAPMAKER_ROOT/hyworld2/panogen/requirements.txt
 
-For full benchmark results, please refer to the [technical report](https://3d-models.hunyuan.tencent.com/world/).
+uv pip install --python $MAPMAKER_MAIN_VENV/bin/python \
+  -r $MAPMAKER_ROOT/requirements.txt
 
-### WorldStereo 2.0 — Camera Control
-
-<table>
-  <thead>
-    <tr>
-      <th rowspan="2">Methods</th>
-      <th colspan="3" align="center">Camera Metrics</th>
-      <th colspan="4" align="center">Visual Quality</th>
-    </tr>
-    <tr>
-      <th>RotErr ↓</th><th>TransErr ↓</th><th>ATE ↓</th>
-      <th>Q-Align ↑</th><th>CLIP-IQA+ ↑</th><th>Laion-Aes ↑</th><th>CLIP-I ↑</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>SEVA</td><td>1.690</td><td>1.578</td><td>2.879</td><td>3.232</td><td>0.479</td><td>4.623</td><td>77.16</td></tr>
-    <tr><td>Gen3C</td><td>0.944</td><td>1.580</td><td>2.789</td><td>3.353</td><td>0.489</td><td>4.863</td><td>82.33</td></tr>
-    <tr><td>WorldStereo</td><td>0.762</td><td>1.245</td><td>2.141</td><td>4.149</td><td><b>0.547</b></td><td>5.257</td><td>89.05</td></tr>
-    <tr><td><b>WorldStereo 2.0</b></td><td><b>0.492</b></td><td><b>0.968</b></td><td><b>1.768</b></td><td><b>4.205</b></td><td>0.544</td><td><b>5.266</b></td><td><b>89.43</b></td></tr>
-  </tbody>
-</table>
-
-### WorldStereo 2.0 — Single-View-Generated Reconstruction
-
-<table>
-  <thead>
-    <tr>
-      <th rowspan="2">Methods</th>
-      <th colspan="4">Tanks-and-Temples</th>
-      <th colspan="4">MipNeRF360</th>
-    </tr>
-    <tr>
-      <th>Precision ↑</th>
-      <th>Recall ↑</th>
-      <th>F1-Score ↑</th>
-      <th>AUC ↑</th>
-      <th>Precision ↑</th>
-      <th>Recall ↑</th>
-      <th>F1-Score ↑</th>
-      <th>AUC ↑</th>
-    </tr>
-  </thead>
-  <tbody align="center">
-    <tr>
-      <td align="left">SEVA</td>
-      <td>33.59</td>
-      <td>35.34</td>
-      <td>36.73</td>
-      <td>51.03</td>
-      <td>22.38</td>
-      <td>55.63</td>
-      <td>28.75</td>
-      <td>46.81</td>
-    </tr>
-    <tr>
-      <td align="left">Gen3C</td>
-      <td><u>46.73</u></td>
-      <td>25.51</td>
-      <td>31.24</td>
-      <td>42.44</td>
-      <td>23.28</td>
-      <td><strong>75.37</strong></td>
-      <td>35.26</td>
-      <td>52.10</td>
-    </tr>
-    <tr>
-      <td align="left">Lyra</td>
-      <td><strong>50.38</strong></td>
-      <td>28.67</td>
-      <td>32.54</td>
-      <td>43.05</td>
-      <td>30.02</td>
-      <td>58.60</td>
-      <td>36.05</td>
-      <td>49.89</td>
-    </tr>
-    <tr>
-      <td align="left">FlashWorld</td>
-      <td>26.58</td>
-      <td>20.72</td>
-      <td>22.29</td>
-      <td>30.45</td>
-      <td>35.97</td>
-      <td>53.77</td>
-      <td>42.60</td>
-      <td>53.86</td>
-    </tr>
-    <tr>
-      <td align="left">WorldStereo 2.0</td>
-      <td>43.62</td>
-      <td><u>41.02</u></td>
-      <td><u>41.43</u></td>
-      <td><u>58.19</u></td>
-      <td><strong>43.19</strong></td>
-      <td><u>65.32</u></td>
-      <td><strong>51.27</strong></td>
-      <td><strong>65.79</strong></td>
-    </tr>
-    <tr>
-      <td align="left">WorldStereo 2.0 (DMD)</td>
-      <td>40.41</td>
-      <td><strong>44.41</strong></td>
-      <td><strong>43.16</strong></td>
-      <td><strong>60.09</strong></td>
-      <td><u>42.34</u></td>
-      <td>64.83</td>
-      <td><u>50.52</u></td>
-      <td><u>65.64</u></td>
-    </tr>
-  </tbody>
-</table>
-
-### WorldMirror 2.0 — Point Map Reconstruction
-
-**Point Map Reconstruction on 7-Scenes, NRGBD, and DTU.** We report the mean Accuracy and Completeness of WorldMirror under different input configurations. **Bold** results are best. "L / M / H" denote low / medium / high inference resolution. "+ all priors" denotes injection of camera extrinsics, camera intrinsics, and depth priors.
-
-<table>
-  <thead>
-    <tr>
-      <th rowspan="2">Method</th>
-      <th colspan="2" align="center">7-Scenes <sub>(scene)</sub></th>
-      <th colspan="2" align="center">NRGBD <sub>(scene)</sub></th>
-      <th colspan="2" align="center">DTU <sub>(object)</sub></th>
-    </tr>
-    <tr>
-      <th>Acc. ↓</th><th>Comp. ↓</th>
-      <th>Acc. ↓</th><th>Comp. ↓</th>
-      <th>Acc. ↓</th><th>Comp. ↓</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td colspan="7"><em>WorldMirror 1.0</em></td></tr>
-    <tr><td>&nbsp;&nbsp;L</td><td>0.043</td><td>0.055</td><td>0.046</td><td>0.049</td><td>1.476</td><td>1.768</td></tr>
-    <tr><td>&nbsp;&nbsp;L + all priors</td><td>0.021</td><td>0.026</td><td>0.022</td><td>0.020</td><td>1.347</td><td>1.392</td></tr>
-    <tr><td>&nbsp;&nbsp;M</td><td>0.043</td><td>0.049</td><td>0.041</td><td>0.045</td><td>1.017</td><td>1.780</td></tr>
-    <tr><td>&nbsp;&nbsp;M + all priors</td><td>0.018</td><td>0.023</td><td>0.016</td><td>0.014</td><td>0.735</td><td>0.935</td></tr>
-    <tr><td>&nbsp;&nbsp;H</td><td>0.079</td><td>0.087</td><td>0.077</td><td>0.093</td><td>2.271</td><td>2.113</td></tr>
-    <tr><td>&nbsp;&nbsp;H + all priors</td><td>0.042</td><td>0.041</td><td>0.078</td><td>0.082</td><td>1.773</td><td>1.478</td></tr>
-    <tr><td colspan="7"></td></tr>
-    <tr><td colspan="7"><em>WorldMirror 2.0</em></td></tr>
-    <tr><td>&nbsp;&nbsp;L</td><td>0.041</td><td>0.052</td><td>0.047</td><td>0.058</td><td>1.352</td><td>2.009</td></tr>
-    <tr><td>&nbsp;&nbsp;L + all priors</td><td>0.019</td><td>0.024</td><td>0.017</td><td>0.015</td><td>1.100</td><td>1.201</td></tr>
-    <tr><td>&nbsp;&nbsp;M</td><td>0.033</td><td>0.046</td><td>0.039</td><td>0.047</td><td>1.005</td><td>1.892</td></tr>
-    <tr><td>&nbsp;&nbsp;M + all priors</td><td>0.013</td><td>0.017</td><td><b>0.013</b></td><td><b>0.013</b></td><td>0.690</td><td>0.876</td></tr>
-    <tr><td>&nbsp;&nbsp;H</td><td>0.037</td><td>0.040</td><td>0.046</td><td>0.053</td><td>0.845</td><td>1.904</td></tr>
-    <tr><td>&nbsp;&nbsp;<b>H + all priors</b></td><td><b>0.012</b></td><td><b>0.016</b></td><td>0.015</td><td>0.016</td><td><b>0.554</b></td><td><b>0.771</b></td></tr>
-  </tbody>
-</table>
- 
-### WorldMirror 2.0 — Prior Comparison
-
-**Comparison with Pow3R and MapAnything under Different Prior Conditions.** Results are averaged on 7-Scenes, NRGBD, and DTU datasets. Pow3R (pro) refers to the original Pow3R with Procrustes alignment.
-
-
-<p align="center">
-  <img src="assets/prior_comparison2_wm2.png" width="85%">
-</p>
-
-
-
-
-## 🎬 More Examples
-
-<table align="center" style="border: none;">
-  <tr>
-    <td align="center" width="50%"><img src="assets/screenshot_3.gif" width="100%"></td>
-    <td align="center" width="50%"><img src="assets/screenshot_4.gif" width="100%"></td>
-  </tr>
-  <tr>
-    <td align="center" width="50%"><img src="assets/screenshot_5.gif" width="100%"></td>
-    <td align="center" width="50%"><img src="assets/screenshot_6.gif" width="100%"></td>
-  </tr>
-  <tr>
-    <td align="center" width="50%"><img src="assets/screenshot_9.gif" width="100%"></td>
-    <td align="center" width="50%"><img src="assets/screenshot_10.gif" width="100%"></td>
-  </tr>
-</table>
-
-
-## 📖 Documentation
-
-For detailed usage guides, parameter references, output format specifications, and prior injection instructions, see **[DOCUMENTATION.md](DOCUMENTATION.md)**.
-
-
-## 📚 Citation
-
-If you find HunyuanWorld 2.0 useful for your research, please cite:
-
-```bibtex
-@article{hyworld2026,
-  title={HY-World 2.0: A Multi-Modal World Model for Reconstructing, Generating, and Simulating 3D Worlds},
-  author={{Team HY-World}},
-  journal={arXiv preprint arXiv:2604.14268},
-  year={2026},
-  doi={10.48550/arXiv.2604.14268},
-  url={https://arxiv.org/abs/2604.14268}
-}
-
-@article{hunyuanworld2025tencent,
-    title={HunyuanWorld 1.0: Generating Immersive, Explorable, and Interactive 3D Worlds from Words or Pixels},
-    author={{Team HunyuanWorld}},
-    year={2025},
-    journal={arXiv preprint arXiv:2507.21809}
-}
+uv pip install --python $MAPMAKER_MAIN_VENV/bin/python \
+  setuptools==78.1.0 ninja packaging
 ```
 
-## 📧 Contact
+검증 당시 Git 의존성을 정확한 커밋으로 설치합니다.
 
-Please send emails to tengfeiwang12@gmail.com for questions or feedback.
+```bash
+uv pip install --python $MAPMAKER_MAIN_VENV/bin/python \
+  --no-build-isolation \
+  "nerfview @ git+https://github.com/nerfstudio-project/nerfview.git@4538024fe0d15fd1a0e4d760f3695fc44ca72787" \
+  "fused-ssim @ git+https://github.com/rahul-goel/fused-ssim.git@328dc9836f513d00c4b5bc38fe30478b4435cbb5" \
+  "spz @ git+https://github.com/nianticlabs/spz.git@5bf2945de1a003cee07133b1e495fe9c6ffdc7e7" \
+  "pytorch3d @ git+https://github.com/facebookresearch/pytorch3d.git@e73a7e7bfc580d1f9225ad9ff7d2c753c320aabd" \
+  "moge @ git+https://github.com/microsoft/MoGe.git@0286b495230a074aadf1c76cc5c679e943e5d1c6" \
+  "utils3d @ git+https://github.com/EasternJournalist/utils3d.git@c5daf6f6c244d251f252102d09e9b7bcef791a38"
+```
+
+Blackwell에서는 CUDA architecture 12.0으로 네이티브 확장을 빌드합니다.
+
+```bash
+source scripts/mapmaker-env.sh
+export TORCH_CUDA_ARCH_LIST=12.0
+export MAX_JOBS=8
+
+uv pip install --python $MAPMAKER_MAIN_VENV/bin/python \
+  --no-build-isolation flash-attn==2.8.3.post1
+
+git clone https://github.com/g-truc/glm.git \
+  "$MAPMAKER_ROOT/hyworld2/worldgen/third_party/gsplat_maskgaussian/gsplat/cuda/csrc/third_party/glm"
+git -C "$MAPMAKER_ROOT/hyworld2/worldgen/third_party/gsplat_maskgaussian/gsplat/cuda/csrc/third_party/glm" \
+  checkout 33b4a621a697a305bc3a7610d290677b96beb181
+uv pip install --python $MAPMAKER_MAIN_VENV/bin/python \
+  --no-build-isolation -e \
+  $MAPMAKER_ROOT/hyworld2/worldgen/third_party/gsplat_maskgaussian
+
+uv pip install --python $MAPMAKER_MAIN_VENV/bin/python \
+  --no-build-isolation \
+  $MAPMAKER_ROOT/hyworld2/worldgen/third_party/navmesh
+```
 
 
-## 🙏 Acknowledgements
+전체 성공 환경은 [메인 환경 고정 목록](environment/MAIN_ENV_FREEZE.txt)에 기록되어 있습니다.
 
-We would like to thank [HunyuanWorld 1.0](https://github.com/Tencent-Hunyuan/HunyuanWorld-1.0), [WorldMirror](https://github.com/Tencent-Hunyuan/HunyuanWorld-Mirror), [WorldPlay](https://github.com/Tencent-Hunyuan/HY-WorldPlay), [WorldStereo](https://github.com/FuchengSu/WorldStereo), [HunyuanImage](https://github.com/Tencent-Hunyuan/HunyuanImage-3.0) for their great work.
+## 4. vLLM 환경 설치
+
+Qwen3-VL은 충돌을 피하기 위해 별도 환경에서 실행합니다.
+
+```bash
+uv venv --python /usr/bin/python3.12 $MAPMAKER_VLLM_VENV
+
+uv pip install --python $MAPMAKER_VLLM_VENV/bin/python \
+  torch==2.11.0 torchvision==0.26.0 torchaudio==2.11.0 \
+  --index-url https://download.pytorch.org/whl/cu128
+
+uv pip install --python $MAPMAKER_VLLM_VENV/bin/python \
+  vllm==0.26.0
+```
+
+전체 성공 환경은 [vLLM 환경 고정 목록](environment/VLLM_ENV_FREEZE.txt)에 기록되어 있습니다. 실행 스크립트는 필요한 CUDA 13 runtime 경로를 자동으로 설정합니다.
+
+## 5. Hugging Face 인증과 모델 다운로드
+
+`facebook/sam3` 사용 승인을 먼저 받은 후 로그인합니다. 토큰을 저장소에 기록하지 마세요.
+
+```bash
+source scripts/mapmaker-env.sh
+hf auth login
+
+hf download facebook/sam3
+hf download Qwen/Qwen3-VL-8B-Instruct
+hf download Qwen/Qwen-Image-Edit-2509
+hf download Ruicheng/moge-2-vitl-normal
+hf download Wan-AI/Wan2.1-I2V-14B-480P-Diffusers
+hf download IDEA-Research/grounding-dino-tiny
+hf download naver-iv/zim-anything-vitl
+hf download facebook/dinov2-base
+hf download hanshanxue/WorldStereo --include "worldstereo-memory-dmd/*"
+hf download tencent/HY-World-2.0 \
+  --include "HY-Pano-2.0/*" "HY-WorldMirror-2.0/*"
+```
+
+모델 캐시는 `$MAPMAKER_CACHE_DIR/huggingface`에 저장됩니다. 검증 환경에서는 약 202GB가 필요했습니다.
+
+## 6. 설치 확인
+
+```bash
+source scripts/mapmaker-env.sh
+python -c "import torch, cupy, diffusers, transformers, gsplat, flash_attn; print(torch.__version__, torch.cuda.get_device_name(0))"
+bash -n $MAPMAKER_ROOT/scripts/*.sh
+```
+
+# 실행
+
+아래 예시는 저장소에 포함된 A_MARCEAU 이미지를 3D world로 변환합니다.
+
+## 빠른 재실행
+
+설치와 캐시가 남아 있는 기존 볼륨에서는 환경을 불러온 뒤 바로 작업할 수 있습니다.
+모든 명령은 저장소 루트에서 실행합니다.
+
+```bash
+source scripts/mapmaker-env.sh
+nvidia-smi
+```
+
+이미 만들어진 A_MARCEAU 결과를 열려면 RunPod에서 TCP 8082 HTTP 서비스를 노출하고 실행합니다.
+
+```bash
+bash $MAPMAKER_ROOT/scripts/start-a-marceau-viewer.sh
+```
+
+다른 체크포인트는 다음처럼 엽니다.
+
+```bash
+MAPMAKER_GS_PORT=8082 \
+  bash $MAPMAKER_ROOT/scripts/start-mapmaker-gs-viewer.sh \
+  $MAPMAKER_OUTPUT_DIR/a-marceau-worldgen-gs/ckpts/ckpt_7999_rank0.pt
+```
+
+## 1. 입력과 출력 경로
+
+```bash
+source scripts/mapmaker-env.sh
+
+export INPUT_IMAGE=$MAPMAKER_ROOT/examples/worldrecon/stylistic/A_MARCEAU/image_0001.jpg
+export PANO_OUTPUT=$MAPMAKER_OUTPUT_DIR/a-marceau-panorama.png
+export SCENE_DIR=$MAPMAKER_OUTPUT_DIR/a-marceau-worldgen
+export GS_RESULT_DIR=$MAPMAKER_OUTPUT_DIR/a-marceau-worldgen-gs
+
+mkdir -p "$SCENE_DIR"
+```
+
+## 2. 입력 이미지를 360도 파노라마로 확장
+
+```bash
+cd $MAPMAKER_ROOT/hyworld2/panogen
+
+python pipeline_with_qwen_image.py \
+  --image "$INPUT_IMAGE" \
+  --prompt "Expand this image into a seamless 360-degree equirectangular panorama while preserving its original artistic style, architecture, lighting, colors, and scene identity." \
+  --seed 42 \
+  --reproduce \
+  --height 960 \
+  --width 1920 \
+  --num-inference-steps 40 \
+  --save "$PANO_OUTPUT"
+
+cp "$PANO_OUTPUT" "$SCENE_DIR/panorama.png"
+```
+
+입력이 이미 2:1 equirectangular 파노라마라면 이 단계를 생략하고 `panorama.png`로 복사합니다.
+
+## 3. Qwen3-VL 서버 시작
+
+별도 터미널에서 다음 서버를 시작하고 Stage 1과 2가 끝날 때까지 유지합니다.
+
+```bash
+bash $MAPMAKER_ROOT/scripts/start-mapmaker-vllm.sh
+```
+
+기본 포트는 8000, GPU 메모리 비율은 0.50입니다.
+
+```bash
+MAPMAKER_VLM_GPU_UTIL=0.45 \
+  bash $MAPMAKER_ROOT/scripts/start-mapmaker-vllm.sh
+curl http://127.0.0.1:8000/v1/models
+```
+
+## 4. Stage 1 — 경로 계획
+
+다른 터미널에서 저장소 루트로 이동한 뒤 환경과 경로 변수를 다시 설정하고 실행합니다.
+
+```bash
+source scripts/mapmaker-env.sh
+export SCENE_DIR=$MAPMAKER_OUTPUT_DIR/a-marceau-worldgen
+cd $MAPMAKER_ROOT/hyworld2/worldgen
+
+python traj_generate.py \
+  --target_path "$SCENE_DIR" \
+  --llm_addr 127.0.0.1 \
+  --llm_port 8000 \
+  --llm_name Qwen/Qwen3-VL-8B-Instruct \
+  --apply_nav_traj \
+  --apply_up_route \
+  --apply_recon_iteration \
+  --force_vlm
+```
+
+## 5. Stage 2 — 경로 렌더링과 캡션
+
+```bash
+torchrun --standalone --nproc_per_node=1 traj_render.py \
+  --target_path "$SCENE_DIR" \
+  --llm_addr 127.0.0.1 \
+  --llm_port 8000 \
+  --llm_name Qwen/Qwen3-VL-8B-Instruct
+```
+
+완료되면 vLLM 터미널에서 `Ctrl+C`로 서버를 종료합니다. Stage 3 전에 반드시 GPU 메모리를 비워야 합니다.
+
+## 6. Stage 3 — WorldStereo와 WorldMirror
+
+```bash
+torchrun --standalone --nproc_per_node=1 video_gen.py \
+  --target_path "$SCENE_DIR" \
+  --local_files_only \
+  --skip_exist
+```
+
+캐시가 없는 첫 실행이라면 `--local_files_only`를 제거합니다. 이 단계는 WorldStereo 비디오 생성, WorldMirror 깊이 추론, 정렬, 필터링과 `aligned_pcd.ply` 내보내기를 순서대로 수행합니다.
+
+비디오는 모두 완성됐고 정렬과 내보내기만 다시 실행하려면:
+
+```bash
+torchrun --standalone --nproc_per_node=1 video_gen.py \
+  --target_path "$SCENE_DIR" \
+  --local_files_only \
+  --skip_exist \
+  --postprocess_only \
+  --nframe 21
+```
+
+`--postprocess_only`에서는 필요한 비디오가 하나라도 없으면 `FileNotFoundError`가 발생합니다.
+
+## 7. Stage 4 — Gaussian Splatting 데이터 생성
+
+```bash
+torchrun --standalone --nproc_per_node=1 gen_gs_data.py \
+  --root_path "$SCENE_DIR" \
+  --save_normal \
+  --split_sky
+```
+
+## 8. Stage 5 — 단일 GPU 3DGS 학습
+
+기존 결과를 보존하려면 매번 새로운 `GS_RESULT_DIR`을 사용하세요.
+
+```bash
+export GS_RESULT_DIR=$MAPMAKER_OUTPUT_DIR/a-marceau-worldgen-gs
+
+PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
+python -m world_gs_trainer default \
+  --data_dir "$SCENE_DIR/gs_data" \
+  --result_dir "$GS_RESULT_DIR" \
+  --max_steps 8000 \
+  --save_steps 8000 \
+  --eval_steps 8000 \
+  --ply_steps 8000 \
+  --save_ply \
+  --convert_to_spz \
+  --disable_video \
+  --disable_viewer \
+  --use_scale_regularization \
+  --antialiased \
+  --depth_loss \
+  --normal_loss \
+  --sky_depth_from_pcd \
+  --use_mask_gaussian \
+  --mask_export_stochastic \
+  --no-mask-export-anchor-protection \
+  --use_anchor_protection \
+  --export_mesh \
+  --strategy.refine-start-iter 1200 \
+  --strategy.refine-stop-iter 6000 \
+  --strategy.refine-every 800 \
+  --strategy.refine-scale2d-stop-iter 6000 \
+  --strategy.reset-every 99990 \
+  --strategy.grow-grad2d 0.0001 \
+  --strategy.prune-scale3d 0.1
+```
+
+## 9. 결과 보기
+
+```bash
+MAPMAKER_GS_PORT=8082 \
+  bash $MAPMAKER_ROOT/scripts/start-mapmaker-gs-viewer.sh \
+  "$GS_RESULT_DIR/ckpts/ckpt_7999_rank0.pt"
+```
+
+RunPod의 8082 HTTP 프록시로 접속합니다. 뷰어의 `Load trajectory`에 `No existing paths found`가 표시되는 것은 정상입니다. 이 메뉴는 WorldGen 경로가 아니라 뷰어에서 별도로 저장한 카메라 경로를 읽습니다.
+
+# WorldMirror만 실행
+
+겹치는 이미지 디렉터리 또는 비디오를 입력으로 전달합니다.
+
+```bash
+bash $MAPMAKER_ROOT/scripts/run-worldmirror.sh $MAPMAKER_ROOT/my-images
+```
+
+출력 경로를 직접 지정할 수도 있습니다.
+
+```bash
+bash $MAPMAKER_ROOT/scripts/run-worldmirror.sh \
+  $MAPMAKER_ROOT/my-images \
+  $MAPMAKER_OUTPUT_DIR/my-scene
+```
+
+Gradio UI를 사용할 때는 RunPod에서 TCP 7860을 노출합니다.
+
+```bash
+bash $MAPMAKER_ROOT/scripts/start-worldmirror-ui.sh
+```
+
+# 중단 후 재개
+
+- Stage 1과 2가 끝났다면 vLLM을 종료하고 Stage 3부터 실행합니다.
+- Stage 3은 `--skip_exist`로 기존 비디오 생성을 건너뜁니다.
+- 비디오가 모두 있으면 `--postprocess_only --nframe 21`로 정렬부터 재개합니다.
+- Stage 4가 끝났다면 `$SCENE_DIR/gs_data/cameras.json`을 확인하고 Stage 5부터 실행합니다.
+- Stage 5를 다시 돌릴 때는 기존 결과를 덮어쓰지 않도록 새 `--result_dir`을 사용합니다.
+
+# 데이터 보관과 용량
+
+Git에 포함되는 것은 소스, 스크립트와 패키지 목록뿐입니다. 다음 항목은 별도로 보관해야 합니다.
+
+| 경로 | 내용 |
+|---|---|
+| `$MAPMAKER_CACHE_DIR/huggingface` | 모델 가중치와 Hugging Face 인증 |
+| `$MAPMAKER_VENVS_DIR` | Python 실행 환경 |
+| `$MAPMAKER_OUTPUT_DIR` | 비디오, 포인트 클라우드, 체크포인트, PLY/SPZ와 메시 |
+
+모델 가중치, 토큰, 가상환경과 생성 결과는 용량 또는 보안 문제로 Git에 포함하지 않습니다. 소스 커밋만으로 기존 생성 결과가 복구되지는 않습니다. 중요한 결과는 별도 볼륨이나 객체 스토리지에 백업하세요.
+
+# 문제 해결
+
+- 메인 환경의 `uv pip check`는 검증된 설치에서도 `hf-gradio`와 `gradio-client` 선언 버전 불일치, `decord` 플랫폼 메타데이터 경고를 표시합니다. 핵심 import와 MP4 디코딩은 검증했으며, vLLM 환경의 `uv pip check`는 통과했습니다.
+- `libcudart.so.13 not found`: vLLM을 직접 실행하지 말고 `scripts/start-mapmaker-vllm.sh`를 사용합니다.
+- Stage 3 OOM: vLLM이 종료됐는지 `nvidia-smi`로 확인합니다.
+- 다른 GPU에서 CUDA extension 오류: `TORCH_CUDA_ARCH_LIST`를 GPU에 맞추고 FlashAttention과 gsplat을 재빌드합니다.
+- Hugging Face gated model 오류: `facebook/sam3` 승인을 확인하고 `hf auth login`을 다시 실행합니다.
+- 기존 성공 환경에서는 패키지를 일괄 업그레이드하지 말고 새 venv에서 먼저 시험합니다.
+- `git clean -fdx`는 캐시되지 않은 빌드 의존성을 지울 수 있으므로 실행하지 않습니다.
+
+# Upstream 및 라이선스
+
+이 fork는 [Tencent-Hunyuan/HY-World-2.0](https://github.com/Tencent-Hunyuan/HY-World-2.0)을 기반으로 합니다. 원본 저작권, 모델 사용 조건, 라이선스와 인용 방법은 [License.txt](License.txt)와 [원본 README](README_UPSTREAM.md)를 따릅니다.
