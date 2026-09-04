@@ -41,6 +41,10 @@ if __name__ == '__main__':
     parser.add_argument("--local_files_only", action="store_true", help="If True, avoid downloading the file and return the path to the local cached file if it exists.")
     parser.add_argument("--fsdp", action="store_true", help="Enable FSDP model sharding")
     parser.add_argument("--skip_exist", action="store_true", help="skip existing videos")
+    parser.add_argument("--postprocess_only", action="store_true",
+                        help="Rebuild the memory bank from existing videos and run alignment/export without loading WorldStereo")
+    parser.add_argument("--nframe", default=21, type=int,
+                        help="Number of frames per generated video when --postprocess_only is enabled")
     parser.add_argument("--seed", default=1024, type=int, help="Random seed")
 
     args = parser.parse_args()
@@ -85,15 +89,17 @@ if __name__ == '__main__':
     torch.set_default_dtype(torch.float)
 
     # == Video Generation Inference ==
-    worldstereo = WorldStereo.from_pretrained(
-        "hanshanxue/WorldStereo",
-        subfolder=args.model_type,
-        local_files_only=args.local_files_only,
-        sp_world_size=sp_size,
-        fsdp=args.fsdp,
-        device_mesh=device_mesh,
-        device=device,
-    )
+    worldstereo = None
+    if not args.postprocess_only:
+        worldstereo = WorldStereo.from_pretrained(
+            "hanshanxue/WorldStereo",
+            subfolder=args.model_type,
+            local_files_only=args.local_files_only,
+            sp_world_size=sp_size,
+            fsdp=args.fsdp,
+            device_mesh=device_mesh,
+            device=device,
+        )
     dist.barrier()
     generator = torch.Generator(device=device).manual_seed(args.seed)
 
@@ -134,7 +140,8 @@ if __name__ == '__main__':
             width, height = imagesize.get(f"{'/'.join(render_list[0].split('/')[:-2])}/start_frame.png")
             rank0_log("Enable memory control, initializing memory bank.")
             with timer.track("[IO] Memory Bank Initialization"):
-                memory_bank = PanoramaMemoryBank(root_path=scene, image_width=width, image_height=height, device=device, nframe=worldstereo.cfg.nframe,
+                memory_bank = PanoramaMemoryBank(root_path=scene, image_width=width, image_height=height, device=device,
+                                                 nframe=args.nframe if worldstereo is None else worldstereo.cfg.nframe,
                                                  max_reference=args.max_reference, align_nframe=args.align_nframe, rank=sp_rank, world_size=sp_size, moge_model=moge_model,
                                                  sam3_model=sam3_model, sam3_processor=sam3_processor, results_name=args.model_type, valid_threshold=0.15, pts_num=args.downsampled_pts,
                                                  kb_anomaly_percentile=args.kb_anomaly_percentile, pcd_nb_neighbors=args.pcd_nb_neighbors, pcd_std_ratio=args.pcd_std_ratio)
@@ -148,11 +155,14 @@ if __name__ == '__main__':
                     tar_w2cs = torch.from_numpy(np.array(target_cameras["extrinsic"])).to(dtype=torch.float32, device=device)
                     tar_Ks = torch.from_numpy(np.array(target_cameras["intrinsic"])).to(dtype=torch.float32, device=device)
 
-                    if args.skip_exist and os.path.exists(f"{scene}/render_results/{view_id}/{traj_id}/{args.model_type}_result.mp4"):
+                    result_path = f"{scene}/render_results/{view_id}/{traj_id}/{args.model_type}_result.mp4"
+                    if (args.skip_exist or args.postprocess_only) and os.path.exists(result_path):
                         if memory_bank is not None:  # Only update the memory bank
-                            gen_frames = load_video(f"{scene}/render_results/{view_id}/{traj_id}/{args.model_type}_result.mp4")
+                            gen_frames = load_video(result_path)
                             memory_bank.update_memory(gen_frames=gen_frames, tar_w2cs_full=tar_w2cs, tar_Ks_full=tar_Ks, view_id=view_id, traj_id=traj_id)
                         continue
+                    if args.postprocess_only:
+                        raise FileNotFoundError(f"Missing generated video required by --postprocess_only: {result_path}")
 
                 # All ranks run retrieval; sequence-parallel rendering happens inside.
                 with timer.track("Memory Retrieval"):
@@ -209,6 +219,15 @@ if __name__ == '__main__':
                         gen_frames = load_video(f"{scene}/render_results/{view_id}/{traj_id}/{args.model_type}_result.mp4")
                     memory_bank.update_memory(gen_frames=gen_frames, tar_w2cs_full=tar_w2cs, tar_Ks_full=tar_Ks, view_id=view_id, traj_id=traj_id)
                 dist.barrier()
+
+            # WorldMirror runs in a child process and needs its own large GPU
+            # allocation.  On a single GPU, release WorldStereo before spawning
+            # it instead of keeping both models resident at the same time.
+            if worldstereo is not None:
+                rank0_log("Releasing WorldStereo before WorldMirror inference.")
+                worldstereo = None
+                gc.collect()
+                torch.cuda.empty_cache()
 
             if memory_bank is not None:
                 with timer.track("Run World Mirror"):

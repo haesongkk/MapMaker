@@ -1127,10 +1127,27 @@ class PanoramaMemoryBank:
                 view_id, traj_id, fname_id = camera_id.split("-")
             self.name_map[f"{view_id}/{traj_id}/{fname_id}"] = str(i).zfill(4)
 
+        # The inference outputs may be complete even when the parent process was
+        # interrupted before it could write name_map.json. Recover that small
+        # completion marker so --skip_exist can resume without recomputing all
+        # WorldMirror depths.
+        name_map_path = f"{self.world_mirror_dir}/name_map.json"
+        if skip_exist and not os.path.exists(name_map_path):
+            expected_depths = [
+                f"{self.world_mirror_dir}/results/depth/depth_{str(i).zfill(4)}.npy"
+                for i in range(len(world_mirror_cam_ids))
+            ]
+            if expected_depths and all(os.path.exists(path) for path in expected_depths):
+                if self.rank == 0:
+                    with open(name_map_path, "w") as w:
+                        json.dump(self.name_map, w, indent=2)
+                    color_print(f"[Rank0] Recovered name_map.json from complete World Mirror outputs.", "info")
+                dist.barrier()
+
         # Rank 0 runs World Mirror inference.
         torch.cuda.empty_cache()
         if self.rank == 0:
-            if not (skip_exist and os.path.exists(f"{self.world_mirror_dir}/name_map.json")):
+            if not (skip_exist and os.path.exists(name_map_path)):
                 wm_cmd = [
                     "torchrun", f"--nproc_per_node={self.world_size}", "-m", "worldrecon.pipeline",
                     "--input_path", f"{self.world_mirror_dir}/images",
@@ -1155,7 +1172,7 @@ class PanoramaMemoryBank:
                     raise RuntimeError(f"World Mirror inference failed with return code {result.returncode}")
 
                 # save name_map
-                with open(f"{self.world_mirror_dir}/name_map.json", "w") as w:
+                with open(name_map_path, "w") as w:
                     json.dump(self.name_map, w, indent=2)
 
                 color_print(f"[Rank0] World Mirror inference completed successfully.", "info")

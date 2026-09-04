@@ -73,7 +73,12 @@ LLM_PORT = 8000
 
 SAM_BATCH_SIZE = 4
 MAX_MASK_COUNT = 5
-HF_CACHE_DIR = os.path.expanduser("~/.cache/huggingface/hub")
+HF_CACHE_DIR = os.environ.get(
+    "HUGGINGFACE_HUB_CACHE",
+    os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "..", ".cache", "huggingface", "hub")
+    ),
+)
 ZIM_REPO_ID = "naver-iv/zim-anything-vitl"
 ZIM_SUBFOLDER = "zim_vit_l_2092"
 GD_REPO_ID = "IDEA-Research/grounding-dino-tiny"

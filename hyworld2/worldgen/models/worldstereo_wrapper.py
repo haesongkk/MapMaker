@@ -39,7 +39,7 @@ from diffusers.schedulers import UniPCMultistepScheduler
 from omegaconf import OmegaConf
 from safetensors.torch import load_file as load_safetensors
 from torch.distributed.fsdp import MixedPrecisionPolicy, fully_shard
-from transformers import AutoTokenizer, CLIPImageProcessor, CLIPVisionModel, UMT5EncoderModel
+from transformers import CLIPImageProcessor, CLIPVisionModel, T5Tokenizer, UMT5EncoderModel
 
 from .attention import WanAttnProcessorSP
 from .dmd_scheduler import FlowGeneratorScheduler
@@ -190,7 +190,14 @@ class WorldStereo:
         image_processor = CLIPImageProcessor.from_pretrained(
             cfg.base_model, do_rescale=False, subfolder="image_processor", local_files_only=local_files_only
         )
-        tokenizer = AutoTokenizer.from_pretrained(cfg.base_model, subfolder="tokenizer", local_files_only=local_files_only)
+        # Wan ships a standalone T5 tokenizer subfolder without a root
+        # transformers config. AutoTokenizer therefore tries (and fails) to
+        # resolve a non-existent root config in offline/local-only runs.
+        tokenizer = T5Tokenizer.from_pretrained(
+            cfg.base_model,
+            subfolder="tokenizer",
+            local_files_only=local_files_only,
+        )
 
         pipeline = cls._build_pipeline(
             model_type,
