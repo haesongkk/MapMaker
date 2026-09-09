@@ -21,6 +21,42 @@ import nerfview
 from nerfview import apply_float_colormap
 
 
+OUTPUT_VARIANTS = {
+    "학습 원본 · PT": "ckpts/ckpt_7999_rank0.pt",
+    "Gaussian · PLY": "ply/point_cloud_7999.ply",
+    "압축 Gaussian · SPZ": "ply/point_cloud_7999.spz",
+    "후처리 메시": "ply/fuse_post.ply",
+    "단순화 메시": "ply/fuse_simplified.ply",
+}
+
+
+def read_metadata(checkpoint):
+    path = Path(checkpoint).parent / "position_meta_info.json"
+    data = json.loads(path.read_text()) if path.exists() else {}
+    return {key: np.asarray(data[key]) if data.get(key) is not None else None
+            for key in ("up_direction", "facing_direction", "center_point")}
+
+
+def load_output(checkpoint, args, device):
+    if Path(checkpoint).name in {"fuse_post.ply", "fuse_simplified.ply"}:
+        import trimesh
+
+        mesh = trimesh.load(checkpoint, force="mesh", process=False)
+        if len(mesh.vertices) == 0 or len(mesh.faces) == 0:
+            raise ValueError("Mesh has no triangles")
+
+        def double_sided(tree):
+            for material in tree.get("materials", []):
+                material["doubleSided"] = True
+
+        glb = trimesh.exchange.gltf.export_glb(mesh, tree_postprocessor=double_sided)
+        return dict(read_metadata(checkpoint), kind="mesh", glb=glb,
+                    count=len(mesh.faces), source=checkpoint)
+    result = load_scene(checkpoint, args, device)
+    result.update(kind="gaussian", count=len(result["means"]), source=checkpoint)
+    return result
+
+
 def load_scene(checkpoint, args, device):
     up_direction = None
     facing_direction = None
@@ -52,6 +88,28 @@ def load_scene(checkpoint, args, device):
         opacities = torch.cat(splat_chunks["opacities"], dim=0)
         sh0 = torch.cat(splat_chunks["sh0"], dim=0)
         shN = torch.cat(splat_chunks["shN"], dim=0)
+    elif checkpoint.endswith(".spz"):
+        import spz
+
+        options = spz.UnpackOptions()
+        # Matches this repository's PLY -> SPZ export convention (verified
+        # against PLY positions); RDF would flip the Y and Z axes here.
+        options.to_coord = spz.CoordinateSystem.RUB
+        cloud = spz.load_spz(checkpoint, options)
+        n_points = cloud.num_points
+        if n_points <= 0:
+            raise ValueError(f"No Gaussians decoded from {checkpoint}")
+        metadata = read_metadata(checkpoint)
+        up_direction, facing_direction, center_point = (
+            metadata[key] for key in ("up_direction", "facing_direction", "center_point")
+        )
+        means = torch.as_tensor(cloud.positions.reshape(n_points, 3), device=device)
+        quats = torch.as_tensor(cloud.rotations.reshape(n_points, 4)[:, [3, 0, 1, 2]].copy(), device=device)
+        quats = F.normalize(quats, p=2, dim=-1)
+        scales = torch.as_tensor(cloud.scales.reshape(n_points, 3), device=device).exp()
+        opacities = torch.as_tensor(cloud.alphas, device=device).sigmoid()
+        sh0 = torch.as_tensor(cloud.colors.reshape(n_points, 1, 3), device=device)
+        shN = torch.as_tensor(cloud.sh.reshape(n_points, (cloud.sh_degree + 1) ** 2 - 1, 3), device=device)
     elif checkpoint.endswith(".ply"):
         with open(os.path.join(os.path.dirname(checkpoint), "position_meta_info.json"), "r") as f:
             meta_info = json.load(f)
@@ -103,7 +161,7 @@ def load_scene(checkpoint, args, device):
             assert num_rest_coeffs % 3 == 0, \
                 f"Invalid PLY: f_rest count {num_rest_coeffs} is not divisible by 3."
             num_sh_rest = num_rest_coeffs // 3
-            shN = sh_rest_flat.reshape(n_points, num_sh_rest, 3)  # (N, C, 3)
+            shN = sh_rest_flat.reshape(n_points, 3, num_sh_rest).transpose(1, 2).contiguous()  # (N, C, 3)
         else:
             shN = torch.zeros(n_points, 0, 3, dtype=torch.float32, device=device)
     else:
@@ -161,7 +219,7 @@ if __name__ == '__main__':
     torch.manual_seed(42)
     device = "cuda"
     scene_lock = threading.RLock()
-    scene = load_scene(args.ckpt, args, device)
+    scene = load_output(args.ckpt, args, device)
 
     render_state = {"mode": "RGB"}
 
@@ -188,6 +246,8 @@ if __name__ == '__main__':
         else:
             width = render_tab_state.viewer_width
             height = render_tab_state.viewer_height
+        if scene["kind"] == "mesh":
+            return np.zeros((height, width, 3), dtype=np.float32)
         c2w = camera_state.c2w
         K = camera_state.get_K([width, height])
         c2w = torch.from_numpy(c2w).float().to(device)
@@ -262,36 +322,83 @@ if __name__ == '__main__':
         Path(args.ckpt).stem,
     )
     scene_paths.setdefault(current_name, args.ckpt)
+    def variant_paths(name):
+        initial = Path(scene_paths[name])
+        gs_root = initial.parent.parent
+        paths = {label: str(gs_root / relative) for label, relative in OUTPUT_VARIANTS.items()
+                 if (gs_root / relative).is_file()}
+        if str(initial) not in paths.values():
+            paths["지정 파일"] = str(initial)
+        return paths
+
+    current_variant = next(label for label, path in variant_paths(current_name).items()
+                           if Path(path).resolve() == Path(args.ckpt).resolve())
+    mesh_handle = None
     with server.gui.add_folder("장면 선택"):
         scene_dropdown = server.gui.add_dropdown(
             "장면", options=list(scene_paths), initial_value=current_name,
         )
-        scene_status = server.gui.add_text("상태", initial_value=f"{current_name} 준비 완료", disabled=True)
+        variant_dropdown = server.gui.add_dropdown(
+            "출력 형식", options=list(variant_paths(current_name)), initial_value=current_variant,
+        )
+        scene_status = server.gui.add_text("상태", initial_value="준비 완료", disabled=True)
+        output_info = server.gui.add_markdown("")
+
+    def update_display():
+        global mesh_handle
+        new_handle = None
+        if scene["kind"] == "mesh":
+            new_handle = server.scene.add_glb(
+                "/output_mesh", scene["glb"], cast_shadow=False, receive_shadow=False,
+            )
+        elif mesh_handle is not None:
+            mesh_handle.remove()
+        mesh_handle = new_handle
+        render_mode_dropdown.disabled = scene["kind"] == "mesh"
+        unit = "삼각형" if scene["kind"] == "mesh" else "Gaussian"
+        note = "메시는 정점 색상으로 표시됩니다." if scene["kind"] == "mesh" else "RGB · Depth · Normal 모드를 사용할 수 있습니다."
+        output_info.content = f"**{Path(scene['source']).name}** · {unit} {scene['count']:,}개\n\n{note}"
+        scene_status.value = f"{current_name} · {current_variant} 준비 완료"
 
     @scene_dropdown.on_update
+    @variant_dropdown.on_update
     def switch_scene(event):
-        global scene, current_name
+        global scene, current_name, current_variant
         with scene_lock:
             selected = scene_dropdown.value
-            if selected == current_name:
+            paths = variant_paths(selected)
+            requested = variant_dropdown.value
+            variant = requested if requested in paths else next(iter(paths))
+            if (selected, variant) == (current_name, current_variant):
                 return
             scene_dropdown.disabled = True
-            scene_status.value = f"{selected} 불러오는 중…"
+            variant_dropdown.disabled = True
+            scene_status.value = f"{selected} · {variant} 불러오는 중…"
+            previous_scene, previous_name, previous_variant = scene, current_name, current_variant
             try:
-                new_scene = load_scene(scene_paths[selected], args, device)
+                new_scene = load_output(paths[variant], args, device)
                 torch.cuda.synchronize()
                 scene = new_scene
-                current_name = selected
-                reset_cameras()
-                torch.cuda.empty_cache()
-                scene_status.value = f"{selected} 준비 완료"
+                current_name, current_variant = selected, variant
+                update_display()
+                if selected != previous_name:
+                    reset_cameras()
+                variant_dropdown.options = list(paths)
+                variant_dropdown.value = variant
                 viewer.rerender(None)
             except Exception:
                 traceback.print_exc()
+                scene, current_name, current_variant = previous_scene, previous_name, previous_variant
+                update_display()
                 scene_dropdown.value = current_name
-                scene_status.value = f"{selected} 로딩 실패. 다른 장면을 선택해 주세요."
+                variant_dropdown.options = list(variant_paths(current_name))
+                variant_dropdown.value = current_variant
+                scene_status.value = f"{selected} · {variant} 로딩 실패. 이전 결과를 유지합니다."
             finally:
+                del previous_scene
+                torch.cuda.empty_cache()
                 scene_dropdown.disabled = False
+                variant_dropdown.disabled = False
 
     # Add GUI controls.
     with server.gui.add_folder("Render Settings"):
@@ -305,7 +412,7 @@ if __name__ == '__main__':
     @render_mode_dropdown.on_update
     def _(_) -> None:
         render_state["mode"] = render_mode_dropdown.value
-        print(f"Render mode changed to: {render_state['mode']}")
+        viewer.rerender(None)
 
 
     def locked_render(camera_state, render_tab_state):
@@ -318,6 +425,7 @@ if __name__ == '__main__':
         mode="rendering",
     )
 
+    update_display()
     print("Viewer running... Ctrl+C to exit.")
     print("Available render modes: RGB, Depth, Normal")
     time.sleep(100000)

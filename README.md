@@ -188,6 +188,19 @@ bash $MAPMAKER_ROOT/scripts/start-mapmaker-gs-viewer.sh
 
 8082 페이지의 **장면 선택** 메뉴에서 `outputs/images/*/gs/ckpts/ckpt_7999_rank0.pt`가 있는 장면을 전환합니다. 장면을 선택하면 로딩 상태가 표시되고 카메라가 해당 장면의 초기 위치로 이동합니다. 장면 선택은 접속 중인 모든 사용자에게 함께 적용됩니다. 별도 갤러리 페이지는 필요하지 않습니다.
 
+같은 메뉴의 **출력 형식**에서 다음 결과를 선택할 수 있습니다. 해당 장면에 존재하는 파일만 표시됩니다.
+
+| 출력 형식 | 읽는 파일 | 표시 방식 |
+|---|---|---|
+| 학습 원본 · PT | `gs/ckpts/ckpt_7999_rank0.pt` | Gaussian 렌더링 |
+| Gaussian · PLY | `gs/ply/point_cloud_7999.ply` | Gaussian 렌더링 |
+| 압축 Gaussian · SPZ | `gs/ply/point_cloud_7999.spz` | 실제 SPZ 복원 후 Gaussian 렌더링 |
+| 후처리 메시 | `gs/ply/fuse_post.ply` | 정점 색상을 포함한 삼각형 표면 |
+| 단순화 메시 | `gs/ply/fuse_simplified.ply` | 삼각형 수를 줄인 표면 |
+
+형식만 바꾸면 카메라 위치를 유지하고, 장면을 바꾸면 초기 위치로 이동합니다. 파일명과 Gaussian 또는 삼각형 개수도 표시합니다. RGB·Depth·Normal 모드는 Gaussian에 적용되며 메시에서는 비활성화됩니다. PT와 내보낸 PLY는 내보내기 필터링 때문에 Gaussian 개수가 다를 수 있습니다. SPZ는 PLY의 압축 결과입니다.
+
+
 다른 체크포인트는 다음처럼 엽니다.
 
 ```bash
