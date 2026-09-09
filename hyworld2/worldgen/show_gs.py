@@ -3,6 +3,9 @@ import json
 import math
 import os
 import time
+import threading
+import traceback
+from pathlib import Path
 from glob import glob
 
 import numpy as np
@@ -18,31 +21,15 @@ import nerfview
 from nerfview import apply_float_colormap
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--scene_grid", type=int, default=1, help="repeat the scene into a grid of NxN")
-    parser.add_argument("--gpu_id", type=int, default=0)
-    parser.add_argument("--none_sh_degree", action='store_true')
-    parser.add_argument("--ckpt", type=str, default=None, help="path to the .pt file")
-    parser.add_argument("--port", type=int, default=443, help="port for the viewer server")
-    parser.add_argument("--backend", type=str, default="gsplat", choices=["gsplat", "gsplat_legacy", "inria"])
-    args = parser.parse_args()
-    assert args.scene_grid % 2 == 1, "scene_grid must be odd"
-    if args.ckpt is None:
-        raise ValueError("--ckpt is required")
-
-    os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu_id)
-
-    torch.manual_seed(42)
-    device = "cuda"
+def load_scene(checkpoint, args, device):
     up_direction = None
     facing_direction = None
     center_point = None
 
-    if "rank*" in args.ckpt or args.ckpt.endswith(".pt"):
-        ckpt_paths = sorted(glob(args.ckpt)) if "rank*" in args.ckpt else [args.ckpt]
+    if "rank*" in checkpoint or checkpoint.endswith(".pt"):
+        ckpt_paths = sorted(glob(checkpoint)) if "rank*" in checkpoint else [checkpoint]
         if not ckpt_paths:
-            raise FileNotFoundError(f"No checkpoints matched: {args.ckpt}")
+            raise FileNotFoundError(f"No checkpoints matched: {checkpoint}")
 
         splat_chunks = {"means": [], "quats": [], "scales": [], "opacities": [], "sh0": [], "shN": []}
         for ckpt_path in tqdm(ckpt_paths, desc="Loading checkpoints..."):
@@ -65,15 +52,15 @@ if __name__ == '__main__':
         opacities = torch.cat(splat_chunks["opacities"], dim=0)
         sh0 = torch.cat(splat_chunks["sh0"], dim=0)
         shN = torch.cat(splat_chunks["shN"], dim=0)
-    elif args.ckpt.endswith(".ply"):
-        with open(os.path.join(os.path.dirname(args.ckpt), "position_meta_info.json"), "r") as f:
+    elif checkpoint.endswith(".ply"):
+        with open(os.path.join(os.path.dirname(checkpoint), "position_meta_info.json"), "r") as f:
             meta_info = json.load(f)
         up_direction = np.array(meta_info["up_direction"])
         facing_direction = np.array(meta_info["facing_direction"])
         center_point = np.array(meta_info["center_point"])
 
-        print(f"[load_ply] Reading {args.ckpt} ...")
-        plydata = PlyData.read(args.ckpt)
+        print(f"[load_ply] Reading {checkpoint} ...")
+        plydata = PlyData.read(checkpoint)
         vertex = plydata['vertex']
         n_points = len(vertex.data)
         print(f"[load_ply] Number of points: {n_points}")
@@ -120,7 +107,7 @@ if __name__ == '__main__':
         else:
             shN = torch.zeros(n_points, 0, 3, dtype=torch.float32, device=device)
     else:
-        raise NotImplementedError(f"Unsupported checkpoint format: {args.ckpt}")
+        raise NotImplementedError(f"Unsupported checkpoint format: {checkpoint}")
 
     colors = torch.cat([sh0, shN], dim=-2)
     if args.none_sh_degree:
@@ -148,6 +135,33 @@ if __name__ == '__main__':
         colors = colors[:, 0]
     opacities = opacities.repeat(repeats ** 2)
     print("Number of Gaussians:", len(means))
+
+    return {name: value for name, value in locals().items() if name in (
+        "means", "quats", "scales", "opacities", "colors", "sh_degree",
+        "up_direction", "facing_direction", "center_point",
+    )}
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--scene_grid", type=int, default=1, help="repeat the scene into a grid of NxN")
+    parser.add_argument("--gpu_id", type=int, default=0)
+    parser.add_argument("--none_sh_degree", action='store_true')
+    parser.add_argument("--ckpt", type=str, default=None, help="path to the .pt file")
+    parser.add_argument("--scene_root", type=Path, default=None, help="directory containing scene/gs/ckpts checkpoints")
+    parser.add_argument("--port", type=int, default=443, help="port for the viewer server")
+    parser.add_argument("--backend", type=str, default="gsplat", choices=["gsplat", "gsplat_legacy", "inria"])
+    args = parser.parse_args()
+    assert args.scene_grid % 2 == 1, "scene_grid must be odd"
+    if args.ckpt is None:
+        raise ValueError("--ckpt is required")
+
+    os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu_id)
+
+    torch.manual_seed(42)
+    device = "cuda"
+    scene_lock = threading.RLock()
+    scene = load_scene(args.ckpt, args, device)
 
     render_state = {"mode": "RGB"}
 
@@ -185,7 +199,7 @@ if __name__ == '__main__':
             raise ValueError(f"Unknown render mode: {current_mode}")
 
         raster_kwargs = {
-            "sh_degree": sh_degree,
+            "sh_degree": scene["sh_degree"],
             "render_mode": "RGB" if current_mode == "RGB" else "ED",
             "radius_clip": 3,
         }
@@ -193,7 +207,8 @@ if __name__ == '__main__':
             raster_kwargs["backgrounds"] = torch.zeros((3,), device=device)
 
         render_colors, _, _ = rasterization_fn(
-            means, quats, scales, opacities, colors, viewmat[None], K[None], width, height, **raster_kwargs
+            scene["means"], scene["quats"], scene["scales"], scene["opacities"], scene["colors"],
+            viewmat[None], K[None], width, height, **raster_kwargs
         )
 
         if current_mode == "RGB":
@@ -216,11 +231,67 @@ if __name__ == '__main__':
     # Set up the Viser server.
     server = viser.ViserServer(port=args.port, verbose=False)
 
-    server.initial_camera.up = up_direction if up_direction is not None else (-1, 0, 0)
-    server.scene.set_up_direction(up_direction if up_direction is not None else "-x")
-    server.initial_camera.look_at = facing_direction if facing_direction is not None else (0.0, 0.0, -1.0)
-    server.initial_camera.position = center_point if center_point is not None else (0, 0, 0)
-    server.initial_camera.fov = np.deg2rad(70)
+    def reset_cameras():
+        up = scene["up_direction"]
+        facing = scene["facing_direction"]
+        center = scene["center_point"]
+        up = up if up is not None else (-1, 0, 0)
+        look_at = facing if facing is not None else (0.0, 0.0, -1.0)
+        position = center if center is not None else (0, 0, 0)
+        server.scene.set_up_direction(up)
+        server.initial_camera.up = up
+        server.initial_camera.look_at = look_at
+        server.initial_camera.position = position
+        server.initial_camera.fov = np.deg2rad(70)
+        for client in server.get_clients().values():
+            with client.atomic():
+                client.camera.up_direction = up
+                client.camera.position = position
+                client.camera.look_at = look_at
+                client.camera.fov = np.deg2rad(70)
+
+    reset_cameras()
+    scene_paths = {}
+    if args.scene_root is not None:
+        scene_paths = {
+            path.parents[2].name: str(path)
+            for path in sorted(args.scene_root.glob("*/gs/ckpts/ckpt_7999_rank0.pt"))
+        }
+    current_name = next(
+        (name for name, path in scene_paths.items() if Path(path).resolve() == Path(args.ckpt).resolve()),
+        Path(args.ckpt).stem,
+    )
+    scene_paths.setdefault(current_name, args.ckpt)
+    with server.gui.add_folder("장면 선택"):
+        scene_dropdown = server.gui.add_dropdown(
+            "장면", options=list(scene_paths), initial_value=current_name,
+        )
+        scene_status = server.gui.add_text("상태", initial_value=f"{current_name} 준비 완료", disabled=True)
+
+    @scene_dropdown.on_update
+    def switch_scene(event):
+        global scene, current_name
+        with scene_lock:
+            selected = scene_dropdown.value
+            if selected == current_name:
+                return
+            scene_dropdown.disabled = True
+            scene_status.value = f"{selected} 불러오는 중…"
+            try:
+                new_scene = load_scene(scene_paths[selected], args, device)
+                torch.cuda.synchronize()
+                scene = new_scene
+                current_name = selected
+                reset_cameras()
+                torch.cuda.empty_cache()
+                scene_status.value = f"{selected} 준비 완료"
+                viewer.rerender(None)
+            except Exception:
+                traceback.print_exc()
+                scene_dropdown.value = current_name
+                scene_status.value = f"{selected} 로딩 실패. 다른 장면을 선택해 주세요."
+            finally:
+                scene_dropdown.disabled = False
 
     # Add GUI controls.
     with server.gui.add_folder("Render Settings"):
@@ -237,9 +308,13 @@ if __name__ == '__main__':
         print(f"Render mode changed to: {render_state['mode']}")
 
 
-    _ = nerfview.Viewer(
+    def locked_render(camera_state, render_tab_state):
+        with scene_lock:
+            return viewer_render_fn(camera_state, render_tab_state)
+
+    viewer = nerfview.Viewer(
         server=server,
-        render_fn=viewer_render_fn,
+        render_fn=locked_render,
         mode="rendering",
     )
 

@@ -183,8 +183,10 @@ nvidia-smi
 이미 만들어진 A_MARCEAU 결과를 열려면 RunPod에서 TCP 8082 HTTP 서비스를 노출하고 실행합니다.
 
 ```bash
-bash $MAPMAKER_ROOT/scripts/start-a-marceau-viewer.sh
+bash $MAPMAKER_ROOT/scripts/start-mapmaker-gs-viewer.sh
 ```
+
+8082 페이지의 **장면 선택** 메뉴에서 `outputs/images/*/gs/ckpts/ckpt_7999_rank0.pt`가 있는 장면을 전환합니다. 장면을 선택하면 로딩 상태가 표시되고 카메라가 해당 장면의 초기 위치로 이동합니다. 장면 선택은 접속 중인 모든 사용자에게 함께 적용됩니다. 별도 갤러리 페이지는 필요하지 않습니다.
 
 다른 체크포인트는 다음처럼 엽니다.
 
@@ -199,7 +201,7 @@ MAPMAKER_GS_PORT=8082 \
 ```bash
 source scripts/mapmaker-env.sh
 
-export INPUT_IMAGE=$MAPMAKER_ROOT/examples/worldrecon/stylistic/A_MARCEAU/image_0001.jpg
+export INPUT_IMAGE=$MAPMAKER_ROOT/inputs/images/A_MARCEAU/image_0001.jpg
 export PANO_OUTPUT=$MAPMAKER_OUTPUT_DIR/a-marceau-panorama.png
 export SCENE_DIR=$MAPMAKER_OUTPUT_DIR/a-marceau-worldgen
 export GS_RESULT_DIR=$MAPMAKER_OUTPUT_DIR/a-marceau-worldgen-gs
@@ -355,6 +357,31 @@ MAPMAKER_GS_PORT=8082 \
 ```
 
 RunPod의 8082 HTTP 프록시로 접속합니다. 뷰어의 `Load trajectory`에 `No existing paths found`가 표시되는 것은 정상입니다. 이 메뉴는 WorldGen 경로가 아니라 뷰어에서 별도로 저장한 카메라 경로를 읽습니다.
+
+# 여러 장면 일괄 생성
+
+설치와 모델 다운로드를 마친 뒤 다음 명령을 실행합니다. 실행 전에 GPU를 사용하는 뷰어와 별도 vLLM 서버를 종료하세요.
+
+```bash
+bash scripts/run-all-single-view.sh
+```
+
+기본 입력은 `inputs/images/<장면>/`이며, 각 폴더에서 파일명 순으로 첫 번째 이미지 한 장을 사용합니다. 출력은 `outputs/images/<장면>/`에 저장됩니다. 파노라마, 경로 생성·렌더링, WorldStereo/WorldMirror, 3DGS 데이터 생성, 8,000스텝 학습을 순서대로 실행하며 필요한 vLLM 서버를 자동으로 시작하고 종료합니다.
+
+- 단계별 로그: `outputs/images/_batch_logs/`
+- 완료 표시: `outputs/images/_batch_state/<장면>.<단계>.ok`
+- 전체 완료 표시: `outputs/images/_batch_state/ALL_COMPLETE`
+
+같은 명령을 다시 실행하면 완료 표시가 있는 단계를 건너뜁니다. 기존 파노라마와 최종 학습 체크포인트도 재사용합니다. 입력이나 설정을 바꿔 새로 생성할 때는 새 출력 디렉터리를 지정하세요.
+
+```bash
+MAPMAKER_BATCH_INPUT=/path/to/scenes \
+MAPMAKER_BATCH_OUTPUT=/path/to/new-results \
+MAPMAKER_MIN_FREE_GB=100 \
+  bash scripts/run-all-single-view.sh
+```
+
+기본 여유 공간 기준은 100 GiB이며, 단계 시작 전에 이보다 적으면 중단합니다. 사용자 지정 출력의 장면 목록은 `show_gs.py`의 `--scene_root` 옵션으로 지정할 수 있습니다.
 
 # WorldMirror만 실행
 
