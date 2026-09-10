@@ -451,3 +451,9 @@ Git에 포함되는 것은 소스, 스크립트와 패키지 목록뿐입니다.
 # Upstream 및 라이선스
 
 이 fork는 [Tencent-Hunyuan/HY-World-2.0](https://github.com/Tencent-Hunyuan/HY-World-2.0)을 기반으로 합니다. 원본 저작권, 모델 사용 조건, 라이선스와 인용 방법은 [License.txt](License.txt)와 [원본 README](README_UPSTREAM.md)를 따릅니다.
+
+# 원본 Gaussian 객체 편집 — A_MARCEAU
+
+학습 원본 Gaussian의 외관을 보존하면서 객체별 변환·복제·삭제를 지원하는 Blender 4.5 장면 생성 경로는 [Gaussian 객체 편집 안내](docs/gaussian-editable-scene.md)를 참고하세요. 실행은 `bash scripts/run-gaussian-object-scene.sh`, 생성된 장면 열기는 `bash scripts/start-blender-editable.sh`입니다. 모델·입력·Blender와 애드온 준비가 필요합니다.
+
+현재 검증 대상은 A_MARCEAU입니다. 일반 폴리곤/UV 메시가 아니며 작은 물체와 가려진 경계에는 자동 분리 오차가 남습니다.
