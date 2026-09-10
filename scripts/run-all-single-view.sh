@@ -22,8 +22,10 @@ run_stage() {
   local scene="$1" stage="$2" cwd="$3"; shift 3
   local marker="$state_dir/${scene}.${stage}.ok" log="$log_dir/${scene}.${stage}.log"
   if [[ -f "$marker" ]]; then echo "[skip] $scene $stage"; return; fi
+  local started=$SECONDS
   check_disk; echo "[run] $scene $stage"
   (cd "$cwd" && "$@") >"$log" 2>&1
+  printf '%s\t%s\t%s\t%s\n' "$(date -u +%FT%TZ)" "$scene" "$stage" "$((SECONDS - started))" >> "$log_dir/stage_timings.tsv"
   touch "$marker"; echo "[complete] $scene $stage"
 }
 mapfile -t scene_dirs < <(find "$input_root" -mindepth 1 -maxdepth 1 -type d -printf '%p\n' | LC_ALL=C sort)
@@ -35,19 +37,33 @@ for scene_dir in "${scene_dirs[@]}"; do
   [[ ! -f "$scene_out/panorama.png" ]] || touch "$state_dir/${scene}.panorama.ok"
   run_stage "$scene" panorama "$MAPMAKER_ROOT/hyworld2/panogen" python pipeline_with_qwen_image.py --image "$scene_dir/$image_name" --prompt "$prompt" --seed 42 --reproduce --height 960 --width 1920 --num-inference-steps 40 --save "$scene_out/panorama.png"
 done
-echo "[vllm] starting"
-bash "$MAPMAKER_ROOT/scripts/start-mapmaker-vllm.sh" >"$log_dir/vllm.log" 2>&1 & vlm_pid=$!
-for _ in $(seq 1 120); do
-  curl -fsS http://127.0.0.1:8000/v1/models >/dev/null 2>&1 && break
-  kill -0 "$vlm_pid" 2>/dev/null || { echo "vLLM exited; see $log_dir/vllm.log" >&2; exit 1; }; sleep 5
+needs_vlm=false
+for scene_dir in "${scene_dirs[@]}"; do
+  scene="$(basename "$scene_dir")"
+  if [[ ! -f "$state_dir/${scene}.trajectory.ok" || ! -f "$state_dir/${scene}.trajectory_render.ok" ]]; then
+    needs_vlm=true
+    break
+  fi
 done
-curl -fsS http://127.0.0.1:8000/v1/models >/dev/null; echo "[vllm] ready"
+if $needs_vlm; then
+  echo "[vllm] starting"
+  bash "$MAPMAKER_ROOT/scripts/start-mapmaker-vllm.sh" >"$log_dir/vllm.log" 2>&1 & vlm_pid=$!
+  for _ in $(seq 1 120); do
+    curl -fsS http://127.0.0.1:8000/v1/models >/dev/null 2>&1 && break
+    kill -0 "$vlm_pid" 2>/dev/null || { echo "vLLM exited; see $log_dir/vllm.log" >&2; exit 1; }; sleep 5
+  done
+  curl -fsS http://127.0.0.1:8000/v1/models >/dev/null; echo "[vllm] ready"
+else
+  echo "[skip] vLLM: all trajectory stages are complete"
+fi
 for scene_dir in "${scene_dirs[@]}"; do
   scene="$(basename "$scene_dir")"; scene_out="$output_root/$scene"
   run_stage "$scene" trajectory "$MAPMAKER_ROOT/hyworld2/worldgen" python traj_generate.py --target_path "$scene_out" --llm_addr 127.0.0.1 --llm_port 8000 --llm_name Qwen/Qwen3-VL-8B-Instruct --apply_nav_traj --apply_up_route --apply_recon_iteration --force_vlm --skip_exist
   run_stage "$scene" trajectory_render "$MAPMAKER_ROOT/hyworld2/worldgen" torchrun --standalone --nproc_per_node=1 traj_render.py --target_path "$scene_out" --llm_addr 127.0.0.1 --llm_port 8000 --llm_name Qwen/Qwen3-VL-8B-Instruct
 done
-cleanup; vlm_pid=""; sleep 5
+if [[ -n "$vlm_pid" ]]; then
+  cleanup; vlm_pid=""; sleep 5
+fi
 for scene_dir in "${scene_dirs[@]}"; do
   scene="$(basename "$scene_dir")"; scene_out="$output_root/$scene"
   run_stage "$scene" video_gen "$MAPMAKER_ROOT/hyworld2/worldgen" torchrun --standalone --nproc_per_node=1 video_gen.py --target_path "$scene_out" --local_files_only --skip_exist

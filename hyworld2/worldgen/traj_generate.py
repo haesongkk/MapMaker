@@ -56,6 +56,7 @@ from src.panorama_utils import (
 )
 from src.pointcloud import point_rendering
 from src.seg_utils import get_zim_mask, build_gd_model, build_zim_model
+from src.sam3_cache import infer_with_vision_cache
 from src.vlm_utils import get_qwen_caption_format
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -705,6 +706,7 @@ if __name__ == '__main__':
                 valid_directions_vis = []
                 seen_pairs = set()
 
+                sam3_vision_cache = {}
                 print(f"SAM3 process for {scene_path}...")
                 for i in range(0, len(unique_objects), SAM_BATCH_SIZE):
                     batch_objects = unique_objects[i: i + SAM_BATCH_SIZE]
@@ -715,7 +717,7 @@ if __name__ == '__main__':
                     with timer.track("SAM3 segmentation"):
                         inputs = sam3_processor(images=batch_images, text=batch_objects, return_tensors="pt").to(device)
                         with torch.no_grad():
-                            outputs = sam3_model(**inputs)
+                            outputs = infer_with_vision_cache(sam3_model, inputs, sam3_vision_cache)
                         results = sam3_processor.post_process_instance_segmentation(outputs, threshold=0.4, mask_threshold=0.5, target_sizes=[full_img.size[::-1]] * len(batch_objects))
 
                     no_cluster_num = 0
@@ -841,6 +843,7 @@ if __name__ == '__main__':
                             valid_labels_vis.append(label)
                             valid_directions_vis.append(direction_label)
 
+                del sam3_vision_cache
                 with timer.track("Processing object masks (ranking)"):
                     segmentation_data, _ = get_topk_seg_data(segmentation_data, topk=999)  # Sort only.
                 with open(os.path.join(camera_dir, "target_camera.json"), "w") as f:
