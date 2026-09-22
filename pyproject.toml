@@ -3,7 +3,7 @@ name = "mapmaker"
 version = "0.1.0"
 description = "Single-image to editable textured 3D scene pipeline"
 requires-python = ">=3.10"
-dependencies = ["numpy>=1.26,<3", "Pillow>=10", "opencv-python-headless>=4.8", "trimesh>=4.0", "scipy>=1.11", "typer>=0.12", "imageio>=2.34", "imageio-ffmpeg>=0.5"]
+dependencies = ["numpy>=1.26,<3", "Pillow>=10", "opencv-python-headless>=4.8", "trimesh>=4.0", "scipy>=1.11", "typer>=0.12", "imageio>=2.34", "imageio-ffmpeg>=0.5", "numba>=0.60"]
 
 [project.scripts]
 mapmaker = "mapmaker.cli:app"

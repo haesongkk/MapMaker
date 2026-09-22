@@ -12,7 +12,9 @@ from PIL import Image
 from .common import camera_matrix, image_to_points, write_json
 
 
-def analyze(image_path: Path, output: Path, model_id: str = "Ruicheng/moge-2-vitl-normal") -> None:
+def analyze(
+    image_path: Path, output: Path, model_id: str = "Ruicheng/moge-2-vitl-normal"
+) -> None:
     import torch
     from moge.model.v2 import MoGeModel
 
@@ -33,20 +35,35 @@ def analyze(image_path: Path, output: Path, model_id: str = "Ruicheng/moge-2-vit
     np.save(output / "valid.npy", valid)
     if normals is not None:
         np.save(output / "normals.npy", normals.float().cpu().numpy())
-    write_json(output / "camera.json", {"width": image.shape[1], "height": image.shape[0],
-                                        "K": k.tolist(), "world_to_camera": np.eye(4).tolist(),
-                                        "coordinate_system": "opencv_x_right_y_down_z_forward",
-                                        "depth_units": "model_estimated_meters", "model": model_id})
+    write_json(
+        output / "camera.json",
+        {
+            "width": image.shape[1],
+            "height": image.shape[0],
+            "K": k.tolist(),
+            "world_to_camera": np.eye(4).tolist(),
+            "coordinate_system": "opencv_x_right_y_down_z_forward",
+            "depth_units": "model_estimated_meters",
+            "model": model_id,
+        },
+    )
     # The preview is visual only. Numeric depth remains in depth.npy.
     finite = depth[valid & np.isfinite(depth)]
     if len(finite):
         lo, hi = np.quantile(finite, [0.02, 0.98])
-        preview = np.uint8(np.clip((depth - lo) / max(hi-lo, 1e-5), 0, 1) * 255)
+        preview = np.uint8(np.clip((depth - lo) / max(hi - lo, 1e-5), 0, 1) * 255)
         cv2.imwrite(str(output / "depth_preview.png"), preview)
 
 
-def run_gen3c(image_path: Path, output: Path, repo: Path, checkpoint_dir: Path,
-              python: str = sys.executable, distance: float = 1.0, angle: float = 90.0) -> None:
+def run_gen3c(
+    image_path: Path,
+    output: Path,
+    repo: Path,
+    checkpoint_dir: Path,
+    python: str = sys.executable,
+    distance: float = 1.0,
+    angle: float = 90.0,
+) -> None:
     image_path = image_path.resolve()
     output = output.resolve()
     repo = repo.resolve()
@@ -54,22 +71,46 @@ def run_gen3c(image_path: Path, output: Path, repo: Path, checkpoint_dir: Path,
     python = os.path.abspath(python)
     output.mkdir(parents=True, exist_ok=True)
     if not (checkpoint_dir / "Gen3C-Cosmos-7B/model.pt").is_file():
-        raise FileNotFoundError(f"GEN3C model checkpoint missing under: {checkpoint_dir}")
+        raise FileNotFoundError(
+            f"GEN3C model checkpoint missing under: {checkpoint_dir}"
+        )
     script = repo / "cosmos_predict1/diffusion/inference/gen3c_single_image.py"
     if not script.exists():
         raise FileNotFoundError(f"GEN3C checkout missing: {script}")
     from .gen3c_patch import patch
+
     patch(repo)
     for direction in ("left", "right"):
         video_file = output / f"{direction}.mp4"
         pose_file = output / f"{direction}_w2c.npy"
         if not video_file.exists():
-            args = [python, str(script), "--checkpoint_dir", str(checkpoint_dir),
-                    "--input_image_path", str(image_path), "--video_save_folder", str(output),
-                    "--video_save_name", direction, "--trajectory", "side_" + direction,
-                    "--camera_rotation", "center_facing", "--movement_distance", str(distance),
-                    "--side_angle_deg", str(angle), "--camera_poses_output", str(pose_file),
-                    "--num_video_frames", "121", "--guidance", "1", "--foreground_masking"]
+            args = [
+                python,
+                str(script),
+                "--checkpoint_dir",
+                str(checkpoint_dir),
+                "--input_image_path",
+                str(image_path),
+                "--video_save_folder",
+                str(output),
+                "--video_save_name",
+                direction,
+                "--trajectory",
+                "side_" + direction,
+                "--camera_rotation",
+                "center_facing",
+                "--movement_distance",
+                str(distance),
+                "--side_angle_deg",
+                str(angle),
+                "--camera_poses_output",
+                str(pose_file),
+                "--num_video_frames",
+                "121",
+                "--guidance",
+                "1",
+                "--foreground_masking",
+            ]
             env = os.environ.copy()
             env["HF_HUB_ENABLE_HF_TRANSFER"] = "0"
             env["PYTHONPATH"] = str(repo) + os.pathsep + env.get("PYTHONPATH", "")
@@ -82,15 +123,31 @@ def run_gen3c(image_path: Path, output: Path, repo: Path, checkpoint_dir: Path,
         frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
         capture.release()
         if frame_count != len(np.load(pose_file)):
-            raise RuntimeError(f"GEN3C frame/pose count mismatch for {direction}: {frame_count}")
+            raise RuntimeError(
+                f"GEN3C frame/pose count mismatch for {direction}: {frame_count}"
+            )
         intrinsics_file = output / f"{direction}_K.npy"
         if not intrinsics_file.exists():
             intrinsics_script = Path(__file__).with_name("gen3c_intrinsics.py")
             env = os.environ.copy()
             env["PYTHONPATH"] = str(repo) + os.pathsep + env.get("PYTHONPATH", "")
-            subprocess.run([python, str(intrinsics_script), "--image", str(image_path),
-                            "--video", str(video_file), "--frames", "121",
-                            "--output", str(intrinsics_file)], cwd=repo, env=env, check=True)
+            subprocess.run(
+                [
+                    python,
+                    str(intrinsics_script),
+                    "--image",
+                    str(image_path),
+                    "--video",
+                    str(video_file),
+                    "--frames",
+                    "121",
+                    "--output",
+                    str(intrinsics_file),
+                ],
+                cwd=repo,
+                env=env,
+                check=True,
+            )
 
 
 def extract_frames(video: Path, output: Path, every: int = 12) -> list[Path]:
@@ -115,7 +172,9 @@ def extract_frames(video: Path, output: Path, every: int = 12) -> list[Path]:
     return selected
 
 
-def ram_tags(images: list[Path], checkpoint: Path, device: str = "cuda") -> dict[str, list[str]]:
+def ram_tags(
+    images: list[Path], checkpoint: Path, device: str = "cuda"
+) -> dict[str, list[str]]:
     if not checkpoint.is_file():
         raise FileNotFoundError(f"RAM++ checkpoint missing: {checkpoint}")
     import torch
@@ -128,8 +187,13 @@ def ram_tags(images: list[Path], checkpoint: Path, device: str = "cuda") -> dict
     found = {}
     with torch.inference_mode():
         for path in images:
-            result = inference_ram(transform(Image.open(path).convert("RGB")).unsqueeze(0).to(device), model)
-            found[str(path)] = sorted({tag.strip().lower() for tag in result[0].split("|") if tag.strip()})
+            result = inference_ram(
+                transform(Image.open(path).convert("RGB")).unsqueeze(0).to(device),
+                model,
+            )
+            found[str(path)] = sorted(
+                {tag.strip().lower() for tag in result[0].split("|") if tag.strip()}
+            )
     return found
 
 
@@ -141,21 +205,32 @@ def sam_video(video: Path, labels: list[str], output: Path) -> dict:
     results = {}
     for label in labels:
         # One session per concept preserves its instance IDs and label association.
-        session = predictor.handle_request(request={"type": "start_session", "resource_path": str(video)})
+        session = predictor.handle_request(
+            request={"type": "start_session", "resource_path": str(video)}
+        )
         session_id = session["session_id"]
         label_dir = output / label.replace("/", "_")
         try:
-            response = predictor.handle_request(request={"type": "add_prompt", "session_id": session_id,
-                                                         "frame_index": 0, "text": label})
+            response = predictor.handle_request(
+                request={
+                    "type": "add_prompt",
+                    "session_id": session_id,
+                    "frame_index": 0,
+                    "text": label,
+                }
+            )
             summary = _store_sam_response(response, label_dir)
             for response in predictor.handle_stream_request(
-                    request={"type": "propagate_in_video", "session_id": session_id}):
+                request={"type": "propagate_in_video", "session_id": session_id}
+            ):
                 frame_summary = _store_sam_response(response, label_dir)
                 for obj_id, frames in frame_summary.items():
                     summary.setdefault(obj_id, []).extend(frames)
             results[label] = {key: sorted(set(value)) for key, value in summary.items()}
         finally:
-            predictor.handle_request(request={"type": "close_session", "session_id": session_id})
+            predictor.handle_request(
+                request={"type": "close_session", "session_id": session_id}
+            )
     return results
 
 
@@ -174,7 +249,7 @@ def _store_sam_response(response: dict, output: Path) -> dict:
             continue
         target = output / str(int(obj_id))
         target.mkdir(exist_ok=True)
-        Image.fromarray(np.uint8(mask)*255).save(target / f"{frame:04d}.png")
+        Image.fromarray(np.uint8(mask) * 255).save(target / f"{frame:04d}.png")
         summary.setdefault(str(int(obj_id)), []).append(frame)
     return summary
 
@@ -187,19 +262,31 @@ def hunyuan_mesh(views: dict[str, Path], output: Path, seed: int = 12345) -> Non
     images = {key: Image.open(path).convert("RGBA") for key, path in views.items()}
     if len(images) > 1:
         shape = Hunyuan3DDiTFlowMatchingPipeline.from_pretrained(
-            "tencent/Hunyuan3D-2mv", subfolder="hunyuan3d-dit-v2-mv", variant="fp16")
-        mesh = shape(image=images, num_inference_steps=50, octree_resolution=380,
-                     generator=torch.manual_seed(seed), output_type="trimesh")[0]
+            "tencent/Hunyuan3D-2mv", subfolder="hunyuan3d-dit-v2-mv", variant="fp16"
+        )
+        mesh = shape(
+            image=images,
+            num_inference_steps=50,
+            octree_resolution=380,
+            generator=torch.manual_seed(seed),
+            output_type="trimesh",
+        )[0]
     else:
         shape = Hunyuan3DDiTFlowMatchingPipeline.from_pretrained(
-            "tencent/Hunyuan3D-2", subfolder="hunyuan3d-dit-v2-0", variant="fp16")
-        mesh = shape(image=images["front"], num_inference_steps=50,
-                     generator=torch.manual_seed(seed), output_type="trimesh")[0]
+            "tencent/Hunyuan3D-2", subfolder="hunyuan3d-dit-v2-0", variant="fp16"
+        )
+        mesh = shape(
+            image=images["front"],
+            num_inference_steps=50,
+            generator=torch.manual_seed(seed),
+            output_type="trimesh",
+        )[0]
     output.parent.mkdir(parents=True, exist_ok=True)
     mesh.export(output.with_suffix(".shape.glb"))
     if len(mesh.faces) > 40000:
         mesh = mesh.simplify_quadric_decimation(face_count=40000)
     import gc
+
     del shape
     gc.collect()
     torch.cuda.empty_cache()
@@ -216,18 +303,29 @@ def hunyuan_meshes(jobs: list[dict], seed: int = 12345) -> None:
     from hy3dgen.shapegen import Hunyuan3DDiTFlowMatchingPipeline
     from hy3dgen.texgen import Hunyuan3DPaintPipeline
 
-    pending = [(Path(job["views"]["front"]), Path(job["output"]))
-               for job in jobs if not Path(job["output"]).exists()]
+    pending = [
+        (Path(job["views"]["front"]), Path(job["output"]))
+        for job in jobs
+        if not Path(job["output"]).exists()
+    ]
     if not pending:
         return
-    missing_shapes = [(front, output) for front, output in pending
-                      if not output.with_suffix(".shape.glb").exists()]
+    missing_shapes = [
+        (front, output)
+        for front, output in pending
+        if not output.with_suffix(".shape.glb").exists()
+    ]
     if missing_shapes:
         shape = Hunyuan3DDiTFlowMatchingPipeline.from_pretrained(
-            "tencent/Hunyuan3D-2", subfolder="hunyuan3d-dit-v2-0", variant="fp16")
+            "tencent/Hunyuan3D-2", subfolder="hunyuan3d-dit-v2-0", variant="fp16"
+        )
         for front, output in missing_shapes:
-            mesh = shape(image=Image.open(front).convert("RGBA"), num_inference_steps=50,
-                         generator=torch.manual_seed(seed), output_type="trimesh")[0]
+            mesh = shape(
+                image=Image.open(front).convert("RGBA"),
+                num_inference_steps=50,
+                generator=torch.manual_seed(seed),
+                output_type="trimesh",
+            )[0]
             output.parent.mkdir(parents=True, exist_ok=True)
             mesh.export(output.with_suffix(".shape.glb"))
             del mesh
@@ -246,3 +344,27 @@ def hunyuan_meshes(jobs: list[dict], seed: int = 12345) -> None:
         del mesh
         gc.collect()
         torch.cuda.empty_cache()
+
+
+def sam_image(image: Path, labels: list[str], output: Path) -> dict:
+    """Anchor masks on the actual source, never a generated video's first frame."""
+    import torch
+    from sam3.model_builder import build_sam3_image_model
+    from sam3.model.sam3_image_processor import Sam3Processor
+
+    processor = Sam3Processor(build_sam3_image_model())
+    results = {}
+    with torch.inference_mode(), torch.autocast("cuda", dtype=torch.bfloat16):
+        state = processor.set_image(Image.open(image).convert("RGB"))
+        for label in labels:
+            processor.reset_all_prompts(state)
+            state = processor.set_text_prompt(prompt=label, state=state)
+            masks = state["masks"].cpu().numpy()
+            scores = state["scores"].float().cpu().numpy()
+            results[label] = []
+            for index, (mask, score) in enumerate(zip(masks, scores)):
+                target = output / label.replace("/", "_") / str(index) / "0000.png"
+                target.parent.mkdir(parents=True, exist_ok=True)
+                Image.fromarray(mask.squeeze().astype(np.uint8) * 255).save(target)
+                results[label].append({"path": str(target), "score": float(score)})
+    return results
