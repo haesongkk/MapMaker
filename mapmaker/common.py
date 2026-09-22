@@ -24,7 +24,8 @@ def normalize_image(source: Path, target: Path, max_side: int = 1536) -> dict:
         image.thumbnail((max_side, max_side), Image.Resampling.LANCZOS)
     target.parent.mkdir(parents=True, exist_ok=True)
     image.save(target)
-    return {"source": str(source.resolve()), "original_size": original, "size": image.size,
+    return {"source": str(source.resolve()), "source_mtime_ns": source.stat().st_mtime_ns,
+            "original_size": original, "size": image.size,
             "scale_x": image.width / original[0], "scale_y": image.height / original[1]}
 
 

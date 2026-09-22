@@ -1,6 +1,6 @@
 # MapMaker
 
-사진 한 장을 원본 시점에 정렬된 3D 장면으로 변환하는 로컬 CLI입니다. 결과는 `scene.glb`, `scene.json`, `validation_overlay.png`, `validation_render.png`, `validation.json`입니다. 중간 결과를 단계별로 저장해 다시 실행할 수 있습니다.
+사진 한 장을 원본 시점에 정렬된 3D 장면으로 변환하는 로컬 CLI입니다. 결과는 `scene.glb`, `scene.json`, `scene_comparison.png`, `validation_overlay.png`, `validation_render.png`, `validation.json`입니다. 중간 결과를 단계별로 저장해 다시 실행할 수 있습니다.
 
 ## 준비
 
@@ -56,16 +56,29 @@ uv sync
 | SAM 3 | `masks/<direction>/<label>/<instance>/<frame>.png` |
 | 뷰 선별 | `objects.json`, `object_views/` |
 | Hunyuan | `meshes/<object-id>.glb` |
-| 장면·검증 | `scene.glb`, `scene.json`, `validation_overlay.png`, `validation_render.png`, `validation.json` |
+| 장면·검증 | `scene.glb`, `scene.json`, `scene_comparison.png`, `validation_overlay.png`, `validation_render.png`, `validation.json` |
 
-원본 깊이는 MoGe-2의 추정값입니다. GEN3C의 내부 MoGe-1 깊이와 수치적으로 직접 합치지 않습니다. `videos/*_K.npy`는 GEN3C의 MoGe-1 초점거리·주점을 영상 크기에 맞춰 저장합니다. `videos/*_w2c.npy`는 GEN3C 공식 경로 함수에 동일 파라미터를 넣어 재생성한 자세입니다. 생성 프레임은 실제 촬영이 아니므로 기하 기준은 원본 이미지입니다.
+원본 깊이는 MoGe-2의 추정값입니다. GEN3C의 내부 MoGe-1 깊이와 수치적으로 직접 합치지 않습니다. `videos/*_K.npy`는 GEN3C의 MoGe-1 초점거리·주점을 영상 크기에 맞춰 저장합니다. `videos/*_w2c.npy`는 GEN3C 추론에 실제 전달한 프레임별 자세를 그 자리에서 내보낸 값입니다. 생성 프레임은 실제 촬영이 아니므로 기하 기준은 원본 이미지입니다.
 
-짧은 GEN3C 궤도로 얻은 뷰는 보통 90도 측면이 아닙니다. 생성된 사선 뷰는 `objects.json`에 보존합니다. 카메라 방향이 원본 대비 65~115도인 경우에만 `left` 또는 `right`로 분류해 Hunyuan3D-2mv에 전달합니다. 기본 0.15 이동 거리에서는 이 조건에 도달하지 않아 단일 이미지 형태 모델을 사용합니다. 공식 Hunyuan Paint 예제도 멀티뷰 형태 생성 뒤 텍스처는 정면 이미지를 입력으로 사용합니다. 선택한 사선 뷰는 객체별 관측 산출물로 보존하지만 현재 메시 생성 입력에는 포함하지 않습니다. 공식 Hunyuan3D-2mv 입력은 `front`, `left`, `back` 같은 정해진 방향을 요구하므로, 방향이 확인되지 않은 프레임을 임의로 측면이라고 전달하지 않습니다.
+GEN3C 뷰 단계는 기본적으로 원본에서 출발해 화면 중심의 목표점을 바라보며 좌우 각 90도까지 이동하는 별도 원호 경로를 사용합니다. 카메라 행렬의 평행이동에는 회전된 카메라 위치를 사용해 목표점이 실제로 화면 중심 앞에 남도록 합니다. `--angle`(도)과 `--distance`(반경 배율, 기본 1.0)로 조절합니다. 경로 설정이나 원본이 바뀌면 기존 영상, 프레임, 마스크, 객체 뷰, 메시와 선별 결과를 지우고 새로 생성합니다. 카메라 각도만으로 실제 객체 측면 품질을 보장할 수 없으므로 자동 선별 뷰는 `oblique`로 보존합니다. `videos/visual_validation.json`의 방향별 `approved_objects`에 직접 영상으로 측면 품질을 확인한 객체 ID가 있고 해당 프레임의 카메라 각도가 80도 이상인 경우에만 `left` 또는 `right`로 분류해 Hunyuan3D-2mv에 전달합니다.
 
 `validation.json`의 IoU는 원본 카메라에서 투영한 **메시 실루엣과 SAM 마스크의 일치도**입니다. `low_alignment_objects`는 IoU 0.6 미만인 객체입니다. 사진 같은 텍스처 렌더 품질 지표는 아닙니다.
 
 장면 GLB는 Y-up 좌표로 내보냅니다. `scene.json`에는 원본 OpenCV 좌표의 `source_transform`, GLB 좌표의 `transform`, 두 좌표계 사이의 변환 행렬이 모두 기록됩니다. `validation_render.png`는 객체 메시의 텍스처를 원본 시점에 투영한 확인용 렌더입니다. 삼각형 단위 색상 근사와 단순 깊이 정렬을 사용하므로 최종 품질 판정에는 실루엣 IoU와 GLB 뷰어 확인을 함께 사용합니다.
 
-## 샘플 실행 결과
+## 샘플 GEN3C 검증 (2026-09-22)
 
-`samples/living_room.jpg`에서 양방향 GEN3C 영상과 8개 객체의 GLB를 만들고 `output/living_room/scene.glb`로 합쳤습니다. 원본 시점 실루엣 IoU 평균은 약 0.56입니다. 커튼 4개와 수납장은 형태·정렬 오차가 커서 `validation.json`에 낮은 정렬 품질로 표시됩니다. 생성 영상의 작은 궤도는 약 17도 사선 관측이므로 Hunyuan3D-2mv의 90도 측면 입력으로 사용하지 않습니다.
+```bash
+.venv/bin/python -m mapmaker.cli step views samples/living_room.jpg \
+  --output output/living_room \
+  --gen3c-python .venv-gen3c/bin/python \
+  --distance 0.8 --angle 90
+```
+
+`output/living_room/videos/left.mp4`와 `right.mp4`는 각각 121프레임입니다. 같은 폴더의 `*_w2c.npy`, `*_K.npy`도 각각 121개 행렬이며, 실제 추론 경로의 시선 각도는 양쪽 모두 0→22.5→45→67.5→90도(프레임 0·30·60·90·120)입니다. 목표점은 각 프레임에서 카메라 좌표 `(0, 0, 0.8)`에 유지됩니다. 프레임은 `frames/left`, `frames/right`에 12프레임 간격으로 저장합니다.
+
+실제 영상은 90도 측면 뷰에 미달합니다. 왼쪽은 방과 테이블이 유지되지만 TV·긴 수납장이 끝까지 거의 정면이며 선반과 소품이 바뀝니다. 오른쪽은 소파와 테이블이 유지되지만 소파가 측면으로 돌아가지 않고 뒷벽 세부가 변합니다. 카메라 행렬의 90도를 객체의 실제 90도 관측으로 해석하지 않습니다. 검토한 프레임은 `videos/left_contact.jpg`, `videos/right_contact.jpg`, 판정과 빈 승인 목록은 `videos/visual_validation.json`에 있습니다. 이 영상의 프레임은 Hunyuan3D-2mv의 측면 입력으로 사용하지 않습니다. 이전의 잘못된 평행이동 경로에서 생성한 좌측 실패 영상은 `validation_trials/`에 별도 보관했습니다.
+
+## 전체 샘플 장면 실행
+
+`output/living_room/scene.glb`에 22개 객체 메시와 원본 깊이 배경을 조립했습니다. 독립적인 GLB 렌더는 `scene_glb_source.png`와 `scene_glb_yaw_12.png`입니다. `validation_render.png`는 원본 사진 위에 메시를 투영한 진단 이미지이며, `scene_comparison.png`도 이를 포함합니다. 실루엣 IoU 평균은 약 0.49이며, 커튼·선반·벽 면과 일부 소품에는 눈에 띄는 형태·텍스처 아티팩트가 있습니다. 이 이미지는 현재 결과의 품질 확인용입니다.

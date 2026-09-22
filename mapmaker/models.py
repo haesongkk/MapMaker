@@ -46,7 +46,7 @@ def analyze(image_path: Path, output: Path, model_id: str = "Ruicheng/moge-2-vit
 
 
 def run_gen3c(image_path: Path, output: Path, repo: Path, checkpoint_dir: Path,
-              python: str = sys.executable, distance: float = 0.15) -> None:
+              python: str = sys.executable, distance: float = 1.0, angle: float = 90.0) -> None:
     image_path = image_path.resolve()
     output = output.resolve()
     repo = repo.resolve()
@@ -58,14 +58,17 @@ def run_gen3c(image_path: Path, output: Path, repo: Path, checkpoint_dir: Path,
     script = repo / "cosmos_predict1/diffusion/inference/gen3c_single_image.py"
     if not script.exists():
         raise FileNotFoundError(f"GEN3C checkout missing: {script}")
-    for direction in ("clockwise", "counterclockwise"):
+    from .gen3c_patch import patch
+    patch(repo)
+    for direction in ("left", "right"):
         video_file = output / f"{direction}.mp4"
         pose_file = output / f"{direction}_w2c.npy"
         if not video_file.exists():
             args = [python, str(script), "--checkpoint_dir", str(checkpoint_dir),
                     "--input_image_path", str(image_path), "--video_save_folder", str(output),
-                    "--video_save_name", direction, "--trajectory", direction,
+                    "--video_save_name", direction, "--trajectory", "side_" + direction,
                     "--camera_rotation", "center_facing", "--movement_distance", str(distance),
+                    "--side_angle_deg", str(angle), "--camera_poses_output", str(pose_file),
                     "--num_video_frames", "121", "--guidance", "1", "--foreground_masking"]
             env = os.environ.copy()
             env["HF_HUB_ENABLE_HF_TRANSFER"] = "0"
@@ -74,10 +77,12 @@ def run_gen3c(image_path: Path, output: Path, repo: Path, checkpoint_dir: Path,
         if not (output / f"{direction}.mp4").exists():
             raise RuntimeError(f"GEN3C did not produce {direction}.mp4")
         if not pose_file.exists():
-            pose_script = Path(__file__).with_name("gen3c_poses.py")
-            subprocess.run([sys.executable, str(pose_script), "--direction", direction,
-                            "--distance", str(distance), "--frames", "121",
-                            "--output", str(pose_file)], check=True)
+            raise RuntimeError(f"GEN3C did not export {pose_file}")
+        capture = cv2.VideoCapture(str(video_file))
+        frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
+        capture.release()
+        if frame_count != len(np.load(pose_file)):
+            raise RuntimeError(f"GEN3C frame/pose count mismatch for {direction}: {frame_count}")
         intrinsics_file = output / f"{direction}_K.npy"
         if not intrinsics_file.exists():
             intrinsics_script = Path(__file__).with_name("gen3c_intrinsics.py")
@@ -201,3 +206,43 @@ def hunyuan_mesh(views: dict[str, Path], output: Path, seed: int = 12345) -> Non
     paint = Hunyuan3DPaintPipeline.from_pretrained("tencent/Hunyuan3D-2")
     mesh = paint(mesh, image=images["front"])
     mesh.export(output)
+
+
+def hunyuan_meshes(jobs: list[dict], seed: int = 12345) -> None:
+    """Generate several front-view meshes while loading each Hunyuan model once."""
+    import gc
+    import torch
+    import trimesh
+    from hy3dgen.shapegen import Hunyuan3DDiTFlowMatchingPipeline
+    from hy3dgen.texgen import Hunyuan3DPaintPipeline
+
+    pending = [(Path(job["views"]["front"]), Path(job["output"]))
+               for job in jobs if not Path(job["output"]).exists()]
+    if not pending:
+        return
+    missing_shapes = [(front, output) for front, output in pending
+                      if not output.with_suffix(".shape.glb").exists()]
+    if missing_shapes:
+        shape = Hunyuan3DDiTFlowMatchingPipeline.from_pretrained(
+            "tencent/Hunyuan3D-2", subfolder="hunyuan3d-dit-v2-0", variant="fp16")
+        for front, output in missing_shapes:
+            mesh = shape(image=Image.open(front).convert("RGBA"), num_inference_steps=50,
+                         generator=torch.manual_seed(seed), output_type="trimesh")[0]
+            output.parent.mkdir(parents=True, exist_ok=True)
+            mesh.export(output.with_suffix(".shape.glb"))
+            del mesh
+        del shape
+        gc.collect()
+        torch.cuda.empty_cache()
+    paint = Hunyuan3DPaintPipeline.from_pretrained("tencent/Hunyuan3D-2")
+    for front, output in pending:
+        if output.exists():
+            continue
+        mesh = trimesh.load(output.with_suffix(".shape.glb"), force="mesh")
+        if len(mesh.faces) > 40000:
+            mesh = mesh.simplify_quadric_decimation(face_count=40000)
+        mesh = paint(mesh, image=Image.open(front).convert("RGBA"))
+        mesh.export(output)
+        del mesh
+        gc.collect()
+        torch.cuda.empty_cache()

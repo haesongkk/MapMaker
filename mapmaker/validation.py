@@ -5,7 +5,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 import trimesh
-from PIL import Image
+from PIL import Image, ImageDraw
 
 from .common import read_json, write_json
 
@@ -82,6 +82,17 @@ def validate_scene(workdir: Path) -> dict:
         results.append({"id": obj["id"], "silhouette_iou": iou})
     Image.fromarray(overlay).save(workdir / "validation_overlay.png")
     Image.fromarray(rendered).save(workdir / "validation_render.png")
+    panel_width = 640
+    panel_height = round(height * panel_width / width)
+    comparison = Image.new("RGB", (panel_width * 3, panel_height + 34), (32, 32, 32))
+    draw = ImageDraw.Draw(comparison)
+    for index, (title, pixels) in enumerate((("Original", original),
+                                             ("Photo + projected meshes", rendered),
+                                             ("Mesh alignment", overlay))):
+        draw.text((index * panel_width + 10, 9), title, fill="white")
+        panel = Image.fromarray(pixels).resize((panel_width, panel_height), Image.Resampling.LANCZOS)
+        comparison.paste(panel, (index * panel_width, 34))
+    comparison.save(workdir / "scene_comparison.png")
     scores = [item["silhouette_iou"] for item in results]
     report = {"objects": results, "metric": "source_view_silhouette_iou",
               "mean_iou": float(np.mean(scores)) if scores else None,

@@ -15,12 +15,12 @@ def run(image: Path, output: Path = Path("output"), gen3c_repo: Path = Path("ext
         gen3c_checkpoints: Path = Path("external/GEN3C/checkpoints"),
         ram_checkpoint: Path = Path("checkpoints/ram_plus_swin_large_14m.pth"),
         gen3c_python: str = sys.executable, moge_python: str = "",
-        vision_python: str = "", hunyuan_python: str = "", distance: float = 0.15,
+        vision_python: str = "", hunyuan_python: str = "", distance: float = 1.0, angle: float = 90.0,
         force: bool = False) -> None:
     pipeline = Pipeline(image, output)
     pipeline.original(force=force, moge_python=moge_python or None)
     pipeline.views(gen3c_repo.resolve(), gen3c_checkpoints.resolve(), gen3c_python,
-                   force=force, distance=distance)
+                   force=force, distance=distance, angle=angle)
     pipeline.candidates(ram_checkpoint.resolve(), vision_python or None)
     pipeline.segment(vision_python or None)
     pipeline.select_views()
@@ -36,12 +36,12 @@ def step(name: str, image: Path, output: Path = Path("output"),
          ram_checkpoint: Path = Path("checkpoints/ram_plus_swin_large_14m.pth"),
          gen3c_python: str = sys.executable, moge_python: str = "",
          vision_python: str = "", hunyuan_python: str = "",
-         distance: float = 0.15) -> None:
+         distance: float = 1.0, angle: float = 90.0) -> None:
     pipeline = Pipeline(image, output)
     actions = {
         "original": lambda: pipeline.original(moge_python=moge_python or None),
         "views": lambda: pipeline.views(gen3c_repo.resolve(), gen3c_checkpoints.resolve(),
-                                         gen3c_python, distance=distance),
+                                         gen3c_python, distance=distance, angle=angle),
         "candidates": lambda: pipeline.candidates(ram_checkpoint.resolve(), vision_python or None),
         "segment": lambda: pipeline.segment(vision_python or None),
         "select-views": pipeline.select_views,

@@ -5,7 +5,7 @@ import argparse
 from pathlib import Path
 
 from .common import read_json, write_json
-from .models import hunyuan_mesh, ram_tags, sam_video
+from .models import hunyuan_mesh, hunyuan_meshes, ram_tags, sam_video
 
 
 def main() -> None:
@@ -20,6 +20,8 @@ def main() -> None:
     sam.add_argument("--labels", type=Path, required=True)
     sam.add_argument("--output", type=Path, required=True)
     sam.add_argument("--summary", type=Path, required=True)
+    batch = sub.add_parser("hunyuan-batch")
+    batch.add_argument("--jobs", type=Path, required=True)
     mesh = sub.add_parser("hunyuan")
     mesh.add_argument("--views", type=Path, required=True)
     mesh.add_argument("--output", type=Path, required=True)
@@ -28,6 +30,8 @@ def main() -> None:
         write_json(args.output, ram_tags([Path(x) for x in read_json(args.images)], args.checkpoint))
     elif args.model == "sam":
         write_json(args.summary, sam_video(args.video, read_json(args.labels), args.output))
+    elif args.model == "hunyuan-batch":
+        hunyuan_meshes(read_json(args.jobs))
     elif args.model == "hunyuan":
         hunyuan_mesh({key: Path(path) for key, path in read_json(args.views).items()}, args.output)
 
