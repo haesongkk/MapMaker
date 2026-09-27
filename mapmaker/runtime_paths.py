@@ -29,4 +29,8 @@ SAM3_CHECKPOINT = configured(
 DINO_PROVENANCE = configured(
     "MAPMAKER_DINO_PROVENANCE", MODEL_ROOT / ".runtime/sam3d-recovery/dinov2-restoration.json"
 )
-VISION_PYTHON = configured("MAPMAKER_VISION_PYTHON", ROOT / ".venv-vision/bin/python")
+# Keep the venv executable path: resolving its symlink launches the base Python
+# without the venv's site-packages on Linux.
+VISION_PYTHON = Path(os.environ.get(
+    "MAPMAKER_VISION_PYTHON", ROOT / ".venv-vision/bin/python"
+)).expanduser().absolute()

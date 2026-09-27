@@ -155,14 +155,14 @@ async function poll() {
         ? `${state.metadata.errors.length} processing issue(s); see scene_metadata.json for details.`
         : "";
       await showScene(state.metadata);
-      $("#generate").disabled = false;
+      $("#generate").disabled = !$("#image").files.length;
       $("#image").disabled = false;
       return;
     }
     setTimeout(poll, 1500);
   } catch (error) {
     $("#status").textContent = error.message;
-    $("#generate").disabled = false;
+    $("#generate").disabled = !$("#image").files.length;
     $("#image").disabled = false;
     document.body.dataset.stage = "failed";
     console.error(error);
@@ -194,6 +194,7 @@ $("#generate").addEventListener("click", async () => {
     const data = await response.json();
     if (!response.ok) throw new Error(data.error);
     runId = data.run_id;
+    history.replaceState(null, "", `?run=${runId}`);
     await poll();
   } catch (error) {
     $("#status").textContent = error.message;
@@ -208,5 +209,16 @@ export function watchRun(id) {
   runId = id;
   $("#generate").disabled = true;
   $("#image").disabled = true;
+  $("#scene-summary").textContent = "Generating...";
+  $("#empty p").textContent = "Your scene is being generated. Follow the stages on the left.";
   return poll();
+}
+
+// Reopen a long-running or completed scene without submitting another GPU job.
+const savedRun = new URLSearchParams(location.search).get("run");
+if (/^[a-f0-9]{32}$/.test(savedRun || "")) {
+  $("#source-preview").src = `/runs/${savedRun}/input/source_image.png`;
+  $("#source-preview").hidden = false;
+  $("#upload-hint").hidden = true;
+  watchRun(savedRun);
 }

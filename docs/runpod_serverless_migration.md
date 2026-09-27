@@ -176,9 +176,13 @@ build targets are sm80, sm86, and sm89+PTX. The first managed build completed na
 compilation and its version audit passed all 438 records, but exceeded RunPod's
 30-minute build limit while sending the exported image. The Dockerfile now uses a
 separate final stage containing only installed environments and pinned sources,
-excluding builder download caches and compiler intermediates. The final stage
-repeats the version audit and native import checks. GPU compatibility must not be
-inferred from successful compilation.
+excluding builder download caches and compiler intermediates. The second build
+completed at 2026-09-27 20:13:06 UTC (build
+`be057b93-171f-4efe-8906-1bf9955455b8`, commit `b22b70789`). The final stage repeated
+the 438-record audit and passed imports for SAM3D Torch 2.5.1+cu121 and vision Torch
+2.8.0+cu128. Published image:
+`registry.runpod.net/haesongkk-mapmaker-codex-runpod-serverless-migration-deploy-runpod-dockerfile:b22b70789`.
+GPU compatibility must not be inferred from successful compilation.
 The worker stages the pinned manifest with SHA-256 checks and disables HF online
 fallback. MoGe/BERT caches already used by the original pipeline are preserved;
 no new depth/placement algorithm was added.
@@ -207,7 +211,7 @@ Required before an honest Docker build/deploy:
   report `.runtime/s3-transport-validation.json`.
 - Actual Chrome loaded the Windows localhost UI on port 8082.
 - Mock transport tests do not perform model inference or validate RunPod execution.
-  No published image, real GPU inference or full E2E is complete yet.
+  Image build/publish is complete; real GPU inference and full E2E are still pending.
 
 RunPod-managed build is now running from `codex/runpod-serverless-migration`, initial
 commit `04d731bd04fe93ea09e95ae9b24c99d02e0b82cb`. Endpoint `8dzbkfrxys43hb` uses
@@ -220,8 +224,9 @@ The original living-room input, metadata and 45,629,804-byte GLB were downloaded
 
 The user supplied a separate RunPod API key through the local hidden prompt.
 Authenticated endpoint health queries and every local doctor check pass. The local
-web backend was restarted with the saved settings. Current prerequisite for GPU
-validation is completion of the Docker build.
+web backend was restarted with the saved settings. The published image is now
+initializing on A40 in EU-SE-1. Idle timeout is temporarily 60 seconds for validation
+of model reuse between scenes; min/max workers remain 0/1.
 
 The user submitted a city image through the actual Windows UI: run
 `4894e94c9f684d11baaf6d970824fdbd`, job `55cfa03b-a99d-45ce-9abf-86534845ce64-e2`.

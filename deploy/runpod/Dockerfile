@@ -39,5 +39,5 @@ ENV MAPMAKER_BACKEND=local \
     OMP_NUM_THREADS=8 MKL_NUM_THREADS=8 PYTHONUNBUFFERED=1
 RUN .venv-sam3d/bin/python scripts/sam3d_runtime_audit.py && \
     .venv-sam3d/bin/python -c 'import torch, flash_attn, pytorch3d._C; print("SAM3D native imports OK", torch.__version__)' && \
-    .venv-vision/bin/python -c 'import torch, ram, sam3; print("Vision imports OK", torch.__version__)'
+    .venv/bin/python -c 'import subprocess; from mapmaker.runtime_paths import VISION_PYTHON; subprocess.run([str(VISION_PYTHON), "-c", "import torch, cv2, ram, sam3; print(\"Vision imports OK\", torch.__version__)"], check=True)'
 ENTRYPOINT ["/opt/mapmaker/.venv/bin/python", "-m", "mapmaker.serverless_worker"]
