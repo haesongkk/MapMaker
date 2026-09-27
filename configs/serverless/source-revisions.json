@@ -1,0 +1,12 @@
+{
+  "sam3": "2345a4ad109ac29c569da749c91d84f10dc08c40",
+  "ram": "7cb804a8609e9f4b1a50b7f31436d2df40bb9481",
+  "sam3d": "f91db411c50efee93d8db7aeb323885650f6f722",
+  "dinov2": "7764ea0f912e53c92e82eb78a2a1631e92725fc8",
+  "vision_python": "3.12.3",
+  "vision_torch": "2.8.0+cu128",
+  "sam3d_python": "3.11.0",
+  "sam3d_torch": "2.5.1+cu121",
+  "source": "Read from original RunPod volume on 2026-09-28",
+  "conda_yaml_sha256": "0689ff6bed65a137af05b8fbcf772b520ae748a62eaa5d7b37957d8edab4eadd"
+}

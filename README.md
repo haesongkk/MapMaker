@@ -2,6 +2,11 @@
 
 For the current project architecture, validated pipeline, runtime and handoff information, see [PROJECT_CURRENT_STATE.md](docs/PROJECT_CURRENT_STATE.md).
 
+Windows → RunPod Serverless migration is **in progress, not yet GPU validated**.
+See [migration status and setup](docs/runpod_serverless_migration.md) before using
+the new Windows launcher. Existing GPU validation below describes the original
+Linux installation, not a completed Serverless deployment.
+
 Turn one image into an object-based 3D scene:
 
 ```text

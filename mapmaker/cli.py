@@ -11,10 +11,10 @@ app = typer.Typer(
 @app.command()
 def run(image: Path, output: Path | None = None):
     """Analyze one image, reconstruct its objects and export scene.glb."""
-    from .scene_pipeline import Pipeline, create_run
+    from .scene_pipeline import configured_pipeline, create_run
 
     target = create_run(image.read_bytes(), output)
-    pipeline = Pipeline()
+    pipeline = configured_pipeline()
     try:
         pipeline.run(target)
         typer.echo(str(target / "scene.glb"))
@@ -23,13 +23,16 @@ def run(image: Path, output: Path | None = None):
 
 
 @app.command()
-def serve(port: int = 8082, host: str = "0.0.0.0"):
+def serve(port: int = 8082, host: str = "127.0.0.1"):
     """Open the local upload/generate/preview web application."""
     from http.server import ThreadingHTTPServer
     from .web import Handler, PIPELINE
+    from .scene_run import ROOT
 
     typer.echo(f"http://{host}:{port}")
     server = ThreadingHTTPServer((host, port), Handler)
+    if hasattr(PIPELINE, "recover_interrupted"):
+        PIPELINE.recover_interrupted(ROOT / "runs")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
@@ -61,7 +64,30 @@ def render(scene: Path, output: Path = Path("previews")):
 @app.command()
 def doctor():
     """Check persistent runtime files; use the smoke scripts for GPU inference checks."""
+    import os
     from .scene_run import ROOT, SAM3D_REPO, SAM3_CHECKPOINT
+
+    if os.environ.get("MAPMAKER_BACKEND", "runpod" if os.name == "nt" else "local") == "runpod":
+        from .remote_settings import load_settings
+        load_settings()
+        missing = False
+        for name in ("RUNPOD_API_KEY", "RUNPOD_ENDPOINT_ID", "MAPMAKER_S3_BUCKET"):
+            exists = bool(os.environ.get(name))
+            typer.echo(f"{'OK' if exists else 'MISSING'}  {name}")
+            missing |= not exists
+        try:
+            import boto3
+            credentials = boto3.Session().get_credentials()
+            exists = credentials is not None
+        except Exception:
+            exists = False
+        typer.echo(f"{'OK' if exists else 'MISSING'}  S3 credentials")
+        missing |= not exists
+        exists = (ROOT / "web/node_modules/three/package.json").is_file()
+        typer.echo(f"{'OK' if exists else 'MISSING'}  Web dependencies")
+        if missing or not exists:
+            raise typer.Exit(1)
+        return
 
     checks = {
         "SAM3D environment": ROOT / ".venv-sam3d/bin/python",

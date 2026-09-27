@@ -1,0 +1,162 @@
+{
+  "source_volume": "qv17bc1sx8",
+  "source_region": "EU-RO-1",
+  "files": [
+    {
+      "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/ss_generator.yaml",
+      "path": "sam3d/ss_generator.yaml",
+      "sha256": "3c265448bca7c057f94e3ef56adea3a895a10bcd9f15f992a41dd03fa35412cd",
+      "bytes": 5076
+    },
+    {
+      "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/ss_generator.ckpt",
+      "path": "sam3d/ss_generator.ckpt",
+      "sha256": "225f40479e4cff4f39d6fa14c55be3abad1475bf55b61af3bec1e19ed2f6c146",
+      "bytes": 6690136964
+    },
+    {
+      "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/ss_encoder.yaml",
+      "path": "sam3d/ss_encoder.yaml",
+      "sha256": "d3df5e18b2cbe87697d319adce0fe7e4fb6266809ad9d2f8c502761739bc4a06",
+      "bytes": 231
+    },
+    {
+      "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/ss_decoder.yaml",
+      "path": "sam3d/ss_decoder.yaml",
+      "sha256": "baacff269b664f84f7aa1896ebd66128065f6568cdb88d419d5c3d2ccb4193ae",
+      "bytes": 244
+    },
+    {
+      "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/ss_decoder.ckpt",
+      "path": "sam3d/ss_decoder.ckpt",
+      "sha256": "6dac1cd7b7fda5a38e0614fadae441f1794f80e39ea2981f1ac8aff0a7e99340",
+      "bytes": 147609242
+    },
+    {
+      "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/slat_generator.yaml",
+      "path": "sam3d/slat_generator.yaml",
+      "sha256": "53029fadff6fe34a0344381a16d64d65d0567d603484952712e8969319559c4e",
+      "bytes": 1986
+    },
+    {
+      "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/slat_generator.ckpt",
+      "path": "sam3d/slat_generator.ckpt",
+      "sha256": "91529bde8e7daa12d09618a66c319e3a5a6398db6b23b958cedcb1c3f28faabb",
+      "bytes": 4906537684
+    },
+    {
+      "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/slat_encoder.yaml",
+      "path": "sam3d/slat_encoder.yaml",
+      "sha256": "ca80da7f1395a2acef9c6cea30ec3ccc89321ef890c644860f316a4ef1e8ebdb",
+      "bytes": 268
+    },
+    {
+      "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/slat_decoder_mesh.yaml",
+      "path": "sam3d/slat_decoder_mesh.yaml",
+      "sha256": "8f46952764aa985c50109a56f0b4f07625cdb06457aaded74957d26f3520c69e",
+      "bytes": 300
+    },
+    {
+      "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/slat_decoder_mesh.ckpt",
+      "path": "sam3d/slat_decoder_mesh.ckpt",
+      "sha256": "85907b37b67d8ce5b099a96629bdcfbd873eb407dee6b3aa9a75deb15038db33",
+      "bytes": 363726862
+    },
+    {
+      "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/slat_decoder_gs_4.yaml",
+      "path": "sam3d/slat_decoder_gs_4.yaml",
+      "sha256": "3d1dfd4c56cdac56f30e0cf5eb310d4df973fe25c60ac0a462c86ca4e3bf8b48",
+      "bytes": 575
+    },
+    {
+      "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/slat_decoder_gs_4.ckpt",
+      "path": "sam3d/slat_decoder_gs_4.ckpt",
+      "sha256": "731a0eceaa47945b52aa27f650d695b2aea9cc70945751e5609e5cb5b49f0186",
+      "bytes": 170269801
+    },
+    {
+      "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/slat_decoder_gs.yaml",
+      "path": "sam3d/slat_decoder_gs.yaml",
+      "sha256": "53f054e02a0c185f0a6885d30bb6ca0ec92efe0a98148688e7f05f7c26afe670",
+      "bytes": 576
+    },
+    {
+      "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/slat_decoder_gs.ckpt",
+      "path": "sam3d/slat_decoder_gs.ckpt",
+      "sha256": "f8077c36a06eaf890dd93cda1937411f793dea1eb80b3dd9329f2038ba84a111",
+      "bytes": 171476155
+    },
+    {
+      "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/pipeline.yaml",
+      "path": "sam3d/pipeline.yaml",
+      "sha256": "53c3d226b21df85c0bb3d16e6e4fa63abde0d6167525765eb929d02bfa9d358c",
+      "bytes": 3548
+    },
+    {
+      "key": ".cache/huggingface/hub/models--xinyu1205--recognize-anything-plus-model/blobs/497c178836ba66698ca226c7895317e6e800034be986452dbd2593298d50e87d",
+      "path": "checkpoints/ram_plus_swin_large_14m.pth",
+      "sha256": "497c178836ba66698ca226c7895317e6e800034be986452dbd2593298d50e87d",
+      "bytes": 3010210801
+    },
+    {
+      "key": ".cache/huggingface/hub/models--facebook--sam3/blobs/9999e2341ceef5e136daa386eecb55cb414446a00ac2b55eb2dfd2f7c3cf8c9e",
+      "path": "sam3/sam3.pt",
+      "sha256": "9999e2341ceef5e136daa386eecb55cb414446a00ac2b55eb2dfd2f7c3cf8c9e",
+      "bytes": 3450062241
+    },
+    {
+      "key": "MapMaker/.runtime/sam3d-torch/hub/checkpoints/dinov2_vitl14_reg4_pretrain.pth",
+      "path": ".runtime/sam3d-torch/hub/checkpoints/dinov2_vitl14_reg4_pretrain.pth",
+      "sha256": "36e4deffbaef061a2576705b0c36f93621e2ae20bf6274694821b0b492551b51",
+      "bytes": 1217607321
+    },
+    {
+      "key": "MapMaker/.runtime/sam3d-recovery/dinov2-restoration.json",
+      "path": ".runtime/sam3d-recovery/dinov2-restoration.json",
+      "sha256": "a4064a608a2c57f381ac9f6c4ff87f1f6ee78764a634c388bbc85d23df84b9d0",
+      "bytes": 598
+    },
+    {
+      "key": ".cache/huggingface/hub/models--Ruicheng--moge-vitl/blobs/da96b09a0485a3c45a5aa455e67743c8b4efc4dd8437c1f2aa93c2b4303d957f",
+      "path": "huggingface/hub/models--Ruicheng--moge-vitl/snapshots/ad326bfb61facd6c52b5a825bc1e34d7c97d9672/model.pt",
+      "sha256": "da96b09a0485a3c45a5aa455e67743c8b4efc4dd8437c1f2aa93c2b4303d957f",
+      "bytes": 1256823446
+    },
+    {
+      "key": ".cache/huggingface/hub/models--Ruicheng--moge-vitl/refs/main",
+      "path": "huggingface/hub/models--Ruicheng--moge-vitl/refs/main",
+      "sha256": "841087a0498da6e595273ffbb51d78ed9e19672c1b1d3a5f69c34577c2bddfbc",
+      "bytes": 40
+    },
+    {
+      "key": ".cache/huggingface/hub/models--bert-base-uncased/blobs/45a2321a7ecfdaaf60a6c1fd7f5463994cc8907d",
+      "path": "huggingface/hub/models--bert-base-uncased/snapshots/86b5e0934494bd15c9632b12f734a8a67f723594/config.json",
+      "sha256": "7160e1553ad2ca51d8c1cb066be533db31826e12d173824c1bb0cb1a4f187d20",
+      "bytes": 570
+    },
+    {
+      "key": ".cache/huggingface/hub/models--bert-base-uncased/blobs/949a6f013d67eb8a5b4b5b46026217b888021b88",
+      "path": "huggingface/hub/models--bert-base-uncased/snapshots/86b5e0934494bd15c9632b12f734a8a67f723594/tokenizer.json",
+      "sha256": "ce64fce797c24f68df90b40a3f74f579b336a493db14bd583fd520ea0d8c9a98",
+      "bytes": 466062
+    },
+    {
+      "key": ".cache/huggingface/hub/models--bert-base-uncased/blobs/e5c73d8a50df1f56fb5b0b8002d7cf4010afdccb",
+      "path": "huggingface/hub/models--bert-base-uncased/snapshots/86b5e0934494bd15c9632b12f734a8a67f723594/tokenizer_config.json",
+      "sha256": "a025160ef0431f1a392f6f050c1310f4c5d9fb6f275932dbccba73c4d214bf10",
+      "bytes": 48
+    },
+    {
+      "key": ".cache/huggingface/hub/models--bert-base-uncased/blobs/fb140275c155a9c7c5a3b3e0e77a9e839594a938",
+      "path": "huggingface/hub/models--bert-base-uncased/snapshots/86b5e0934494bd15c9632b12f734a8a67f723594/vocab.txt",
+      "sha256": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3",
+      "bytes": 231508
+    },
+    {
+      "key": ".cache/huggingface/hub/models--bert-base-uncased/refs/main",
+      "path": "huggingface/hub/models--bert-base-uncased/refs/main",
+      "sha256": "2cddf5a9b63cbf6d5c80c1f9c5ceee322cd0a5d614774e6daf7e37e99ad94d94",
+      "bytes": 40
+    }
+  ]
+}

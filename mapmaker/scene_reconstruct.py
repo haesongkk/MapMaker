@@ -3,6 +3,7 @@
 from pathlib import Path
 import contextlib, gc, json, sys, time, traceback
 from .scene_run import ROOT, SAM3D_REPO, write, read, sha, status
+from .runtime_paths import SAM3D_CHECKPOINT, DINO_PROVENANCE
 
 MODEL = None
 
@@ -27,11 +28,13 @@ def run_scene(run):
     import torch
     from loguru import logger
 
+    torch.cuda.reset_peak_memory_stats()
+
     logger.remove()
     logger.add(sys.stderr)
     if MODEL is None:
         MODEL = Inference(
-            str(SAM3D_REPO / "checkpoints/hf/pipeline.yaml"), compile=False
+            str(SAM3D_CHECKPOINT), compile=False
         )
     meta["timing"]["reconstruction_model_ready_seconds"] = time.monotonic() - start
     image = load_image(str(run / meta["input_image"]))
@@ -114,10 +117,24 @@ def run_scene(run):
         seed=42,
         compile=False,
         sam3d_source_revision="f91db411c50efee93d8db7aeb323885650f6f722",
-        pipeline_sha256=sha(SAM3D_REPO / "checkpoints/hf/pipeline.yaml"),
-        dino=read(ROOT / ".runtime/sam3d-recovery/dinov2-restoration.json"),
+        pipeline_sha256=sha(SAM3D_CHECKPOINT),
+        dino=read(DINO_PROVENANCE),
     )
     write(run / "scene_metadata.json", meta)
+    write(run / "logs/sam3d_gpu.json", {
+        "gpu": torch.cuda.get_device_name(),
+        "torch": torch.__version__, "cuda": torch.version.cuda,
+        "python": sys.version,
+        "peak_allocated_bytes": torch.cuda.max_memory_allocated(),
+        "peak_reserved_bytes": torch.cuda.max_memory_reserved(),
+        "model_ready_seconds": meta["timing"]["reconstruction_model_ready_seconds"],
+        "attention_environment": {k: __import__("os").environ.get(k)
+                                  for k in ("ATTN_BACKEND", "SPCONV_ALGO")},
+        "sdpa_enabled": {"flash": torch.backends.cuda.flash_sdp_enabled(),
+                         "memory_efficient": torch.backends.cuda.mem_efficient_sdp_enabled(),
+                         "math": torch.backends.cuda.math_sdp_enabled()},
+        "note": "Enabled backends are recorded; actual dispatch must be checked against worker logs.",
+    })
     del outputs, combined, image
     gc.collect()
     torch.cuda.empty_cache()

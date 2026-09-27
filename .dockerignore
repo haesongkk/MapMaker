@@ -1,0 +1,13 @@
+.git
+.venv*
+.runtime
+.tools
+.env*
+runs
+checkpoints
+external
+experiments
+web/node_modules
+__pycache__
+.pytest_cache
+*.egg-info

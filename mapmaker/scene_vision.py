@@ -6,6 +6,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 from .scene_run import ROOT, SAM3_CHECKPOINT, write, read, sha, status
 from .object_candidates import candidates
+from .runtime_paths import RAM_CHECKPOINT
 
 
 def run_scene(run):
@@ -46,7 +47,7 @@ def run_scene(run):
             views.append(path)
             regions.append({"image": str(path.relative_to(run)), "box": box})
     tags_by_view = ram_tags(
-        views, ROOT / "checkpoints/ram_plus_swin_large_14m.pth", threshold_scale=0.75
+        views, RAM_CHECKPOINT, threshold_scale=0.75
     )
     tags = sorted({tag for values in tags_by_view.values() for tag in values})
     prompts, rejected = candidates(tags)
@@ -77,9 +78,9 @@ def run_scene(run):
         "candidate_votes": votes,
         "candidates": prompts,
         "rejected": rejected,
-        "checkpoint": str(ROOT / "checkpoints/ram_plus_swin_large_14m.pth"),
+        "checkpoint": str(RAM_CHECKPOINT),
         "checkpoint_resolved": str(
-            (ROOT / "checkpoints/ram_plus_swin_large_14m.pth").resolve()
+            RAM_CHECKPOINT.resolve()
         ),
     }
     write(run / "object_candidates.json", extraction)

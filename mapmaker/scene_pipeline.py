@@ -4,6 +4,7 @@ from pathlib import Path
 import argparse, atexit, io, os, subprocess, sys, time, traceback, uuid
 from PIL import Image, ImageOps
 from .scene_run import ROOT, now, read, write, sha, status
+from .runtime_paths import VISION_PYTHON
 
 
 def create_run(data, output=None):
@@ -94,7 +95,7 @@ class Pipeline:
             with (run / "logs/vision.log").open("w") as log:
                 subprocess.run(
                     [
-                        str(ROOT / ".venv-vision/bin/python"),
+                        str(VISION_PYTHON),
                         "-m",
                         "mapmaker.scene_vision",
                         str(run),
@@ -146,13 +147,25 @@ class Pipeline:
             raise
 
 
+def configured_pipeline():
+    backend = os.environ.get("MAPMAKER_BACKEND", "runpod" if os.name == "nt" else "local")
+    if backend == "runpod":
+        from .remote_settings import load_settings
+        load_settings()
+        from .scene_remote import RemotePipeline
+        return RemotePipeline()
+    if backend != "local":
+        raise ValueError("MAPMAKER_BACKEND must be local or runpod")
+    return Pipeline()
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("image", type=Path)
     p.add_argument("--output", type=Path)
     args = p.parse_args()
     run = create_run(args.image.read_bytes(), args.output)
-    pipeline = Pipeline()
+    pipeline = configured_pipeline()
     try:
         pipeline.run(run)
         print(run / "scene.glb")

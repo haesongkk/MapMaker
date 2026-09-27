@@ -3,12 +3,7 @@
 from pathlib import Path
 import datetime, hashlib, json, os
 
-ROOT = Path(__file__).resolve().parents[1]
-BENCH = ROOT / "experiments/image_first_scene_object_benchmark"
-SAM3D_REPO = BENCH / "model_setup/sam3d_objects/repo"
-SAM3_CHECKPOINT = Path(
-    "/workspace/.cache/huggingface/hub/models--facebook--sam3/snapshots/3c879f39826c281e95690f02c7821c4de09afae7/sam3.pt"
-)
+from .runtime_paths import ROOT, BENCH, SAM3D_REPO, SAM3_CHECKPOINT
 
 
 def now():

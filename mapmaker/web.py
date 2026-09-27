@@ -4,9 +4,9 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import argparse, json, mimetypes, re, shutil, threading
 from urllib.parse import unquote, urlsplit
 from .scene_run import ROOT, read
-from .scene_pipeline import Pipeline, create_run
+from .scene_pipeline import configured_pipeline, create_run
 
-PIPELINE = Pipeline()
+PIPELINE = configured_pipeline()
 BUSY = threading.Lock()
 
 
@@ -97,9 +97,11 @@ class Handler(BaseHTTPRequestHandler):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--host", default="0.0.0.0")
+    p.add_argument("--host", default="127.0.0.1")
     p.add_argument("--port", type=int, default=8082)
     a = p.parse_args()
+    if hasattr(PIPELINE, "recover_interrupted"):
+        PIPELINE.recover_interrupted(ROOT / "runs")
     server = ThreadingHTTPServer((a.host, a.port), Handler)
     print(f"SAM3D Scene Studio: http://{a.host}:{a.port}", flush=True)
     try:
