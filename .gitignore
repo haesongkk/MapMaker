@@ -7,3 +7,8 @@ checkpoints/
 *.egg-info/
 .ipynb_checkpoints/
 .tools/
+
+.runtime/
+
+web/node_modules/
+runs/

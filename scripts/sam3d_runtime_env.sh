@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Source this file. All environment/build paths use the persistent workspace.
+SAM3D_PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export SAM3D_REPO="$SAM3D_PROJECT_ROOT/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo"
+export SAM3D_PYTHON="$SAM3D_PROJECT_ROOT/.venv-sam3d/bin/python"
+export CONDA_PREFIX="$SAM3D_PROJECT_ROOT/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/env"
+export CUDA_HOME="$CONDA_PREFIX"
+export CPATH="$CUDA_HOME/targets/x86_64-linux/include"
+export LIBRARY_PATH="$CUDA_HOME/targets/x86_64-linux/lib"
+export LD_LIBRARY_PATH="$LIBRARY_PATH:${LD_LIBRARY_PATH:-}"
+export CC="$CUDA_HOME/bin/x86_64-conda-linux-gnu-gcc"
+export CXX="$CUDA_HOME/bin/x86_64-conda-linux-gnu-g++"
+export PATH="$SAM3D_PROJECT_ROOT/.venv-sam3d/bin:$CUDA_HOME/bin:$PATH"
+export TMPDIR="$SAM3D_PROJECT_ROOT/.runtime/sam3d-recovery/build"
+export UV_CACHE_DIR="$SAM3D_PROJECT_ROOT/.runtime/sam3d-recovery/cache"
+export TORCH_HOME="$SAM3D_PROJECT_ROOT/.runtime/sam3d-torch"
+export TORCH_EXTENSIONS_DIR="$SAM3D_PROJECT_ROOT/.runtime/sam3d-extensions"
+export OMP_NUM_THREADS="${OMP_NUM_THREADS:-8}" MKL_NUM_THREADS="${MKL_NUM_THREADS:-8}"
+export PYTHONUNBUFFERED=1 HF_HUB_ENABLE_HF_TRANSFER=0 MAX_JOBS=4
+mkdir -p "$TMPDIR" "$UV_CACHE_DIR" "$TORCH_EXTENSIONS_DIR"

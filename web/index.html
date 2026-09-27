@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SAM3D Scene Studio</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "/vendor/three/build/three.module.js",
+          "three/addons/": "/vendor/three/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <span class="mark">◈</span>
+      <div>
+        <h1>SAM3D Scene Studio</h1>
+        <p>One image. A scene of independent objects.</p>
+      </div>
+      <span class="badge">IMAGE → 3D</span>
+    </header>
+    <main>
+      <aside class="input-panel">
+        <div class="section-label">01 / SOURCE IMAGE</div>
+        <h2>Start with an image</h2>
+        <p class="muted">Choose a photo with clearly visible objects.</p>
+        <label class="upload" for="image"
+          ><img id="source-preview" hidden alt="Selected source image" /><span
+            id="upload-hint"
+            >＋<br />Choose an image<small
+              >PNG, JPEG or WebP · up to 25 MB / 16 MP</small
+            ></span
+          ><input
+            id="image"
+            type="file"
+            accept="image/png,image/jpeg,image/webp" /></label
+        ><button id="generate" disabled>
+          Generate 3D Scene <span>↗</span>
+        </button>
+        <section class="progress-panel" aria-live="polite">
+          <div class="section-label">GENERATION STATUS</div>
+          <p id="status">Ready for your image</p>
+          <progress id="progress" max="6" value="0"></progress>
+          <p id="detail" class="muted"></p>
+        </section>
+        <p class="footnote">
+          The first generation includes model loading and can take several
+          minutes.
+        </p>
+      </aside>
+      <section class="viewport-panel">
+        <div class="viewport-bar">
+          <span class="section-label">02 / SCENE PREVIEW</span
+          ><span id="scene-summary">No scene yet</span>
+        </div>
+        <div id="viewport">
+          <div id="empty">
+            <div class="wire-cube">◇</div>
+            <h2>Your scene will appear here</h2>
+            <p>Upload an image and generate to begin.</p>
+          </div>
+        </div>
+        <div class="controls-help">
+          Drag to orbit <span>·</span> Scroll to zoom <span>·</span> Right-drag
+          to pan
+        </div>
+      </section>
+      <aside class="objects-panel">
+        <div class="section-label">03 / OBJECTS</div>
+        <h2>Scene objects <span id="object-count">0</span></h2>
+        <p class="muted">Toggle an object to show or hide it.</p>
+        <div id="objects">
+          <p class="muted">Objects appear after generation.</p>
+        </div>
+        <a id="export" class="export disabled" aria-disabled="true"
+          >↓ Download scene.glb</a
+        >
+        <p id="warnings" class="muted"></p>
+      </aside>
+    </main>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

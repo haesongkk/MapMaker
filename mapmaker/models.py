@@ -173,7 +173,7 @@ def extract_frames(video: Path, output: Path, every: int = 12) -> list[Path]:
 
 
 def ram_tags(
-    images: list[Path], checkpoint: Path, device: str = "cuda"
+    images: list[Path], checkpoint: Path, device: str = "cuda", threshold_scale: float = 1.0
 ) -> dict[str, list[str]]:
     if not checkpoint.is_file():
         raise FileNotFoundError(f"RAM++ checkpoint missing: {checkpoint}")
@@ -181,7 +181,10 @@ def ram_tags(
     from ram import get_transform, inference_ram
     from ram.models import ram_plus
 
+    if not 0 < threshold_scale <= 1:
+        raise ValueError("threshold_scale must be in (0, 1]")
     model = ram_plus(pretrained=str(checkpoint), image_size=384, vit="swin_l")
+    model.class_threshold = model.class_threshold * threshold_scale
     model = model.eval().to(device)
     transform = get_transform(image_size=384)
     found = {}

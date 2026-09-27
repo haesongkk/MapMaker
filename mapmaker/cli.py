@@ -1,145 +1,88 @@
-from __future__ import annotations
+"""SAM3D object-scene commands. Model environments remain isolated."""
 
-import sys
 from pathlib import Path
-
 import typer
 
-from .pipeline import Pipeline
-
-app = typer.Typer(help="Generate a textured 3D scene from one image.")
+app = typer.Typer(
+    help="Generate an object-based 3D scene from one image with RAM++, SAM3 and SAM3D."
+)
 
 
 @app.command()
-def run(
-    image: Path,
-    output: Path = Path("output"),
-    gen3c_repo: Path = Path("external/GEN3C"),
-    gen3c_checkpoints: Path = Path("external/GEN3C/checkpoints"),
-    ram_checkpoint: Path = Path("checkpoints/ram_plus_swin_large_14m.pth"),
-    gen3c_python: str = sys.executable,
-    moge_python: str = "",
-    vision_python: str = "",
-    hunyuan_python: str = "",
-    distance: float = 1.0,
-    angle: float = 90.0,
-    force: bool = False,
-) -> None:
-    pipeline = Pipeline(image, output)
-    pipeline.original(force=True, moge_python=moge_python or None)
-    pipeline.views(
-        gen3c_repo.resolve(),
-        gen3c_checkpoints.resolve(),
-        gen3c_python,
-        force=force,
-        distance=distance,
-        angle=angle,
+def run(image: Path, output: Path | None = None):
+    """Analyze one image, reconstruct its objects and export scene.glb."""
+    from .scene_pipeline import Pipeline, create_run
+
+    target = create_run(image.read_bytes(), output)
+    pipeline = Pipeline()
+    try:
+        pipeline.run(target)
+        typer.echo(str(target / "scene.glb"))
+    finally:
+        pipeline.close()
+
+
+@app.command()
+def serve(port: int = 8082, host: str = "0.0.0.0"):
+    """Open the local upload/generate/preview web application."""
+    from http.server import ThreadingHTTPServer
+    from .web import Handler, PIPELINE
+
+    typer.echo(f"http://{host}:{port}")
+    server = ThreadingHTTPServer((host, port), Handler)
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.server_close()
+        PIPELINE.close()
+
+
+@app.command()
+def render(scene: Path, output: Path = Path("previews")):
+    """Render mesh previews without loading reconstruction models."""
+    import subprocess, sys
+
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "mapmaker.scene_preview",
+            str(scene.resolve()),
+            "--out",
+            str(output.resolve()),
+            "--material",
+        ],
+        check=True,
     )
-    pipeline.candidates(ram_checkpoint.resolve(), vision_python or None)
-    pipeline.segment(vision_python or None)
-    pipeline.select_views()
-    pipeline.meshes(hunyuan_python or None)
-    pipeline.scene(only_sofa=True)
-    target = pipeline.scene()
-    typer.echo(str(target))
 
 
 @app.command()
-def step(
-    name: str,
-    image: Path,
-    output: Path = Path("output"),
-    gen3c_repo: Path = Path("external/GEN3C"),
-    gen3c_checkpoints: Path = Path("external/GEN3C/checkpoints"),
-    ram_checkpoint: Path = Path("checkpoints/ram_plus_swin_large_14m.pth"),
-    gen3c_python: str = sys.executable,
-    moge_python: str = "",
-    vision_python: str = "",
-    hunyuan_python: str = "",
-    distance: float = 1.0,
-    angle: float = 90.0,
-) -> None:
-    pipeline = Pipeline(image, output)
-    actions = {
-        "original": lambda: pipeline.original(moge_python=moge_python or None),
-        "views": lambda: pipeline.views(
-            gen3c_repo.resolve(),
-            gen3c_checkpoints.resolve(),
-            gen3c_python,
-            distance=distance,
-            angle=angle,
-        ),
-        "candidates": lambda: pipeline.candidates(
-            ram_checkpoint.resolve(), vision_python or None
-        ),
-        "segment": lambda: pipeline.segment(vision_python or None),
-        "select-views": pipeline.select_views,
-        "meshes": lambda: pipeline.meshes(hunyuan_python or None),
-        "scene": pipeline.scene,
-        "sofa-scene": lambda: pipeline.scene(only_sofa=True),
-    }
-    if name not in actions:
-        raise typer.BadParameter(f"Choose one of: {', '.join(actions)}")
-    actions[name]()
-
-
-@app.command()
-def render(
-    scene: Path,
-    output: Path = Path("output/render"),
-    yaw: float = 0.0,
-    scale: float = 0.5,
-) -> None:
-    """Render a calibrated scene GLB without input images or model inference."""
-    from .standalone_render import render_glb
-
-    if scale <= 0:
-        raise typer.BadParameter("scale must be positive")
-    output.mkdir(parents=True, exist_ok=True)
-    typer.echo(str(render_glb(output, yaw, scale, scene_path=scene.resolve())))
-
-
-@app.command()
-def doctor(
-    gen3c_repo: Path = Path("external/GEN3C"),
-    gen3c_checkpoints: Path = Path("external/GEN3C/checkpoints"),
-    ram_checkpoint: Path = Path("checkpoints/ram_plus_swin_large_14m.pth"),
-    moge_python: str = ".venv-moge/bin/python",
-    vision_python: str = ".venv-vision/bin/python",
-    hunyuan_python: str = ".venv/bin/python",
-    gen3c_python: str = ".venv-gen3c/bin/python",
-) -> None:
-    """Show local model code and checkpoint readiness."""
-    import subprocess
-
-    def module_available(python: str, module: str) -> bool:
-        if not Path(python).is_file():
-            return False
-        result = subprocess.run(
-            [
-                python,
-                "-c",
-                f"import importlib.util; assert importlib.util.find_spec('{module}')",
-            ],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-        return result.returncode == 0
+def doctor():
+    """Check persistent runtime files; use the smoke scripts for GPU inference checks."""
+    from .scene_run import ROOT, SAM3D_REPO, SAM3_CHECKPOINT
 
     checks = {
-        "MoGe environment": module_available(moge_python, "moge"),
-        "RAM++/SAM 3 environment": module_available(vision_python, "ram")
-        and module_available(vision_python, "sam3"),
-        "RAM++ checkpoint": ram_checkpoint.is_file(),
-        "Hunyuan environment": module_available(hunyuan_python, "hy3dgen"),
-        "GEN3C environment": module_available(gen3c_python, "amp_C"),
-        "GEN3C source": (
-            gen3c_repo / "cosmos_predict1/diffusion/inference/gen3c_single_image.py"
-        ).is_file(),
-        "GEN3C checkpoints": (gen3c_checkpoints / "Gen3C-Cosmos-7B/model.pt").is_file(),
+        "SAM3D environment": ROOT / ".venv-sam3d/bin/python",
+        "Vision environment": ROOT / ".venv-vision/bin/python",
+        "RAM++ checkpoint": ROOT / "checkpoints/ram_plus_swin_large_14m.pth",
+        "SAM3 checkpoint": SAM3_CHECKPOINT,
+        "Official SAM3D inference": SAM3D_REPO / "notebook/inference.py",
+        "SAM3D configuration": SAM3D_REPO / "checkpoints/hf/pipeline.yaml",
+        "DINOv2 source": ROOT
+        / ".runtime/sam3d-torch/hub/facebookresearch_dinov2_main/hubconf.py",
+        "DINOv2 pretrained weights": ROOT
+        / ".runtime/sam3d-torch/hub/checkpoints/dinov2_vitl14_reg4_pretrain.pth",
+        "Web dependencies": ROOT / "web/node_modules/three/package.json",
     }
-    for label, ready in checks.items():
-        typer.echo(f"{'OK' if ready else 'MISSING'}  {label}")
+    missing = False
+    for label, path in checks.items():
+        exists = path.is_file()
+        typer.echo(f"{'OK' if exists else 'MISSING'}  {label}: {path}")
+        missing |= not exists
+    if missing:
+        raise typer.Exit(1)
 
 
 if __name__ == "__main__":
