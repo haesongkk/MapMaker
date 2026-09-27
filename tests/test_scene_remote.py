@@ -1,4 +1,5 @@
 import io
+import os
 import shutil
 import stat
 import zipfile
@@ -239,3 +240,22 @@ def test_failed_worker_diagnostics_materialize(tmp_path):
                               "scene_sha256": None, "success": False})
     assert read(run / "status.json")["stage"] == "failed"
     assert read(run / "logs/gpu_measurement.json")["success"] is False
+
+
+def test_private_settings_keep_explicit_environment_precedence(tmp_path, monkeypatch):
+    from mapmaker import remote_settings
+    monkeypatch.setattr(remote_settings, "ROOT", tmp_path)
+    monkeypatch.setenv("RUNPOD_ENDPOINT_ID", "explicit-endpoint")
+    monkeypatch.delenv("RUNPOD_API_KEY", raising=False)
+    monkeypatch.delenv("AWS_SHARED_CREDENTIALS_FILE", raising=False)
+    write(tmp_path / ".runtime/runpod-settings.json", {
+        "RUNPOD_ENDPOINT_ID": "saved-endpoint", "RUNPOD_API_KEY": "ignored-value",
+        "UNRELATED_SETTING": "ignored",
+    })
+    (tmp_path / ".runtime/runpod-api.key").write_text("local-test-key\n")
+    (tmp_path / ".runtime/runpod-s3.credentials").write_text("[default]\n")
+    remote_settings.load_settings()
+    assert os.environ["RUNPOD_ENDPOINT_ID"] == "explicit-endpoint"
+    assert os.environ["RUNPOD_API_KEY"] == "local-test-key"
+    assert "UNRELATED_SETTING" not in os.environ
+    assert os.environ["AWS_SHARED_CREDENTIALS_FILE"] == str(tmp_path / ".runtime/runpod-s3.credentials")

@@ -140,6 +140,9 @@ etc.). `scripts/configure_runpod_s3.ps1` provides an interactive prompt and save
 `.runtime/runpod-s3.credentials`, excluded from Git; the transport and launcher
 recognize that file automatically. RunPod S3 credentials differ from the MCP/API key.
 Never commit either. Local S3 authentication was configured and verified.
+The backend also reads `.runtime/runpod-settings.json` for endpoint/storage settings
+and `.runtime/runpod-api.key` for the job API key. Explicit environment variables take
+precedence. `scripts/configure_runpod_api.ps1` saves a key through a hidden local prompt.
 Keep input/output job objects until validation finishes; no automatic deletion or
 lifecycle rule was enabled on the user's existing volume.
 
@@ -169,8 +172,13 @@ and verify Ampere sm86 and Ada sm89 compatibility without changing inference qua
 
 `deploy/runpod/Dockerfile` and `build_runtime.sh` implement a proposed reproducible
 build, using verified amd64 base-image digests and separate environments. Native
-build targets are sm80, sm86, and sm89+PTX. **The image has not been built yet**;
-compatibility and build completion must not be inferred from the Dockerfile.
+build targets are sm80, sm86, and sm89+PTX. The first managed build completed native
+compilation and its version audit passed all 438 records, but exceeded RunPod's
+30-minute build limit while sending the exported image. The Dockerfile now uses a
+separate final stage containing only installed environments and pinned sources,
+excluding builder download caches and compiler intermediates. The final stage
+repeats the version audit and native import checks. GPU compatibility must not be
+inferred from successful compilation.
 The worker stages the pinned manifest with SHA-256 checks and disables HF online
 fallback. MoGe/BERT caches already used by the original pipeline are preserved;
 no new depth/placement algorithm was added.
@@ -183,8 +191,8 @@ Required before an honest Docker build/deploy:
    SAM3D f91db411c50efee93d8db7aeb323885650f6f722,
    DINO 7764ea0f912e53c92e82eb78a2a1631e92725fc8).
 4. Build/publish the custom image. RunPod UI offers GitHub-managed builds, so a
-   separate registry is not necessarily required; this account's GitHub connection
-   is currently absent. No GitHub access was granted during this task.
+   separate registry is not required. The user authorized the Runpod Inc. GitHub app
+   to read MapMaker code/metadata and completed GitHub identity verification.
 5. Deploy and measure real A40/A6000, L40S/RTX 6000 Ada, and optionally A100 runs.
    Then run real Windows Generate → RunPod → received GLB → viewer/export checks.
 
@@ -193,15 +201,29 @@ Required before an honest Docker build/deploy:
 - Original tests in this clone: **20 passed** (the historical 48-test report refers
   to a different historical workspace/test inventory).
 - Current tests including transport, integrity rejection, restart, failure-lock
-  release and a real localhost HTTP 409 check: **44 passed**.
+  release and a real localhost HTTP 409 check: **45 passed**.
 - Python compileall: passed. Frontend `npm ci`: passed.
 - Real S3 input/result/progress upload/download and hash round trip: passed,
   report `.runtime/s3-transport-validation.json`.
 - Actual Chrome loaded the Windows localhost UI on port 8082.
 - Mock transport tests do not perform model inference or validate RunPod execution.
-  No Docker build, real GPU inference or full E2E is complete.
+  No published image, real GPU inference or full E2E is complete yet.
 
-Current prerequisites: an authorized image build/publish path (RunPod-managed
-GitHub build connection is not yet configured), and a regular RunPod API key for
-the standalone local backend. MCP authentication is healthy but is not automatically
-available to a separate Python web process. S3 authentication is already working.
+RunPod-managed build is now running from `codex/runpod-serverless-migration`, initial
+commit `04d731bd04fe93ea09e95ae9b24c99d02e0b82cb`. Endpoint `8dzbkfrxys43hb` uses
+AMPERE_48, min/max workers 0/1, 100 GB disk, a 7200-second execution timeout and no
+network-volume attachment. The user explicitly authorized storing S3 credentials
+as RunPod Secrets; the endpoint references them without plaintext values.
+The original living-room input, metadata and 45,629,804-byte GLB were downloaded to
+`.runtime/reference-living-room` for regression comparison. Its GLB SHA-256 is
+`144d62362c93ff2ff21570d4aa37d4efc5be5984508567c83415702985aa83c9`.
+
+The user supplied a separate RunPod API key through the local hidden prompt.
+Authenticated endpoint health queries and every local doctor check pass. The local
+web backend was restarted with the saved settings. Current prerequisite for GPU
+validation is completion of the Docker build.
+
+The user submitted a city image through the actual Windows UI: run
+`4894e94c9f684d11baaf6d970824fdbd`, job `55cfa03b-a99d-45ce-9abf-86534845ce64-e2`.
+It is queued behind the initial image build. A real second HTTP submission returned
+409 `A scene is already generating`, without creating a second job.

@@ -76,6 +76,12 @@ class Pipeline:
         result = run / "logs/reconstruction_result.json"
         while not result.exists():
             if self.worker.poll() is not None:
+                if self.worker_log:
+                    self.worker_log.flush()
+                service_log = ROOT / ".runtime/sam3d-service.log"
+                if service_log.is_file():
+                    import shutil
+                    shutil.copyfile(service_log, run / "logs/sam3d-service.log")
                 raise RuntimeError(
                     "SAM3D worker exited; inspect reconstruction.log and .runtime/sam3d-service.log"
                 )
