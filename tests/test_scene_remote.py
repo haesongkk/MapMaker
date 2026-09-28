@@ -151,6 +151,30 @@ def test_remote_failure_is_terminal_locally(tmp_path, terminal):
     assert read(run / "status.json")["stage"] == "failed"
 
 
+@pytest.mark.parametrize("encoded", [False, True])
+def test_storage_quota_failure_explains_remedy_without_private_text(tmp_path, encoded):
+    import json
+    run = make_run(tmp_path)
+    error = {"error_message": "UploadPart QuotaExceeded https://private.invalid?secret=hidden"}
+    result = {"id": "job-1", "status": "FAILED", "executionTime": 123,
+              "error": json.dumps(error) if encoded else error}
+    with pytest.raises(RuntimeError, match="Storage quota exceeded"):
+        RemotePipeline(Client(result), Store()).run(run)
+    saved = read(run / "logs/runpod_failure.json")
+    assert saved["executionTime"] == 123
+    assert "before retrying" in read(run / "status.json")["message"]
+    assert "private.invalid" not in json.dumps(saved)
+    assert "hidden" not in json.dumps(saved)
+
+
+def test_unknown_worker_failure_does_not_expose_private_text(tmp_path):
+    run = make_run(tmp_path)
+    with pytest.raises(RuntimeError) as exc:
+        RemotePipeline(Client({"status": "FAILED", "error": "secret-token"}), Store()).run(run)
+    assert "secret-token" not in str(exc.value)
+    assert "secret-token" not in (run / "logs/runpod_failure.json").read_text()
+
+
 def test_interruption_cancels_remote(tmp_path):
     run = make_run(tmp_path)
     client = Client({"status": "IN_PROGRESS"})

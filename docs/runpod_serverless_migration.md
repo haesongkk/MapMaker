@@ -231,6 +231,25 @@ No artifact lifecycle deletion was enabled on the existing volume. Results survi
 after RunPod's short status retention expires. New local orchestration records safe job
 queue/execution timing and worker ID alongside artifacts before that retention expires.
 
+On 2026-09-28, run `e5b4b3d530a7474a98dd71f312b7eb66` (job
+`0ba8a6e9-8ce5-4c81-a73f-b5ae56681dd8-e2`) failed during S3 `UploadPart`
+with `QuotaExceeded` on the existing 500 GB `mapmaker-storage` volume. Its last
+stored progress was GLB export; the result archive never reached local storage.
+Local orchestration now recognizes this cause and saves a sanitized diagnosis and
+job timing in `logs/runpod_failure.json`, rather than showing only “inspect worker
+logs.” This reporting fix does not free storage: space must be reclaimed or the
+volume enlarged before retrying. Upload failure also prevents delivery of worker
+diagnostics, and temporary worker artifacts are removed when the handler exits.
+The user authorized expanding this volume to 550 GB, and RunPod confirmed the
+resize on 2026-09-28. The estimated standard storage charge increases from
+$35 to $38.50 per month; GPU execution remains billed separately. The original
+image was resubmitted as run `65db3225cab34978868d888c014268d7` for verification.
+That retry completed successfully: 6/6 objects, no errors, verified archive/GLB
+hashes and artifact validation, and the browser rendered the scene. Job
+`212116fc-8403-4fc0-9ce7-60c85c0d2eae-e2` ran on RTX 6000 Ada worker
+`ye5nw99g18rsyg`, with 56.721 seconds queue delay, 834.802 seconds execution,
+and 910.344 seconds total local round trip including cold model preparation.
+
 ## Deployment issues resolved
 
 1. The first managed build exceeded its 30-minute limit while exporting a cache-heavy

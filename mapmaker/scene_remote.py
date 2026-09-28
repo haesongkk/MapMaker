@@ -1,5 +1,6 @@
 """Windows orchestration only: one asynchronous RunPod job per complete scene."""
 
+import json
 import os
 import re
 import tempfile
@@ -9,6 +10,20 @@ from pathlib import Path
 
 from .scene_run import read, write, sha, status, now
 from .scene_transfer import ArtifactStore, pack_run, materialize
+
+
+def remote_failure_detail(result):
+    """Expose recognized causes, never arbitrary worker text or signed URLs."""
+    error = result.get("error", "")
+    if isinstance(error, str):
+        try:
+            error = json.loads(error)
+        except (ValueError, TypeError):
+            pass
+    message = error.get("error_message", "") if isinstance(error, dict) else error
+    if isinstance(message, str) and "QuotaExceeded" in message:
+        return "Storage quota exceeded (QuotaExceeded): result upload failed. Free storage space or increase the RunPod network volume before retrying."
+    return "Inspect worker logs for the failure cause."
 
 
 class RunPodClient:
@@ -129,7 +144,13 @@ class RemotePipeline:
                         return
                     if state in {"FAILED", "CANCELLED", "TIMED_OUT"}:
                         remote_terminal = True
-                        raise RuntimeError(f"RunPod job {job}: {state}; inspect worker logs")
+                        detail = remote_failure_detail(result)
+                        write(run / "logs/runpod_failure.json", {
+                            **{key: result.get(key) for key in
+                               ("id", "status", "delayTime", "executionTime", "workerId")},
+                            "detail": detail,
+                        })
+                        raise RuntimeError(f"RunPod job {job}: {state}; {detail}")
                     try:
                         progress = self.store.progress(run.name)
                     except Exception:
