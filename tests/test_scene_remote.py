@@ -14,6 +14,24 @@ from mapmaker.scene_run import read, write, sha, status
 from mapmaker.scene_transfer import ArtifactStore, pack_run, unpack_run, materialize
 
 
+def test_http_failure_keeps_status_without_response_secrets():
+    import requests
+    from mapmaker.scene_remote import RunPodClient
+    client = object.__new__(RunPodClient)
+    client.base = "https://example.invalid"
+
+    class Session:
+        def request(self, *args, **kwargs):
+            response = requests.Response()
+            response.status_code = 503
+            raise requests.HTTPError("private response text", response=response)
+
+    client.session = Session()
+    with pytest.raises(RuntimeError) as error:
+        client.request("POST", "run", {})
+    assert str(error.value) == "RunPod run request failed (HTTP 503)"
+
+
 def make_run(tmp_path):
     data = io.BytesIO()
     Image.new("RGB", (8, 8), "red").save(data, "PNG")

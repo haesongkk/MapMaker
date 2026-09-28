@@ -1,0 +1,874 @@
+{
+  "status": "completed",
+  "runs": [
+    {
+      "run_id": "83b8a7a8fde840bf81abcff40ef25c82",
+      "case": "living_room_cold",
+      "image_commit": "b22b70789",
+      "interpreter_override": "Same venv path fix as 8a0bcaa, applied through startup command while replacement image built",
+      "gpu": {
+        "devices": [
+          {
+            "name": "NVIDIA A40",
+            "driver": "595.91.07",
+            "total_mib": 46068
+          }
+        ],
+        "sampled_peak_device_memory_mib": 22781,
+        "sample_count": 235,
+        "sampling_interval_seconds": 1,
+        "seconds": 241.08692139596678,
+        "success": true,
+        "measurement_error": null,
+        "note": "Whole-device sampled usage, including resident processes; short peaks may be missed."
+      },
+      "sam3d": {
+        "gpu": "NVIDIA A40",
+        "torch": "2.5.1+cu121",
+        "cuda": "12.1",
+        "python": "3.11.0 | packaged by conda-forge | (main, Jan 14 2023, 12:27:40) [GCC 11.3.0]",
+        "peak_allocated_bytes": 19229157888,
+        "peak_reserved_bytes": 23492296704,
+        "model_ready_seconds": 53.57209606305696,
+        "attention_environment": {
+          "ATTN_BACKEND": null,
+          "SPCONV_ALGO": null
+        },
+        "sdpa_enabled": {
+          "flash": true,
+          "memory_efficient": true,
+          "math": true
+        },
+        "note": "Enabled backends are recorded; actual dispatch must be checked against worker logs."
+      },
+      "integrity": {
+        "job_id": "1dfca98b-926f-4efd-a573-274ba1d6e490-e1",
+        "archive_sha256": "9cf50e977f049576923c2ae7cc53910d2819e81616ce9867b30c47ca9ea89fd6",
+        "scene_sha256": "d4a809ddfb9b62c80713a5c98bed8051e929f107628720bdfd20d921ecfcacda",
+        "verified": true,
+        "round_trip_seconds": 525.6719999997877
+      },
+      "artifacts": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\83b8a7a8fde840bf81abcff40ef25c82",
+        "objects": [
+          {
+            "id": "loveseat_00",
+            "mask_pixels": 165197,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "cabinet_00",
+            "mask_pixels": 72216,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "coffee_table_00",
+            "mask_pixels": 68889,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "television_00",
+            "mask_pixels": 45544,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "plant_00",
+            "mask_pixels": 5514,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "book_00",
+            "mask_pixels": 4891,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 6,
+        "gltf_node_count": 12,
+        "errors": [],
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      },
+      "timing": {
+        "object_extraction_seconds": 9.160757791018113,
+        "segmentation_seconds": 12.319510909961537,
+        "reconstruction_model_ready_seconds": 53.57209606305696,
+        "object_reconstruction_seconds": 86.70105940313078,
+        "assembly_seconds": 4.923657754901797,
+        "total_seconds": 241.08408867102116
+      },
+      "attention": "sdpa",
+      "sparse_backend": "spconv",
+      "sparse_algorithm": "auto",
+      "regression": {
+        "reference_run": "6db380213f8148dbbcfb0341f21131c7",
+        "current_run": "83b8a7a8fde840bf81abcff40ef25c82",
+        "input_pixels_equal": true,
+        "missing_objects": [],
+        "additional_objects": [],
+        "objects": [
+          {
+            "id": "book_00",
+            "status": "generated",
+            "mask_iou": 0.9995911692559281,
+            "rotation_difference_degrees": 0.08578954648826358,
+            "translation_distance": 0.0005627546776336867,
+            "scale_ratio": [
+              [
+                1.0024025100702934,
+                1.0024025100702934,
+                1.0024025100702934
+              ]
+            ],
+            "mesh_extent_ratio": [
+              1.0045623748669819,
+              1.0012254570386205,
+              0.9995465084232656
+            ]
+          },
+          {
+            "id": "cabinet_00",
+            "status": "generated",
+            "mask_iou": 0.9995016611295681,
+            "rotation_difference_degrees": 0.32758157789957815,
+            "translation_distance": 0.00401792809109685,
+            "scale_ratio": [
+              [
+                1.0014052493341405,
+                1.0014052493341405,
+                1.0014052493341405
+              ]
+            ],
+            "mesh_extent_ratio": [
+              1.000005358483435,
+              0.9997189280666027,
+              1.0003852267791962
+            ]
+          },
+          {
+            "id": "coffee_table_00",
+            "status": "generated",
+            "mask_iou": 0.9993179113575015,
+            "rotation_difference_degrees": 0.23377918535072464,
+            "translation_distance": 0.00952216844104846,
+            "scale_ratio": [
+              [
+                0.9867581523413187,
+                0.9867581523413187,
+                0.9867581523413187
+              ]
+            ],
+            "mesh_extent_ratio": [
+              0.9998877585483328,
+              0.997260754651655,
+              1.0273950602291908
+            ]
+          },
+          {
+            "id": "loveseat_00",
+            "status": "generated",
+            "mask_iou": 0.9998789375559913,
+            "rotation_difference_degrees": 0.9845928923499064,
+            "translation_distance": 0.008774855683822221,
+            "scale_ratio": [
+              [
+                1.001385986764181,
+                1.001385986764181,
+                1.001385986764181
+              ]
+            ],
+            "mesh_extent_ratio": [
+              1.00217188133444,
+              1.0093935817352557,
+              0.9945514120744648
+            ]
+          },
+          {
+            "id": "plant_00",
+            "status": "generated",
+            "mask_iou": 0.999456029011786,
+            "rotation_difference_degrees": 0.46065398317251244,
+            "translation_distance": 0.006299812953168709,
+            "scale_ratio": [
+              [
+                1.0097986646284682,
+                1.0097986646284682,
+                1.0097986646284682
+              ]
+            ],
+            "mesh_extent_ratio": [
+              1.0008392442059604,
+              1.0004206784066583,
+              0.9899483322405217
+            ]
+          },
+          {
+            "id": "television_00",
+            "status": "generated",
+            "mask_iou": 0.9998243649695931,
+            "rotation_difference_degrees": 0.06445928766920699,
+            "translation_distance": 0.0017070446482926342,
+            "scale_ratio": [
+              [
+                1.0026134985854775,
+                1.0026134985854775,
+                1.0026134985854775
+              ]
+            ],
+            "mesh_extent_ratio": [
+              0.9999992860832702,
+              0.9998970444321178,
+              1.0054614385323046
+            ]
+          }
+        ],
+        "errors": [],
+        "note": "Measured differences, not a claim of bitwise equivalence across GPU architectures."
+      },
+      "data_center": "EU-SE-1",
+      "host_cuda_capability": "13.2",
+      "runpod_timing": {
+        "id": "1dfca98b-926f-4efd-a573-274ba1d6e490-e1",
+        "status": "COMPLETED",
+        "delayTime": 58818,
+        "executionTime": 451835,
+        "workerId": "xu7srsfehxm90c",
+        "source": "Observed status response before retention expiry"
+      },
+      "model_staging_first_to_last_file_seconds": 201.584297
+    },
+    {
+      "run_id": "2e58128c189949f0a959803306afc83f",
+      "case": "city_warm",
+      "image_commit": "b22b70789",
+      "interpreter_override": "Same venv path fix as 8a0bcaa, applied through startup command while replacement image built",
+      "gpu": {
+        "devices": [
+          {
+            "name": "NVIDIA A40",
+            "driver": "595.91.07",
+            "total_mib": 46068
+          }
+        ],
+        "sampled_peak_device_memory_mib": 22451,
+        "sample_count": 74,
+        "sampling_interval_seconds": 1,
+        "seconds": 75.86657779687084,
+        "success": true,
+        "measurement_error": null,
+        "note": "Whole-device sampled usage, including resident processes; short peaks may be missed."
+      },
+      "sam3d": {
+        "gpu": "NVIDIA A40",
+        "torch": "2.5.1+cu121",
+        "cuda": "12.1",
+        "python": "3.11.0 | packaged by conda-forge | (main, Jan 14 2023, 12:27:40) [GCC 11.3.0]",
+        "peak_allocated_bytes": 19059300864,
+        "peak_reserved_bytes": 23146266624,
+        "model_ready_seconds": 0.004084778018295765,
+        "attention_environment": {
+          "ATTN_BACKEND": null,
+          "SPCONV_ALGO": null
+        },
+        "sdpa_enabled": {
+          "flash": true,
+          "memory_efficient": true,
+          "math": true
+        },
+        "note": "Enabled backends are recorded; actual dispatch must be checked against worker logs."
+      },
+      "integrity": {
+        "job_id": "ee96046b-10a4-4f68-a7eb-709be97a7014-e1",
+        "archive_sha256": "b5acd2e35552dc0a2e61ebf977d4d40cab31e698f9e2e9733c2476156a7ea9bf",
+        "scene_sha256": "5f136c523ed80c10b9a4fc3f3dc253826aa82428e89fd525160112f9ea8af474",
+        "verified": true,
+        "round_trip_seconds": 87.18800000008196
+      },
+      "artifacts": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\2e58128c189949f0a959803306afc83f",
+        "objects": [
+          {
+            "id": "city_00",
+            "mask_pixels": 37180,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "lush_00",
+            "mask_pixels": 685,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "coast_00",
+            "mask_pixels": 323,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 3,
+        "gltf_node_count": 6,
+        "errors": [],
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      },
+      "timing": {
+        "object_extraction_seconds": 6.638659611111507,
+        "segmentation_seconds": 12.117970045888796,
+        "reconstruction_model_ready_seconds": 0.004084778018295765,
+        "object_reconstruction_seconds": 36.83417089097202,
+        "assembly_seconds": 1.245167300105095,
+        "total_seconds": 75.86456076893955
+      },
+      "attention": "sdpa",
+      "sparse_backend": "spconv",
+      "sparse_algorithm": "auto",
+      "regression": null,
+      "data_center": "EU-SE-1",
+      "host_cuda_capability": "13.2",
+      "model_staging_first_to_last_file_seconds": 0
+    },
+    {
+      "run_id": "5614756e06bd4580a2e432d9198b8be3",
+      "case": "living_room_ada",
+      "image_commit": "8a0bcaa35",
+      "gpu": {
+        "devices": [
+          {
+            "name": "NVIDIA RTX 6000 Ada Generation",
+            "driver": "580.159.04",
+            "total_mib": 49140
+          }
+        ],
+        "sampled_peak_device_memory_mib": 22988,
+        "sample_count": 201,
+        "sampling_interval_seconds": 1,
+        "seconds": 208.4163802312687,
+        "success": true,
+        "measurement_error": null,
+        "note": "Whole-device sampled usage, including resident processes; short peaks may be missed."
+      },
+      "sam3d": {
+        "gpu": "NVIDIA RTX 6000 Ada Generation",
+        "torch": "2.5.1+cu121",
+        "cuda": "12.1",
+        "python": "3.11.0 | packaged by conda-forge | (main, Jan 14 2023, 12:27:40) [GCC 11.3.0]",
+        "peak_allocated_bytes": 19229319680,
+        "peak_reserved_bytes": 23511171072,
+        "model_ready_seconds": 53.568778027780354,
+        "attention_environment": {
+          "ATTN_BACKEND": null,
+          "SPCONV_ALGO": null
+        },
+        "sdpa_enabled": {
+          "flash": true,
+          "memory_efficient": true,
+          "math": true
+        },
+        "note": "Enabled backends are recorded; actual dispatch must be checked against worker logs."
+      },
+      "integrity": {
+        "job_id": "948f90ff-07b2-4ab9-baa5-d57bc61220ac-e1",
+        "archive_sha256": "e224b74f959502fa446b0295ae6d484ce96d5f8fd7a977c429074a6f19594d1f",
+        "scene_sha256": "0814be52b6bcc136bb33c7532502be77447cf1ca38d6422400438628a880f757",
+        "verified": true,
+        "round_trip_seconds": 1123.5160000002943
+      },
+      "artifacts": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\5614756e06bd4580a2e432d9198b8be3",
+        "objects": [
+          {
+            "id": "loveseat_00",
+            "mask_pixels": 165184,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "cabinet_00",
+            "mask_pixels": 72223,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "coffee_table_00",
+            "mask_pixels": 68874,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "television_00",
+            "mask_pixels": 45543,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "plant_00",
+            "mask_pixels": 5514,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "book_00",
+            "mask_pixels": 4892,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 6,
+        "gltf_node_count": 12,
+        "errors": [],
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      },
+      "timing": {
+        "object_extraction_seconds": 10.403499617241323,
+        "segmentation_seconds": 12.794871502555907,
+        "reconstruction_model_ready_seconds": 53.568778027780354,
+        "object_reconstruction_seconds": 51.92350100632757,
+        "assembly_seconds": 3.805695020593703,
+        "total_seconds": 208.41371635720134
+      },
+      "runpod_timing": {
+        "id": "948f90ff-07b2-4ab9-baa5-d57bc61220ac-e1",
+        "status": "COMPLETED",
+        "delayTime": 235362,
+        "executionTime": 870086,
+        "workerId": "tso4ge88ils2ne"
+      },
+      "backend_log_lines": [
+        "2026-09-28 00:57:03.006 | INFO     | sam3d_objects.model.backbone.tdfy_dit.modules.sparse:__from_env:39 - [SPARSE] Backend: spconv, Attention: sdpa",
+        "2026-09-28 00:57:07.196 | INFO     | sam3d_objects.model.backbone.tdfy_dit.modules.attention:__from_env:30 - [ATTENTION] Using backend: sdpa",
+        "[SPARSE][CONV] spconv algo: auto"
+      ],
+      "model_staging_first_to_last_file_seconds": 649.006774,
+      "regression": {
+        "reference_run": "6db380213f8148dbbcfb0341f21131c7",
+        "current_run": "5614756e06bd4580a2e432d9198b8be3",
+        "input_pixels_equal": true,
+        "missing_objects": [],
+        "additional_objects": [],
+        "objects": [
+          {
+            "id": "book_00",
+            "status": "generated",
+            "mask_iou": 0.999795584627964,
+            "rotation_difference_degrees": 0.08276971000436954,
+            "translation_distance": 0.0004748470537563386,
+            "scale_ratio": [
+              [
+                1.0009423071750774,
+                1.0009423071750774,
+                1.0009423071750774
+              ]
+            ],
+            "mesh_extent_ratio": [
+              1.0001974617135085,
+              1.0066876079381764,
+              0.9995119430622686
+            ]
+          },
+          {
+            "id": "cabinet_00",
+            "status": "generated",
+            "mask_iou": 0.9996816036103382,
+            "rotation_difference_degrees": 0.2607093894854942,
+            "translation_distance": 0.005086121158801185,
+            "scale_ratio": [
+              [
+                1.011294728659765,
+                1.011294728659765,
+                1.011294728659765
+              ]
+            ],
+            "mesh_extent_ratio": [
+              1.0000160159115998,
+              1.0003976298323247,
+              1.0003848196583631
+            ]
+          },
+          {
+            "id": "coffee_table_00",
+            "status": "generated",
+            "mask_iou": 0.9995645231528524,
+            "rotation_difference_degrees": 0.2340700612901395,
+            "translation_distance": 0.0051952468048321225,
+            "scale_ratio": [
+              [
+                0.9934281850096585,
+                0.9934281850096585,
+                0.9934281850096585
+              ]
+            ],
+            "mesh_extent_ratio": [
+              1.0000741329481835,
+              0.9994146967493206,
+              1.0125194711177679
+            ]
+          },
+          {
+            "id": "loveseat_00",
+            "status": "generated",
+            "mask_iou": 0.9998970919392721,
+            "rotation_difference_degrees": 0.3128871558562633,
+            "translation_distance": 0.005382999445799433,
+            "scale_ratio": [
+              [
+                0.999719055553897,
+                0.999719055553897,
+                0.999719055553897
+              ]
+            ],
+            "mesh_extent_ratio": [
+              1.0043125312653836,
+              1.0043032969663388,
+              1.0001418792634673
+            ]
+          },
+          {
+            "id": "plant_00",
+            "status": "generated",
+            "mask_iou": 0.9998186434530286,
+            "rotation_difference_degrees": 0.2437143886988485,
+            "translation_distance": 0.0015747331868144205,
+            "scale_ratio": [
+              [
+                0.9999611968561511,
+                0.9999611968561511,
+                0.9999611968561511
+              ]
+            ],
+            "mesh_extent_ratio": [
+              0.9975041590246106,
+              1.0013220679748038,
+              0.9983301214625802
+            ]
+          },
+          {
+            "id": "television_00",
+            "status": "generated",
+            "mask_iou": 0.9998024105907923,
+            "rotation_difference_degrees": 0.3418766916453974,
+            "translation_distance": 0.0003196007944844494,
+            "scale_ratio": [
+              [
+                0.9969174522666284,
+                0.9969174522666284,
+                0.9969174522666284
+              ]
+            ],
+            "mesh_extent_ratio": [
+              0.9999825685331801,
+              0.9999731977292173,
+              1.0049011331135451
+            ]
+          }
+        ],
+        "errors": [],
+        "note": "Measured differences, not a claim of bitwise equivalence across GPU architectures."
+      },
+      "data_center": "US-WA-1",
+      "host_cuda_capability": "13.0"
+    },
+    {
+      "run_id": "a0d1b9737bd14b99ac8abf7002688ef5",
+      "case": "living_room_a100",
+      "image_commit": "8a0bcaa35",
+      "gpu": {
+        "devices": [
+          {
+            "name": "NVIDIA A100-SXM4-80GB",
+            "driver": "580.126.16",
+            "total_mib": 81920
+          }
+        ],
+        "sampled_peak_device_memory_mib": 23757,
+        "sample_count": 217,
+        "sampling_interval_seconds": 1,
+        "seconds": 222.52415364794433,
+        "success": true,
+        "measurement_error": null,
+        "note": "Whole-device sampled usage, including resident processes; short peaks may be missed."
+      },
+      "sam3d": {
+        "gpu": "NVIDIA A100-SXM4-80GB",
+        "torch": "2.5.1+cu121",
+        "cuda": "12.1",
+        "python": "3.11.0 | packaged by conda-forge | (main, Jan 14 2023, 12:27:40) [GCC 11.3.0]",
+        "peak_allocated_bytes": 19245744640,
+        "peak_reserved_bytes": 24322768896,
+        "model_ready_seconds": 60.019350341986865,
+        "attention_environment": {
+          "ATTN_BACKEND": "flash_attn",
+          "SPCONV_ALGO": null
+        },
+        "sdpa_enabled": {
+          "flash": true,
+          "memory_efficient": true,
+          "math": true
+        },
+        "note": "Enabled backends are recorded; actual dispatch must be checked against worker logs."
+      },
+      "integrity": {
+        "job_id": "f44fb4c1-d0ec-43c0-b43e-98f49a5d42a8-e2",
+        "archive_sha256": "d78fc1fbb1fead42bd3201b05d388d971fd19ed14778b618a7425c54735b4b12",
+        "scene_sha256": "d56f252b8697ee9a992eeee0153dbf5f4ae1cdfc11aedc1a6d57b473b8cd0344",
+        "verified": true,
+        "round_trip_seconds": 1352.5
+      },
+      "artifacts": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\a0d1b9737bd14b99ac8abf7002688ef5",
+        "objects": [
+          {
+            "id": "loveseat_00",
+            "mask_pixels": 165191,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "cabinet_00",
+            "mask_pixels": 72228,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "coffee_table_00",
+            "mask_pixels": 68876,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "television_00",
+            "mask_pixels": 45546,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "plant_00",
+            "mask_pixels": 5513,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "book_00",
+            "mask_pixels": 4891,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 6,
+        "gltf_node_count": 12,
+        "errors": [],
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      },
+      "timing": {
+        "object_extraction_seconds": 9.814567107707262,
+        "segmentation_seconds": 12.25503619061783,
+        "reconstruction_model_ready_seconds": 60.019350341986865,
+        "object_reconstruction_seconds": 60.15788113325834,
+        "assembly_seconds": 7.541616118047386,
+        "total_seconds": 222.5217310898006
+      },
+      "runpod_timing": {
+        "id": "f44fb4c1-d0ec-43c0-b43e-98f49a5d42a8-e2",
+        "status": "COMPLETED",
+        "delayTime": 665429,
+        "executionTime": 670146,
+        "workerId": "gk1laxf0y5jwzd"
+      },
+      "backend_log_lines": [
+        "2026-09-28 01:22:18.764 | INFO     | sam3d_objects.model.backbone.tdfy_dit.modules.sparse:__from_env:39 - [SPARSE] Backend: spconv, Attention: flash_attn",
+        "2026-09-28 01:22:23.483 | INFO     | sam3d_objects.model.backbone.tdfy_dit.modules.attention:__from_env:30 - [ATTENTION] Using backend: flash_attn",
+        "[SPARSE][CONV] spconv algo: auto"
+      ],
+      "model_staging_first_to_last_file_seconds": 436.871669,
+      "regression": {
+        "reference_run": "6db380213f8148dbbcfb0341f21131c7",
+        "current_run": "a0d1b9737bd14b99ac8abf7002688ef5",
+        "input_pixels_equal": true,
+        "missing_objects": [],
+        "additional_objects": [],
+        "objects": [
+          {
+            "id": "book_00",
+            "status": "generated",
+            "mask_iou": 1.0,
+            "rotation_difference_degrees": 2.4148365394514667e-06,
+            "translation_distance": 0.0,
+            "scale_ratio": [
+              [
+                1.0,
+                1.0,
+                1.0
+              ]
+            ],
+            "mesh_extent_ratio": [
+              0.9999979651513448,
+              0.9999964304062958,
+              1.00000077474085
+            ]
+          },
+          {
+            "id": "cabinet_00",
+            "status": "generated",
+            "mask_iou": 1.0,
+            "rotation_difference_degrees": 0.0,
+            "translation_distance": 0.0,
+            "scale_ratio": [
+              [
+                1.0,
+                1.0,
+                1.0
+              ]
+            ],
+            "mesh_extent_ratio": [
+              1.0000016670837353,
+              0.9999719145062691,
+              0.9999850722361279
+            ]
+          },
+          {
+            "id": "coffee_table_00",
+            "status": "generated",
+            "mask_iou": 1.0,
+            "rotation_difference_degrees": 0.0,
+            "translation_distance": 0.0,
+            "scale_ratio": [
+              [
+                1.0,
+                1.0,
+                1.0
+              ]
+            ],
+            "mesh_extent_ratio": [
+              1.0000039894839585,
+              1.0000485678489428,
+              0.9999833030025352
+            ]
+          },
+          {
+            "id": "loveseat_00",
+            "status": "generated",
+            "mask_iou": 1.0,
+            "rotation_difference_degrees": 0.0,
+            "translation_distance": 0.0,
+            "scale_ratio": [
+              [
+                1.0,
+                1.0,
+                1.0
+              ]
+            ],
+            "mesh_extent_ratio": [
+              1.0000074000907704,
+              1.0000099862907896,
+              1.0000635390396677
+            ]
+          },
+          {
+            "id": "plant_00",
+            "status": "generated",
+            "mask_iou": 1.0,
+            "rotation_difference_degrees": 0.0,
+            "translation_distance": 0.0,
+            "scale_ratio": [
+              [
+                1.0,
+                1.0,
+                1.0
+              ]
+            ],
+            "mesh_extent_ratio": [
+              1.0000073617912804,
+              1.000003413333691,
+              0.9999649466063537
+            ]
+          },
+          {
+            "id": "television_00",
+            "status": "generated",
+            "mask_iou": 1.0,
+            "rotation_difference_degrees": 0.0,
+            "translation_distance": 0.0,
+            "scale_ratio": [
+              [
+                1.0,
+                1.0,
+                1.0
+              ]
+            ],
+            "mesh_extent_ratio": [
+              1.0000048189379263,
+              1.0000056884360553,
+              1.0000580450828567
+            ]
+          }
+        ],
+        "errors": [],
+        "note": "Measured differences, not a claim of bitwise equivalence across GPU architectures."
+      },
+      "data_center": "US-MD-1",
+      "host_cuda_capability": "13.0"
+    }
+  ],
+  "endpoint_id": "8dzbkfrxys43hb",
+  "image": "registry.runpod.net/haesongkk-mapmaker-codex-runpod-serverless-migration-deploy-runpod-dockerfile:8a0bcaa35",
+  "image_digest": "sha256:5aec52d956c31d1aeb7d15b13320731d21c5c5b842cad3afab23737950c0f586",
+  "local_tests_passed": 47,
+  "viewer": {
+    "room_rendered": true,
+    "object_visibility_off_on": true,
+    "glb_download_event": true,
+    "city_rendered": true
+  },
+  "default_gpus": [
+    "NVIDIA A40",
+    "NVIDIA RTX 6000 Ada Generation"
+  ],
+  "additional_validated_gpu": "NVIDIA A100-SXM4-80GB"
+}

@@ -1,107 +1,159 @@
-# RunPod Serverless migration — in progress
+# Windows + RunPod Serverless migration
 
-Updated 2026-09-28. **Not deployed or GPU validated.** This document distinguishes
-implemented transport from the original GPU validation recorded in
-`sam3d_project_validation.md`. Do not treat local tests as evidence of GPU compatibility.
+Updated 2026-09-28. **Real A40, RTX 6000 Ada and A100 SXM 80GB end-to-end validation passed.**
+The original A100 baseline regression also passed. Machine-readable evidence is in
+[runpod_serverless_validation.json](runpod_serverless_validation.json); full logs,
+meshes and metadata remain in the local `runs` directories identified there.
 
-## Implemented locally
+## Run this checkout
 
-- Windows web and CLI default to the RunPod backend. `scripts/start_scene_web.ps1`
-  binds the existing web app to localhost:8082. Linux retains the original local
-  pipeline by default. `MAPMAKER_BACKEND=local|runpod` selects explicitly.
-- One `/run` request contains a complete scene job. Poll `/status/{job_id}` with
-  bounded transient retries; do not automatically retry an ambiguous submission.
-- Source PNG and metadata travel in an uncompressed ZIP over authenticated S3.
-  Job JSON contains only run identity and hashes. The worker uses S3 credentials
-  supplied privately in endpoint configuration; no credentials enter the image.
-  Real RunPod S3 presigned GET testing failed with HTTP 401 / `missing Authorization
-  header`, so presigned URLs are not used by this deployment.
-- The queue handler reuses one `Pipeline` and its existing resident SAM3D process.
-  Vision and SAM3D remain separate environments/processes. RAM++/SAM3 currently
-  reload once per scene, as before; SAM3D is not reloaded per object or warm job.
-- Worker status is periodically uploaded to a small S3 object. Local status keeps
-  the existing UI stages. `done` is published only after downloading and checking
-  archive SHA-256, scene SHA-256, run ID and source-image SHA-256.
-- Results materialize into the existing local `runs/{run_id}` layout. ZIP paths,
-  symlinks, duplicate names and expanded size are checked. Input/GLB never enter
-  the RunPod JSON payload as base64.
-- Remote failure, cancellation, polling failure and deadline expiry become local
-  `failed`; existing generation lock releases in `finally`. Restart marks unfinished
-  runs failed and attempts cancellation of recorded jobs for the configured endpoint.
-  Cancellation failures are recorded and require checking the remote job; local
-  restart does not imply remote cancellation succeeded.
-- `logs/gpu_measurement.json` samples total device memory across subprocesses.
-  `logs/sam3d_gpu.json` records Python/Torch/CUDA, model readiness time, allocator peaks
-  and enabled attention backends. Actual attention dispatch still requires worker logs.
-- Native pose, GLB conversion, filtering, mask policies, compile=False and seed=42
-  are unchanged. `scene_assembly.py`, `object_candidates.py`, `models.py` are unchanged.
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/start_scene_web.ps1
+```
 
-## Live RunPod discovery
+Open http://127.0.0.1:8082. Upload one image and Generate. Windows runs the existing
+web backend, job transport and Three.js viewer; it does not run local model inference.
+The server is already configured in this checkout. Keep it running until completion.
+Refreshing the browser restores the run from `?run=<id>` without resubmitting it.
 
-MCP endpoint, template, volume, pod and GPU catalog reads succeeded. No duplicate
-MCP configuration was created. Initial endpoint/template lists were empty.
-Existing volume: `mapmaker-storage`, `qv17bc1sx8`, 500 GB, EU-RO-1. Existing two A100
-Pods were EXITED. They were not modified. No billable resources were created.
+## Deployment identity
 
-Serverless catalog snapshot (availability changes; refresh before provisioning):
+- Endpoint: `8dzbkfrxys43hb` (`mapmaker-scene-validation`), queue-based, one GPU.
+- Runtime commit: `8a0bcaa35349d4ed488728e219185c8668de6ac9`.
+- Image: `registry.runpod.net/haesongkk-mapmaker-codex-runpod-serverless-migration-deploy-runpod-dockerfile:8a0bcaa35`.
+- Pulled digest: `sha256:5aec52d956c31d1aeb7d15b13320731d21c5c5b842cad3afab23737950c0f586`.
+- GitHub-managed build: `0ba9702b-827e-4025-b74e-5013cc66fd96`, completed
+  2026-09-27 20:49:03 UTC. All 438 frozen SAM3D package records matched; native
+  imports and vision imports through the actual application interpreter path passed.
+- Default GPU selection is restricted to tested A40 and RTX 6000 Ada. The shared
+  pools also contain untested A6000, L40, L40S and Blackwell MIG; these are explicitly excluded.
+- Workers min/max 0/1, 100 GB local disk, 60-second idle timeout, no attached volume,
+  no data-center restriction, host CUDA >=12.8 among the configured versions.
+- Execution limit 7200 seconds. `RUNPOD_INIT_TIMEOUT=1800` accommodates the large
+  runtime ([official setting](https://docs.runpod.io/serverless/development/optimization)).
+- `codex/runpod-serverless-migration` remains pinned to the runtime commit so report
+  changes do not automatically rebuild it. `codex/runpod-serverless-validation-results`
+  contains the runtime plus local diagnostics/UI fixes and the final evidence.
+- Original A100 Pods were not modified or restarted. Existing storage capacity and
+  region are unchanged; job artifacts use the separate `mapmaker-jobs/` prefix.
 
-| GPU | Pool | Availability | Catalog USD/hour |
-|---|---|---|---:|
-| A40 48 GB | AMPERE_48 | HIGH | 1.22 |
-| RTX A6000 48 GB | AMPERE_48 | LOW | 1.22 |
-| L40 48 GB | ADA_48_PRO | NONE | 1.75 |
-| L40S 48 GB | ADA_48_PRO | LOW | 1.75 |
-| RTX 6000 Ada 48 GB | ADA_48_PRO | LOW | 1.75 |
-| A100 80 GB PCIe | AMPERE_80 | LOW | 2.72 |
+## Preserved pipeline and environments
 
-These are capacity/price observations, **not** inference compatibility results.
-Use minimum zero/maximum one worker initially, with one GPU and no regional
-placement restriction unless required for a temporary source-runtime audit.
+```text
+Windows image -> S3 input archive -> one RunPod /run job
+  -> RAM++ -> deterministic candidate filtering -> SAM3 instance masks
+  -> resident SAM3D -> original native pose / GLB conversion -> independent nodes
+  -> S3 result archive -> verified local runs/{run_id} -> existing viewer
+```
 
-## Storage findings and provisional choice
+`models.py`, `object_candidates.py`, and `scene_assembly.py` are unchanged. No manual
+object list, new placement math, quantization, reduced resolution, or quality changes
+were used. SAM3D stays `compile=False`, `seed=42`. RAM++/SAM3 reload once per scene as
+before; the resident SAM3D process is reused across objects and warm scene jobs.
 
-The current [Global Volume overview](https://docs.runpod.io/storage/globalvolume/overview)
-states GPU Serverless support and `/runpod-volume` mounting. However:
+| Environment | Exact runtime / source |
+|---|---|
+| Windows orchestration | Python 3.11.9 in local `.venv`; no Torch inference |
+| Worker orchestration | Separate `.venv`, RunPod SDK 1.10.1 |
+| Vision | Python 3.12.3, Torch 2.8.0+cu128, original overlay + system packages |
+| SAM3D | Python 3.11.0, Torch 2.5.1+cu121, frozen 438-package audit |
+| SAM3D source | `f91db411c50efee93d8db7aeb323885650f6f722` |
+| DINOv2 source | `7764ea0f912e53c92e82eb78a2a1631e92725fc8` |
 
-- The connected MCP has no Global Volume CRUD/attach tools.
-- The fetched [REST v2 OpenAPI](https://api.runpod.io/v2/openapi.json) exposes regional
-  network volumes; `CreateEndpointRequest` has `networkVolumes`, no global-volume field.
-- This account's Serverless create UI exposes Network volumes only. The Storage
-  create UI offers Global volume but describes Pod attachment.
-- The overview's Serverless detail link returned 404 during this check.
+SAM3 and RAM revisions, recovered conda YAML, vision overlay, and the immutable
+26-file model manifest are under `configs/serverless`. The Docker build keeps
+three environments and compiles native targets sm80, sm86, sm89+PTX. DINO weights
+and the original MoGe/BERT caches are preserved and HF online fallback is disabled.
 
-Therefore actual Serverless attachment/mount has **not** been demonstrated. Do not
-invent a global-volume ID or treat it as a regional volume ID. Recheck rollout before
-choosing a final deployment storage configuration.
+`runtime_paths.py` centralizes model paths. The worker uses `/opt/mapmaker-models`
+and local `/tmp/mapmaker-jobs` scratch. The Linux fallback layout is repository-relative;
+new code does not depend on `/workspace/MapMaker`. Interpreter symlinks are deliberately
+not resolved, preserving the vision virtual environment.
 
-[Cached models](https://docs.runpod.io/serverless/endpoints/model-caching) are region
-independent, support gated/private HF models with credentials, but currently allow
-only one cached model per endpoint. MapMaker needs multiple model families plus
-the pinned DINO source/cache. A combined private bundle would require an additional
-upload and full license/provenance review.
+## Actual GPU validation
 
-Implemented fallback: immutable, hash-manifested model files read over object
-storage into worker-local cache, with one central model-root configuration. The
-existing RunPod volume's S3 API can serve it without attaching the regional volume
-to inference workers. This avoids a new storage provider and leaves GPU scheduling
-unconstrained. Trade-offs: cross-region transfer and repeated cold-start downloads;
-source storage is still region-dependent for availability, even though GPU placement
-is not. The source manifest has 26 files totaling 21,385,172,187 bytes (21.4 GB).
-The original living-room GLB is 45,629,804 bytes. Cold-start time remains unmeasured.
+| Case | Objects | Pipeline seconds | SAM3D readiness seconds | Sampled peak device MiB | Local end-to-end seconds |
+|---|---:|---:|---:|---:|---:|
+| A40, reference room cold | 6/6 | 241.08 | 53.572 | 22,781 | 525.67 |
+| A40, user city warm | 3/3 | 75.86 | 0.004 | 22,451 | 87.19 |
+| RTX 6000 Ada, reference room cold | 6/6 | 208.41 | 53.569 | 22,988 | 1123.52 |
+| A100 SXM 80GB, reference room cold | 6/6 | 222.52 | 60.019 | 23,757 | 1352.50 |
 
-Alternative comparison:
+All four completed with no pipeline errors, valid GLB nodes/transforms, previews,
+and verified archive/scene SHA-256. A40 driver: 595.91.07. Ada driver: 580.159.04.
+A100 driver: 580.126.16. All ran SAM3D Torch 2.5.1+cu121 / CUDA 12.1 / Python 3.11.0. Application logs selected
+`sdpa` attention on A40/Ada and `flash_attn` on A100, retaining the original GPU-based
+automatic selection. All used `spconv` sparse convolution (`auto`). These logs identify the
+application backend, not every internal SDPA kernel dispatch. Allocator peaks are
+in the JSON report, separately from whole-device measurements sampled every second.
+Short device peaks can be missed; these images do not establish a universal VRAM limit.
 
-| Option | Benefit | Cost / limitation |
-|---|---|---|
-| Global Volume | Shared read-mostly models across regions | Account's attach path and real mount not verified |
-| HF host cache | Downloads before billed worker startup | One repository/model per endpoint; multiple families need bundling |
-| Private image with weights | Immutable, simple worker startup | Large image, private registry/build auth and license packaging |
-| Immutable object bundle | No GPU region binding, reuse existing S3 | Download time/egress, local cache warmup |
-| Regional replicas | Fast mounted reads in selected regions | Replication, duplicated storage cost and regional maintenance |
+A40 jobs used the previous `b22b70789` image with the same interpreter-path fix applied
+through the startup command while the replacement built. Ada and A100 used the final image
+with the normal module entrypoint; the temporary override was removed. This distinction
+is retained in the report rather than attributing every test to the final image.
 
-Artifacts and temporary inference writes must stay on worker-local disk, even if
-Global Volume support becomes usable: global storage lacks atomic rename and full
-POSIX semantics required by `scene_run.write()`.
+Reference comparison against the recovered original A100 production run:
+
+| Measurement | A40 | RTX 6000 Ada | A100 SXM 80GB |
+|---|---:|---:|---:|
+| Missing/additional objects | 0/0 | 0/0 | 0/0 |
+| Minimum mask IoU | 0.999318 | 0.999565 | 1.0 |
+| Maximum pose rotation difference | 0.985 degrees | 0.342 degrees | 0.0000025 degrees |
+| Maximum translation distance | 0.00953 native units | 0.00539 native units | 0 |
+| Scale ratio range | 0.98676-1.00980 | 0.99343-1.01130 | 1.0 |
+
+Cross-GPU results are close, not bitwise identical. Pose/assembly algorithms were
+not adjusted to force agreement. The original reference has GLB SHA-256
+`144d62362c93ff2ff21570d4aa37d4efc5be5984508567c83415702985aa83c9` and lives at
+`.runtime/reference-living-room` locally.
+
+Chrome displayed the returned six-object room, and toggling loveseat off/on visibly
+removed/restored it. GLB export triggered a browser download. The city result is in
+`runs/2e58128c189949f0a959803306afc83f`; the unchanged extraction policy selected
+`city`, `lush`, and `coast`. All three remain independent nodes.
+
+Local checks: **47 tests passed**, compileall, JavaScript syntax and diff checks passed.
+The original clone had 20 tests; old handoff test counts refer to another workspace.
+Real duplicate generation returned HTTP 409 without submitting another job. A worker
+failure returned diagnostics and released the local lock; an HTTP submission failure
+also became local `failed`. These are separate from the successful GPU runs above.
+
+## Storage decision and measured trade-offs
+
+The connected MCP/API and account UI were inspected before choosing storage. Existing
+volume `mapmaker-storage` (`qv17bc1sx8`, 500 GB, EU-RO-1) serves model files through S3;
+it is **not mounted on the inference worker**. GPU placement is therefore unrestricted,
+which was verified by execution in EU-SE-1, US-WA-1 and US-MD-1. The source still has regional
+availability dependency and cross-region transfer latency.
+
+[Global Volume overview](https://docs.runpod.io/storage/globalvolume/overview) advertises
+Serverless support, but this account's UI exposed only Network Volume attachment;
+the connected MCP and [REST v2 schema](https://api.runpod.io/v2/openapi.json) exposed
+no Global Volume attach field. The linked Serverless detail page returned 404. A real
+Global Volume mount could not be demonstrated; no unsupported attach request was invented.
+
+| Option | Finding / trade-off |
+|---|---|
+| Global Volume | Attractive read-mostly model storage; actual Serverless attach not verified |
+| [HF cached model](https://docs.runpod.io/serverless/endpoints/model-caching) | Region-independent host cache, but one repository/model per endpoint; multiple original caches need a new private bundle |
+| Private image with weights | Simple immutable package, but larger image and redistribution review |
+| Immutable object files (chosen) | Existing authenticated storage, no GPU region binding; repeated cold downloads |
+| Regional replicas | Faster regional reads; duplicated storage and replication maintenance |
+
+The manifest has 26 files totaling 21,385,172,187 bytes. Files are hash-checked and
+atomically published on worker-local disk, then reused while the worker lives.
+Observed staging was about 197 seconds in EU-SE-1 and 649 seconds in US-WA-1, before
+inference (A100 in US-MD-1: 437 seconds). Initial image pull is additional: the final image is roughly 18.59 GB
+compressed, preserving the successful environments. Cold starts can take many minutes.
+Warm city generation completed end-to-end in 87 seconds. Min-zero workers avoid
+continuous active GPU charges; warm retention lasts only for the configured idle period.
+
+All inference scratch and artifact assembly remain local to the worker. S3 holds
+small progress objects and input/result ZIPs. Authenticated S3 SDK transfer is used:
+real presigned GET testing on RunPod S3 returned 401 `missing Authorization header`.
+The user approved S3 keys stored in RunPod Secrets and referenced by the worker.
+No credentials or model weights are in Git or the Docker build context.
 
 ## Model redistribution review
 
@@ -152,83 +204,42 @@ uses run identity/hashes and polls continuously. `MAPMAKER_JOB_TIMEOUT` defaults
 (60..21600), applies to queue + execution locally and supplies explicit RunPod TTL
 and execution timeout.
 
-## Linux runtime inputs recovered from the successful installation
 
-`runtime_paths.py` centralizes `MAPMAKER_MODEL_ROOT`, `MAPMAKER_RAM_CHECKPOINT`,
-`MAPMAKER_SAM3_CHECKPOINT`, `MAPMAKER_SAM3D_CHECKPOINT`, `MAPMAKER_DINO_PROVENANCE`,
-`SAM3D_REPO`, and `MAPMAKER_VISION_PYTHON`. The original Linux layout still resolves
-by default relative to the repository. `SAM3D_PYTHON`, `MAPMAKER_SAM3D_BASE` and
-`TORCH_HOME` can override the existing worker launcher. Scratch defaults to
-`/tmp/mapmaker-jobs` for the Serverless handler.
+A100 is verified as an optional alternative, but the default endpoint selects only the
+two verified 48 GB models. Catalog rates during validation were $1.22/hour (A40),
+$1.75/hour (Ada), and $2.72/hour (A100); rates/availability can change. Original Pods
+remain stopped. All test workers were stopped before restoring the default GPU pool.
 
-The original clone contained only the SAM3D successful freeze, not the original
-vision environment, model weights, native libraries, or reference runs. S3 reads now
-confirm that vision used Python 3.12.3 / Torch 2.8.0+cu128 with system-site-packages,
-whereas SAM3D used Python 3.11.0 / Torch 2.5.1+cu121. These environments cannot simply
-be merged. The vision overlay's 26 distributions and the original conda specification
-are recorded under `configs/serverless/`, with SAM3 and RAM source commits.
-Original native recovery builds targeted A100 sm80. A portable image must build
-and verify Ampere sm86 and Ada sm89 compatibility without changing inference quality.
+## Failure handling and limits
 
-`deploy/runpod/Dockerfile` and `build_runtime.sh` implement a proposed reproducible
-build, using verified amd64 base-image digests and separate environments. Native
-build targets are sm80, sm86, and sm89+PTX. The first managed build completed native
-compilation and its version audit passed all 438 records, but exceeded RunPod's
-30-minute build limit while sending the exported image. The Dockerfile now uses a
-separate final stage containing only installed environments and pinned sources,
-excluding builder download caches and compiler intermediates. The second build
-completed at 2026-09-27 20:13:06 UTC (build
-`be057b93-171f-4efe-8906-1bf9955455b8`, commit `b22b70789`). The final stage repeated
-the 438-record audit and passed imports for SAM3D Torch 2.5.1+cu121 and vision Torch
-2.8.0+cu128. Published image:
-`registry.runpod.net/haesongkk-mapmaker-codex-runpod-serverless-migration-deploy-runpod-dockerfile:b22b70789`.
-GPU compatibility must not be inferred from successful compilation.
-The worker stages the pinned manifest with SHA-256 checks and disables HF online
-fallback. MoGe/BERT caches already used by the original pipeline are preserved;
-no new depth/placement algorithm was added.
+One asynchronous job covers the whole scene. Submission is never automatically
+retried after an ambiguous network error; polling tolerates bounded transient errors.
+A failed/timeout/cancelled job releases the local lock. Backend restart marks unfinished
+runs failed and attempts cancellation; cancellation failure is logged, not claimed as success.
 
-Required before an honest Docker build/deploy:
+Downloaded archives are checked for SHA-256, run/input identity, GLB SHA-256, safe paths,
+symlinks, duplicates and expanded-size limits before publishing `done` last. Results
+keep the original input/masks/objects/scene/metadata/previews/logs layout. Worker pipeline
+failures also return their logs over the same artifact channel.
 
-1. Verify the recovered vision/base specifications reproduce the original imports.
-2. Download reference images/masks/GLBs for actual GPU regression comparison.
-3. Build pinned Linux environments (SAM3D Python 3.11.0, Torch 2.5.1+cu121,
-   SAM3D f91db411c50efee93d8db7aeb323885650f6f722,
-   DINO 7764ea0f912e53c92e82eb78a2a1631e92725fc8).
-4. Build/publish the custom image. RunPod UI offers GitHub-managed builds, so a
-   separate registry is not required. The user authorized the Runpod Inc. GitHub app
-   to read MapMaker code/metadata and completed GitHub identity verification.
-5. Deploy and measure real A40/A6000, L40S/RTX 6000 Ada, and optionally A100 runs.
-   Then run real Windows Generate → RunPod → received GLB → viewer/export checks.
+Windows CLI: `.venv\Scripts\python.exe -m mapmaker.cli run image.png` generates a
+canonical UUID run directory. A custom `--output` name must be 32 lowercase hex characters
+for the remote protocol; invalid names fail locally before upload. Original Linux local
+execution retains arbitrary output directory names.
 
-## Validation so far
+No artifact lifecycle deletion was enabled on the existing volume. Results survive locally
+after RunPod's short status retention expires. New local orchestration records safe job
+queue/execution timing and worker ID alongside artifacts before that retention expires.
 
-- Original tests in this clone: **20 passed** (the historical 48-test report refers
-  to a different historical workspace/test inventory).
-- Current tests including transport, integrity rejection, restart, failure-lock
-  release and a real localhost HTTP 409 check: **45 passed**.
-- Python compileall: passed. Frontend `npm ci`: passed.
-- Real S3 input/result/progress upload/download and hash round trip: passed,
-  report `.runtime/s3-transport-validation.json`.
-- Actual Chrome loaded the Windows localhost UI on port 8082.
-- Mock transport tests do not perform model inference or validate RunPod execution.
-  Image build/publish is complete; real GPU inference and full E2E are still pending.
+## Deployment issues resolved
 
-RunPod-managed build is now running from `codex/runpod-serverless-migration`, initial
-commit `04d731bd04fe93ea09e95ae9b24c99d02e0b82cb`. Endpoint `8dzbkfrxys43hb` uses
-AMPERE_48, min/max workers 0/1, 100 GB disk, a 7200-second execution timeout and no
-network-volume attachment. The user explicitly authorized storing S3 credentials
-as RunPod Secrets; the endpoint references them without plaintext values.
-The original living-room input, metadata and 45,629,804-byte GLB were downloaded to
-`.runtime/reference-living-room` for regression comparison. Its GLB SHA-256 is
-`144d62362c93ff2ff21570d4aa37d4efc5be5984508567c83415702985aa83c9`.
-
-The user supplied a separate RunPod API key through the local hidden prompt.
-Authenticated endpoint health queries and every local doctor check pass. The local
-web backend was restarted with the saved settings. The published image is now
-initializing on A40 in EU-SE-1. Idle timeout is temporarily 60 seconds for validation
-of model reuse between scenes; min/max workers remain 0/1.
-
-The user submitted a city image through the actual Windows UI: run
-`4894e94c9f684d11baaf6d970824fdbd`, job `55cfa03b-a99d-45ce-9abf-86534845ce64-e2`.
-It is queued behind the initial image build. A real second HTTP submission returned
-409 `A scene is already generating`, without creating a second job.
+1. The first managed build exceeded its 30-minute limit while exporting a cache-heavy
+   image. A final runtime stage excludes builder caches and compiler intermediates.
+2. The first GPU attempt staged every model but launched the base vision Python because
+   a symlink was resolved. The interpreter path is now preserved, tested, and exercised
+   by the image's final build-time import check.
+3. Browser refresh previously lost the active run. The URL now restores polling without
+   submitting another job. Failure placeholders now show a stopped state.
+4. A submission immediately after changing GPU configuration was rejected; authentication
+   and health remained valid. A later fresh submission succeeded.
+   Local failures now preserve the HTTP status code without exposing response secrets.

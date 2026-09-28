@@ -164,6 +164,8 @@ async function poll() {
     $("#status").textContent = error.message;
     $("#generate").disabled = !$("#image").files.length;
     $("#image").disabled = false;
+    $("#scene-summary").textContent = "Generation failed";
+    $("#empty p").textContent = "Generation stopped. Select an image to try again.";
     document.body.dataset.stage = "failed";
     console.error(error);
   }
@@ -200,6 +202,8 @@ $("#generate").addEventListener("click", async () => {
     $("#status").textContent = error.message;
     $("#generate").disabled = false;
     $("#image").disabled = false;
+    $("#scene-summary").textContent = "Generation failed";
+    $("#empty p").textContent = "Generation stopped. Select an image to try again.";
     document.body.dataset.stage = "failed";
   }
 });

@@ -32,7 +32,9 @@ class RunPodClient:
             response.raise_for_status()
             return response.json()
         except Exception as exc:
-            raise RuntimeError(f"RunPod {operation.split('/')[0]} request failed ({type(exc).__name__})") from None
+            code = getattr(getattr(exc, "response", None), "status_code", None)
+            detail = f"HTTP {code}" if code is not None else type(exc).__name__
+            raise RuntimeError(f"RunPod {operation.split('/')[0]} request failed ({detail})") from None
 
     def submit(self, payload, timeout):
         return self.request("POST", "run", {"input": payload, "policy": {
@@ -70,6 +72,8 @@ class RemotePipeline:
         job = None
         remote_terminal = False
         try:
+            if not re.fullmatch(r"[a-f0-9]{32}", run.name):
+                raise ValueError("RunPod run directory must have a 32-character lowercase hex ID; omit --output to generate one")
             self.client = self.client or RunPodClient()
             self.store = self.store or ArtifactStore()
             status(run, "queued", "Uploading image for RunPod...")
@@ -107,6 +111,10 @@ class RemotePipeline:
                     if state == "COMPLETED":
                         remote_terminal = True
                         output = result["output"]
+                        write(run / "logs/runpod_timing.json", {
+                            key: result.get(key) for key in
+                            ("id", "status", "delayTime", "executionTime", "workerId")
+                        })
                         status(run, "exporting", "Downloading and verifying scene...")
                         archive = Path(tmp) / "result.zip"
                         self.store.download(run.name, archive)

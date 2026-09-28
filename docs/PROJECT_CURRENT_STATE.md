@@ -1,9 +1,10 @@
 # PROJECT CURRENT STATE — SAM3D Scene Studio
 
-2026-09-28 update: Windows/RunPod transport implementation is in progress.
+2026-09-28 update: Windows/RunPod deployment passed real A40, RTX 6000 Ada and A100 SXM 80GB end-to-end generation.
 See [runpod_serverless_migration.md](runpod_serverless_migration.md) for current
-code, live capability checks and blockers. No new Serverless GPU validation has
-been completed; the successful runtime and results below remain the baseline.
+code, measurements and remaining GPU validation. Both the 6-object reference room
+and 3-object user city image passed; both 48 GB families and the A100 baseline regression passed. The original
+successful runtime and results below remain the historical baseline.
 
 최종 정리: 2026-09-27. 새 ChatGPT/Codex는 이 문서부터 읽는다.
 이 문서는 기존 검증 기록과 현재 코드에 근거한 handoff이며, 작성 과정에서 모델 추론이나 E2E를 재실행하지 않았다.

@@ -2,10 +2,24 @@
 
 For the current project architecture, validated pipeline, runtime and handoff information, see [PROJECT_CURRENT_STATE.md](docs/PROJECT_CURRENT_STATE.md).
 
-Windows → RunPod Serverless migration is **in progress, not yet GPU validated**.
-See [migration status and setup](docs/runpod_serverless_migration.md) before using
-the new Windows launcher. Existing GPU validation below describes the original
-Linux installation, not a completed Serverless deployment.
+Windows → RunPod Serverless is deployed and has passed real A40, RTX 6000 Ada and A100 SXM 80GB end-to-end runs.
+The original A100 baseline regression also passed; see [current results and setup](docs/runpod_serverless_migration.md).
+The historical Linux runtime and its validation are preserved below.
+
+## Windows local UI + remote GPU
+
+In this configured checkout, start the local web backend with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/start_scene_web.ps1
+```
+
+Open **http://127.0.0.1:8082**. Generate submits one complete scene to RunPod and
+returns verified artifacts to `runs/{run_id}`. The local GPU is not used for inference.
+Keep the local backend running until completion. A browser refresh restores the
+run from its URL; a backend restart marks interrupted jobs failed and attempts cancellation.
+Credentials stay in ignored `.runtime` files; setup for another checkout is in the
+[migration guide](docs/runpod_serverless_migration.md).
 
 Turn one image into an object-based 3D scene:
 
@@ -16,7 +30,7 @@ Image → RAM++ tags → SAM3 instance masks → SAM3D objects
 
 The input is an image only. RAM++ supplies the object candidates; there is no manually supplied object list. The application reconstructs independent objects, not walls, floors, room shells, or other background geometry.
 
-## Run on this workspace
+## Original Linux runtime
 
 ```bash
 cd /workspace/MapMaker
