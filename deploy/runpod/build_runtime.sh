@@ -6,17 +6,24 @@ python -c 'import torch,sys; assert sys.version_info[:3] == (3,12,3); assert tor
 python -m pip install --break-system-packages uv==0.9.0
 uv venv --python "$(command -v python)" --system-site-packages .venv-vision
 uv pip install --python .venv-vision/bin/python --no-deps -r configs/serverless/vision-overlay.txt
-git clone https://github.com/facebookresearch/sam3.git /opt/sam3
-git -C /opt/sam3 checkout 2345a4ad109ac29c569da749c91d84f10dc08c40
-git clone https://github.com/xinyu1205/recognize-anything.git /opt/ram
-git -C /opt/ram checkout 7cb804a8609e9f4b1a50b7f31436d2df40bb9481
+checkout_source() {
+    local name="$1" url="$2" destination="$3" revision
+    revision="$(python -c 'import json,sys; print(json.load(open("configs/serverless/source-revisions.json"))[sys.argv[1]])' "$name")"
+    git init "$destination"
+    git -C "$destination" remote add origin "$url"
+    git -C "$destination" fetch --depth 1 origin "$revision"
+    git -C "$destination" checkout --detach FETCH_HEAD
+    test "$(git -C "$destination" rev-parse HEAD)" = "$revision"
+}
+
+checkout_source sam3 https://github.com/facebookresearch/sam3.git /opt/sam3
+checkout_source ram https://github.com/xinyu1205/recognize-anything.git /opt/ram
 uv pip install --python .venv-vision/bin/python --no-deps -e /opt/sam3 -e /opt/ram
 
 micromamba env create -y -p /opt/sam3d-base -f configs/serverless/sam3d-conda.yml
 uv venv --python /opt/sam3d-base/bin/python --seed .venv-sam3d
 .venv-sam3d/bin/python -c 'import sys; assert sys.version_info[:3] == (3,11,0)'
-git clone https://github.com/facebookresearch/sam-3d-objects.git /opt/sam3d
-git -C /opt/sam3d checkout f91db411c50efee93d8db7aeb323885650f6f722
+checkout_source sam3d https://github.com/facebookresearch/sam-3d-objects.git /opt/sam3d
 export CUDA_HOME=/opt/sam3d-base CONDA_PREFIX=/opt/sam3d-base
 export PATH="/opt/mapmaker/.venv-sam3d/bin:$CUDA_HOME/bin:$PATH"
 export CPATH="$CUDA_HOME/targets/x86_64-linux/include"
@@ -44,5 +51,4 @@ uv pip install --python .venv-sam3d/bin/python --no-deps --no-build-isolation -r
 uv pip install --python .venv-sam3d/bin/python --no-deps --no-build-isolation -e /opt/sam3d
 .venv-sam3d/bin/python /opt/sam3d/patching/hydra
 mkdir -p /opt/mapmaker-models/.runtime/sam3d-torch/hub
-git clone https://github.com/facebookresearch/dinov2.git /opt/mapmaker-models/.runtime/sam3d-torch/hub/facebookresearch_dinov2_main
-git -C /opt/mapmaker-models/.runtime/sam3d-torch/hub/facebookresearch_dinov2_main checkout 7764ea0f912e53c92e82eb78a2a1631e92725fc8
+checkout_source dinov2 https://github.com/facebookresearch/dinov2.git /opt/mapmaker-models/.runtime/sam3d-torch/hub/facebookresearch_dinov2_main

@@ -25,21 +25,9 @@ def run(image: Path, output: Path | None = None):
 @app.command()
 def serve(port: int = 8082, host: str = "127.0.0.1"):
     """Open the local upload/generate/preview web application."""
-    from http.server import ThreadingHTTPServer
-    from .web import Handler, PIPELINE
-    from .scene_run import ROOT
+    from .web import serve as serve_web
 
-    typer.echo(f"http://{host}:{port}")
-    server = ThreadingHTTPServer((host, port), Handler)
-    if hasattr(PIPELINE, "recover_interrupted"):
-        PIPELINE.recover_interrupted(ROOT / "runs")
-    try:
-        server.serve_forever()
-    except KeyboardInterrupt:
-        pass
-    finally:
-        server.server_close()
-        PIPELINE.close()
+    serve_web(host, port)
 
 
 @app.command()
@@ -65,7 +53,8 @@ def render(scene: Path, output: Path = Path("previews")):
 def doctor():
     """Check persistent runtime files; use the smoke scripts for GPU inference checks."""
     import os
-    from .scene_run import ROOT, SAM3D_REPO, SAM3_CHECKPOINT
+    from .runtime_paths import (ROOT, SAM3D_REPO, SAM3_CHECKPOINT,
+                                SAM3D_CHECKPOINT, RAM_CHECKPOINT, VISION_PYTHON, MODEL_ROOT)
 
     if os.environ.get("MAPMAKER_BACKEND", "runpod" if os.name == "nt" else "local") == "runpod":
         from .remote_settings import load_settings
@@ -90,16 +79,16 @@ def doctor():
         return
 
     checks = {
-        "SAM3D environment": ROOT / ".venv-sam3d/bin/python",
-        "Vision environment": ROOT / ".venv-vision/bin/python",
-        "RAM++ checkpoint": ROOT / "checkpoints/ram_plus_swin_large_14m.pth",
+        "SAM3D environment": Path(os.environ.get("SAM3D_PYTHON", ROOT / ".venv-sam3d/bin/python")),
+        "Vision environment": VISION_PYTHON,
+        "RAM++ checkpoint": RAM_CHECKPOINT,
         "SAM3 checkpoint": SAM3_CHECKPOINT,
         "Official SAM3D inference": SAM3D_REPO / "notebook/inference.py",
-        "SAM3D configuration": SAM3D_REPO / "checkpoints/hf/pipeline.yaml",
-        "DINOv2 source": ROOT
-        / ".runtime/sam3d-torch/hub/facebookresearch_dinov2_main/hubconf.py",
-        "DINOv2 pretrained weights": ROOT
-        / ".runtime/sam3d-torch/hub/checkpoints/dinov2_vitl14_reg4_pretrain.pth",
+        "SAM3D configuration": SAM3D_CHECKPOINT,
+        "DINOv2 source": Path(os.environ.get("TORCH_HOME", MODEL_ROOT / ".runtime/sam3d-torch"))
+        / "hub/facebookresearch_dinov2_main/hubconf.py",
+        "DINOv2 pretrained weights": Path(os.environ.get("TORCH_HOME", MODEL_ROOT / ".runtime/sam3d-torch"))
+        / "hub/checkpoints/dinov2_vitl14_reg4_pretrain.pth",
         "Web dependencies": ROOT / "web/node_modules/three/package.json",
     }
     missing = False

@@ -2,16 +2,13 @@ import { chromium } from "@playwright/test";
 import { writeFile, readFile, mkdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import path from "node:path";
-const root = path.resolve("..");
-const source =
-  process.argv[2] ||
-  path.join(
-    root,
-    "experiments/image_first_scene_object_benchmark/runs/sam3d/phase_c/main_living_room/input/rgb.png",
-  );
+import { fileURLToPath } from "node:url";
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const source = process.argv[2] || path.join(root, "samples/living_room.jpg");
 const reportPath = path.join(root, ".runtime/web-e2e.json");
 const report = { source, stages: [], pageErrors: [], checks: {} };
 const save = () => writeFile(reportPath, JSON.stringify(report, null, 2));
+await mkdir(path.dirname(reportPath), { recursive: true });
 const browser = await chromium.launch({
   headless: true,
   args: [
@@ -25,17 +22,14 @@ page.setDefaultTimeout(120000);
 page.setDefaultNavigationTimeout(180000);
 page.on("pageerror", (e) => report.pageErrors.push(e.message));
 try {
-  await page.goto("http://127.0.0.1:8082/");
-  await page.locator("#image").setInputFiles(source);
   const resume = process.env.RESUME_RUN;
+  await page.goto(`http://127.0.0.1:8082/${resume ? `?run=${resume}` : ""}`);
   if (resume) {
     report.run_id = resume;
-    report.resumed_after_browser_observer_error = true;
-    await page.evaluate(async (id) => {
-      const app = await import("/app.js");
-      app.watchRun(id);
-    }, resume);
+    report.resumed = true;
+    report.checks.restore = (await page.locator("body").getAttribute("data-run-id")) === resume;
   } else {
+    await page.locator("#image").setInputFiles(source);
     const responsePromise = page.waitForResponse(
       (r) => r.url().endsWith("/api/runs") && r.request().method() === "POST",
     );
@@ -76,7 +70,7 @@ try {
   const count = meta.objects.filter((o) => o.status === "generated").length;
   if ((await page.locator(".object-row").count()) !== count || count === 0)
     throw new Error("Object list mismatch");
-  report.checks.status = report.resumed_after_browser_observer_error
+  report.checks.status = report.resumed
     ? report.stages.length > 0
     : ["analyzing", "segmenting", "reconstructing", "done"].every((s) =>
         report.stages.includes(s),

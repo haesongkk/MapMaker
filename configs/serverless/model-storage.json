@@ -15,12 +15,6 @@
       "bytes": 6690136964
     },
     {
-      "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/ss_encoder.yaml",
-      "path": "sam3d/ss_encoder.yaml",
-      "sha256": "d3df5e18b2cbe87697d319adce0fe7e4fb6266809ad9d2f8c502761739bc4a06",
-      "bytes": 231
-    },
-    {
       "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/ss_decoder.yaml",
       "path": "sam3d/ss_decoder.yaml",
       "sha256": "baacff269b664f84f7aa1896ebd66128065f6568cdb88d419d5c3d2ccb4193ae",
@@ -43,12 +37,6 @@
       "path": "sam3d/slat_generator.ckpt",
       "sha256": "91529bde8e7daa12d09618a66c319e3a5a6398db6b23b958cedcb1c3f28faabb",
       "bytes": 4906537684
-    },
-    {
-      "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/slat_encoder.yaml",
-      "path": "sam3d/slat_encoder.yaml",
-      "sha256": "ca80da7f1395a2acef9c6cea30ec3ccc89321ef890c644860f316a4ef1e8ebdb",
-      "bytes": 268
     },
     {
       "key": "MapMaker/experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo/checkpoints/hf-download/checkpoints/slat_decoder_mesh.yaml",

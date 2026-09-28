@@ -9,8 +9,35 @@ from .object_candidates import candidates
 from .runtime_paths import RAM_CHECKPOINT
 
 
+def ram_tags(
+    images: list[Path], checkpoint: Path, device: str = "cuda", threshold_scale: float = 1.0
+) -> dict[str, list[str]]:
+    if not checkpoint.is_file():
+        raise FileNotFoundError(f"RAM++ checkpoint missing: {checkpoint}")
+    import torch
+    from ram import get_transform, inference_ram
+    from ram.models import ram_plus
+
+    if not 0 < threshold_scale <= 1:
+        raise ValueError("threshold_scale must be in (0, 1]")
+    model = ram_plus(pretrained=str(checkpoint), image_size=384, vit="swin_l")
+    model.class_threshold = model.class_threshold * threshold_scale
+    model = model.eval().to(device)
+    transform = get_transform(image_size=384)
+    found = {}
+    with torch.inference_mode():
+        for path in images:
+            result = inference_ram(
+                transform(Image.open(path).convert("RGB")).unsqueeze(0).to(device),
+                model,
+            )
+            found[str(path)] = sorted(
+                {tag.strip().lower() for tag in result[0].split("|") if tag.strip()}
+            )
+    return found
+
+
 def run_scene(run):
-    from .models import ram_tags
     import torch
 
     run = Path(run)
@@ -19,7 +46,6 @@ def run_scene(run):
     meta["implementation_sha256"] = {
         name: sha(ROOT / "mapmaker" / name)
         for name in (
-            "models.py",
             "object_candidates.py",
             "scene_vision.py",
             "scene_reconstruct.py",
@@ -69,7 +95,7 @@ def run_scene(run):
     extraction = {
         "model": "RAM++",
         "threshold_scale": 0.75,
-        "code": "mapmaker.models.ram_tags",
+        "code": "mapmaker.scene_vision.ram_tags",
         "raw_tags": tags,
         "tags_by_view": {
             str(Path(k).relative_to(run)): v for k, v in tags_by_view.items()

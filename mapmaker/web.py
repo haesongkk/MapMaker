@@ -95,15 +95,11 @@ class Handler(BaseHTTPRequestHandler):
             pass
 
 
-def main():
-    p = argparse.ArgumentParser()
-    p.add_argument("--host", default="127.0.0.1")
-    p.add_argument("--port", type=int, default=8082)
-    a = p.parse_args()
+def serve(host="127.0.0.1", port=8082):
     if hasattr(PIPELINE, "recover_interrupted"):
         PIPELINE.recover_interrupted(ROOT / "runs")
-    server = ThreadingHTTPServer((a.host, a.port), Handler)
-    print(f"SAM3D Scene Studio: http://{a.host}:{a.port}", flush=True)
+    server = ThreadingHTTPServer((host, port), Handler)
+    print(f"SAM3D Scene Studio: http://{host}:{port}", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
@@ -111,6 +107,14 @@ def main():
     finally:
         server.server_close()
         PIPELINE.close()
+
+
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument("--host", default="127.0.0.1")
+    p.add_argument("--port", type=int, default=8082)
+    a = p.parse_args()
+    serve(a.host, a.port)
 
 
 if __name__ == "__main__":

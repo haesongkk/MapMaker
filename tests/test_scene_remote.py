@@ -82,6 +82,26 @@ def test_verified_materialization(tmp_path):
     assert sha(run / "scene.glb") == output["scene_sha256"]
 
 
+def test_materialization_publishes_status_last(tmp_path, monkeypatch):
+    run = make_run(tmp_path)
+    archive, output = remote_result(run, tmp_path)
+    replace = os.replace
+    published = []
+
+    def observe(source, target):
+        if Path(target) == run / "status.json":
+            assert sha(run / "scene.glb") == output["scene_sha256"]
+            assert (run / "object_candidates.json").exists()
+        else:
+            assert read(run / "status.json")["stage"] == "queued"
+        published.append(Path(target).name)
+        return replace(source, target)
+
+    monkeypatch.setattr(os, "replace", observe)
+    materialize(archive, run, output)
+    assert published[-1] == "status.json"
+
+
 @pytest.mark.parametrize("field", ["archive_sha256", "scene_sha256", "run_id"])
 def test_corrupt_result_never_publishes_done(tmp_path, field):
     run = make_run(tmp_path)
@@ -120,17 +140,11 @@ class Store:
         with zipfile.ZipFile(path) as z:
             assert set(z.namelist()) == {"input/source_image.png", "scene_metadata.json"}
 
-    def url(self, *args):
-        return "https://storage.example/scoped-url"
-
     def download(self, run_id, path):
         shutil.copyfile(self.archive, path)
 
     def progress(self, run_id):
         return None
-
-    def model_urls(self, expiry):
-        return {}
 
 
 def test_remote_one_job_and_integrity(tmp_path):
@@ -268,6 +282,30 @@ def test_model_cache_checks_hash_and_reuses(tmp_path, monkeypatch):
     cache.prepare_models(store, run)
     assert store.calls == 1
     assert (tmp_path / "models/sam3/model").read_bytes() == b"model"
+
+
+def test_model_cache_rejects_corrupt_download(tmp_path, monkeypatch):
+    import hashlib
+    from mapmaker import model_cache as cache
+
+    run = make_run(tmp_path)
+    write(tmp_path / "configs/serverless/model-storage.json", {
+        "source_volume": "bucket", "files": [{"key": "model", "path": "sam3/model",
+        "bytes": 5, "sha256": hashlib.sha256(b"model").hexdigest()}],
+    })
+    monkeypatch.setattr(cache, "ROOT", tmp_path)
+    monkeypatch.setattr(cache, "MODEL_ROOT", tmp_path / "models")
+    monkeypatch.setattr(cache, "READY", False)
+
+    class CorruptStore:
+        def download_object(self, bucket, key, path, limit):
+            path.write_bytes(b"wrong")
+
+    with pytest.raises(ValueError, match="checksum mismatch"):
+        cache.prepare_models(CorruptStore(), run)
+    assert not cache.READY
+    assert not (tmp_path / "models/sam3/model").exists()
+    assert not (tmp_path / "models/sam3/model.part").exists()
 
 
 def test_failed_worker_diagnostics_materialize(tmp_path):

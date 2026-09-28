@@ -3,7 +3,7 @@ name = "mapmaker"
 version = "0.1.0"
 description = "Single-image object scenes with RAM++, SAM3 and official SAM3D"
 requires-python = ">=3.10"
-dependencies = ["numpy>=1.26,<3", "Pillow>=10", "opencv-python-headless>=4.8", "trimesh>=4.0", "scipy>=1.11", "typer>=0.12", "imageio>=2.34", "imageio-ffmpeg>=0.5", "numba>=0.60"]
+dependencies = ["numpy>=1.26,<3", "Pillow>=10", "trimesh>=4.0", "typer>=0.12"]
 
 [project.scripts]
 mapmaker = "mapmaker.cli:app"
@@ -11,6 +11,9 @@ mapmaker = "mapmaker.cli:app"
 [project.optional-dependencies]
 remote = ["requests>=2.32,<3", "boto3>=1.35,<2"]
 serverless = ["boto3>=1.35,<2", "runpod==1.10.1"]
+
+[dependency-groups]
+dev = ["pytest>=9,<10"]
 
 [build-system]
 requires = ["setuptools>=68"]

@@ -68,7 +68,6 @@ c = np.concatenate(colors)
 lo = t.min((0, 1))
 hi = t.max((0, 1))
 t = t - (lo + hi) / 2
-scale = 410 / max(hi - lo)
 views = {
     "front_Z": np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
     "top_Y": np.array([[1, 0, 0], [0, 0, -1], [0, 1, 0]]),

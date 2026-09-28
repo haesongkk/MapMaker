@@ -4,7 +4,11 @@ set -euo pipefail
 source "$(dirname "$0")/sam3d_runtime_env.sh"
 cd "$SAM3D_PROJECT_ROOT"
 test "$(git -C "$SAM3D_REPO" rev-parse HEAD)" = f91db411c50efee93d8db7aeb323885650f6f722
-test -f "$SAM3D_REPO/checkpoints/hf/pipeline.yaml"
+checkpoint="${MAPMAKER_SAM3D_CHECKPOINT:-$SAM3D_REPO/checkpoints/hf/pipeline.yaml}"
+if [ -n "${MAPMAKER_MODEL_ROOT:-}" ]; then
+  checkpoint="${MAPMAKER_SAM3D_CHECKPOINT:-$MAPMAKER_MODEL_ROOT/sam3d/pipeline.yaml}"
+fi
+test -f "$checkpoint"
 if [ ! -x "$SAM3D_PYTHON" ]; then
   uv venv --python "$CONDA_PREFIX/bin/python" .venv-sam3d
 fi

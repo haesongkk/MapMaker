@@ -57,54 +57,8 @@ report = {
 }
 assert report["previews"]
 if a.reference:
-    ref = a.reference.resolve()
-    refimage = np.asarray(Image.open(ref / "input/rgb.png").convert("RGB"))
-    report["reference_input_pixels_equal"] = bool(np.array_equal(image, refimage))
-    assert report["reference_input_pixels_equal"]
-    reference = []
-    for old in json.loads((ref / "segmentation/method.json").read_text())["masks"]:
-        if old.get("status") != "SELECTED":
-            continue
-        mask = np.asarray(Image.open(ref / old["mask"])) > 0
-        scores = {
-            oid: float((mask & m).sum() / max(1, (mask | m).sum()))
-            for oid, m in masks.items()
-        }
-        match = max(scores, key=scores.get)
-        current = next(o for o in objects if o["id"] == match)
-        old_dir = ref / "reconstruction" / old["slug"]
-        old_pose = json.loads((old_dir / "pose.json").read_text())
-        old_mesh = trimesh.load(old_dir / "mesh.glb", force="scene", process=False)
-        new_mesh = trimesh.load(run / current["asset"], force="scene", process=False)
-        old_q = np.asarray(old_pose["rotation"]).reshape(4)
-        new_q = np.asarray(current["pose"]["rotation"]).reshape(4)
-        cosine = abs(
-            np.dot(old_q, new_q) / (np.linalg.norm(old_q) * np.linalg.norm(new_q))
-        )
-        reference.append(
-            {
-                "reference": old["label"],
-                "pose_translation_distance": float(
-                    np.linalg.norm(
-                        np.asarray(old_pose["translation"])
-                        - np.asarray(current["pose"]["translation"])
-                    )
-                ),
-                "pose_rotation_angle_degrees": float(
-                    2 * np.rad2deg(np.arccos(np.clip(cosine, 0, 1)))
-                ),
-                "pose_scale_ratio": (
-                    np.asarray(current["pose"]["scale"]) / np.asarray(old_pose["scale"])
-                ).tolist(),
-                "local_mesh_extent_ratio": (
-                    new_mesh.extents / old_mesh.extents
-                ).tolist(),
-                "best_node": match,
-                "mask_iou": scores[match],
-                "covered": scores[match] >= 0.5,
-            }
-        )
-    report["reference_masks"] = reference
-    report["reference_coverage"] = sum(x["covered"] for x in reference)
+    from compare_serverless_run import compare
+    report["reference"] = compare(a.reference.resolve(), run)
+    assert report["reference"]["input_pixels_equal"]
 (run / "logs/artifact_validation.json").write_text(json.dumps(report, indent=2))
 print(json.dumps(report, indent=2))

@@ -1,12 +1,12 @@
 """Restore the official SAM3D auxiliary backbone in the persistent Torch Hub cache."""
 
 from pathlib import Path
-import hashlib, json, tarfile, urllib.request
+import hashlib, json, os, tarfile, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
 ROOT = Path(__file__).resolve().parents[1]
 REV = "7764ea0f912e53c92e82eb78a2a1631e92725fc8"
-HUB = ROOT / ".runtime/sam3d-torch/hub"
+HUB = Path(os.environ.get("TORCH_HOME", ROOT / ".runtime/sam3d-torch")) / "hub"
 SOURCE = HUB / "facebookresearch_dinov2_main"
 WEIGHT = HUB / "checkpoints/dinov2_vitl14_reg4_pretrain.pth"
 URL = "https://dl.fbaipublicfiles.com/dinov2/dinov2_vitl14/dinov2_vitl14_reg4_pretrain.pth"
@@ -71,7 +71,9 @@ report = {
     "historical_hub_revision_known": False,
     "weight_format_modified": False,
 }
-(ROOT / ".runtime/sam3d-recovery/dinov2-restoration.json").write_text(
+provenance = Path(os.environ.get("MAPMAKER_DINO_PROVENANCE", Path(os.environ.get("MAPMAKER_MODEL_ROOT", ROOT)) / ".runtime/sam3d-recovery/dinov2-restoration.json"))
+provenance.parent.mkdir(parents=True, exist_ok=True)
+provenance.write_text(
     json.dumps(report, indent=2)
 )
 print(json.dumps(report, indent=2))

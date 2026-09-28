@@ -1,138 +1,64 @@
 # SAM3D Scene Studio
 
-For the current project architecture, validated pipeline, runtime and handoff information, see [PROJECT_CURRENT_STATE.md](docs/PROJECT_CURRENT_STATE.md).
+이미지 한 장에서 RAM++ 후보 → SAM3 instance mask → SAM3D 객체 mesh/pose → 독립 object node의 `scene.glb`를 생성합니다. Three.js에서 orbit/zoom/pan, 객체 표시 전환, 전체 GLB 다운로드와 기존 run URL 복원을 지원합니다.
 
-Windows → RunPod Serverless is deployed and has passed real A40, RTX 6000 Ada and A100 SXM 80GB end-to-end runs.
-The original A100 baseline regression also passed; see [current results and setup](docs/runpod_serverless_migration.md).
-The historical Linux runtime and its validation are preserved below.
+현재 구조·검증 범위는 [PROJECT_CURRENT_STATE.md](PROJECT_CURRENT_STATE.md), worker 배포와 복구 절차는 [runtime guide](docs/runtime.md)를 참조하세요.
 
-## Windows local UI + remote GPU
+## Windows 실행
 
-In this configured checkout, start the local web backend with:
+이미 설정된 checkout:
 
 ```powershell
+.venv\Scripts\python.exe -m mapmaker.cli doctor
 powershell -ExecutionPolicy Bypass -File scripts/start_scene_web.ps1
 ```
 
-Open **http://127.0.0.1:8082**. Generate submits one complete scene to RunPod and
-returns verified artifacts to `runs/{run_id}`. The local GPU is not used for inference.
-Keep the local backend running until completion. A browser refresh restores the
-run from its URL; a backend restart marks interrupted jobs failed and attempts cancellation.
-Credentials stay in ignored `.runtime` files; setup for another checkout is in the
-[migration guide](docs/runpod_serverless_migration.md).
+[로컬 앱](http://127.0.0.1:8082)을 열어 이미지를 업로드합니다. Windows 기본 backend는 RunPod이며 실제 생성에는 GPU 비용이 발생합니다. 완료까지 backend를 유지하세요. 브라우저 새로고침은 URL의 run을 복원합니다. Backend 재시작은 중단된 원격 run을 실패 처리하고 취소를 시도합니다.
 
-Turn one image into an object-based 3D scene:
+새 checkout 준비 (Python 3.11, Node.js와 uv 필요):
 
-```text
-Image → RAM++ tags → SAM3 instance masks → SAM3D objects
-      → official pose transforms → scene.glb → web preview / visibility / download
+```powershell
+uv sync --frozen --extra remote
+npm.cmd ci --prefix web --omit=dev
+powershell -ExecutionPolicy Bypass -File scripts/configure_runpod_api.ps1
+powershell -ExecutionPolicy Bypass -File scripts/configure_runpod_s3.ps1
 ```
 
-The input is an image only. RAM++ supplies the object candidates; there is no manually supplied object list. The application reconstructs independent objects, not walls, floors, room shells, or other background geometry.
+별도로 배포된 RunPod endpoint와 artifact/model S3 권한이 필요합니다. `RUNPOD_ENDPOINT_ID`, `MAPMAKER_S3_BUCKET`, `MAPMAKER_S3_ENDPOINT`, `AWS_DEFAULT_REGION`을 환경 변수 또는 ignored `.runtime/runpod-settings.json`에 설정합니다. 두 인증 스크립트는 비공개 입력을 `.runtime`에 저장합니다. 기존 인증 점검 용도로 재실행하지 마세요. 명시적 환경 변수가 파일 설정보다 우선합니다.
 
-## Original Linux runtime
+`doctor`는 파일·설정 존재 검사이며 원격 인증/추론 성공 검사가 아닙니다. HTTP 입력은 최대 25 MiB, 16 megapixels입니다. 내장 인증이 없으므로 Windows launcher는 localhost에 바인딩합니다.
 
-```bash
-cd /workspace/MapMaker
-npm ci --prefix web
-bash scripts/start_scene_web.sh
+## CLI와 검증
+
+```powershell
+# 실제 GPU 생성: 자동 UUID 디렉터리 사용
+.venv\Scripts\python.exe -m mapmaker.cli run samples/living_room.jpg
+# CPU mesh preview
+.venv\Scripts\python.exe -m mapmaker.cli render runs/<run_id>/scene.glb --output <preview-directory>
+
+$env:PYTHONDONTWRITEBYTECODE = '1'
+.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider
+node --check web/app.js
+.venv\Scripts\python.exe scripts/validate_scene_run.py runs/<run_id>
+.venv\Scripts\python.exe scripts/validate_scene_run.py runs/<run_id> --reference .runtime/reference-living-room
 ```
 
-The server binds to **0.0.0.0:8082** by default. Open **http://127.0.0.1:8082** locally, or use the RunPod endpoint that exposes container port **8082** for remote access. Upload an image and select **Generate 3D Scene**. The page reports the current stage and object progress, then displays the scene with orbit, zoom, pan, object visibility checkboxes, and **Export GLB**. Export downloads the complete generated scene; visibility is a preview control.
+Remote `--output`은 존재하지 않는 32자리 lowercase hex 이름이어야 합니다. 생략하는 편이 안전합니다. Reference는 동일 입력의 production-format run이어야 하며 clone에는 포함되지 않습니다. 검증 스크립트는 run의 `logs`에 보고서를 작성합니다.
 
-The server accepts one generation job at a time and keeps the SAM3D model loaded between jobs. The first run can spend tens of minutes importing packages and reading checkpoints on this workspace's network filesystem. Subsequent jobs reuse the loaded model. Run files survive server restarts; an interrupted inference job is not automatically resumed.
+Browser E2E는 개발 의존성과 Chromium을 추가로 설치합니다. 서버를 실행한 상태에서 기존 run을 재사용하세요.
 
-CLI alternatives:
-
-```bash
-.venv/bin/python -m mapmaker.cli doctor
-.venv/bin/python -m mapmaker.cli run path/to/image.jpg --output runs/my_scene
-.venv/bin/python -m mapmaker.cli render runs/my_scene/scene.glb --output runs/my_scene/previews/meshes
-.venv/bin/python -m mapmaker.cli serve --port 8082
+```powershell
+npm.cmd ci --prefix web
+$env:PLAYWRIGHT_BROWSERS_PATH = "$PWD\.runtime\browsers"
+node web/node_modules/playwright/cli.js install chromium
+$env:RESUME_RUN = '<existing-run-id>'
+node web/e2e.mjs
 ```
 
-The output directory must not already exist. The web MVP accepts images up to 25 MB and 16 megapixels. The MVP has no built-in authentication; clients that can reach the exposed port can access uploaded images and generated artifacts. To bind only to localhost, use `bash scripts/start_scene_web.sh --host 127.0.0.1`.
+`RESUME_RUN`을 지정하지 않으면 샘플 또는 전달한 이미지로 새 GPU job을 생성합니다. 보고서는 `.runtime/web-e2e.json`과 run의 `logs/web_validation.json`에 저장됩니다.
 
-## Preserved model environments
+## 결과
 
-| Component | Runtime / source |
-|---|---|
-| Web, orchestration, mesh previews | `.venv` |
-| RAM++ and SAM3 | existing `.venv-vision`, unchanged |
-| SAM3D | `.venv-sam3d`, Python 3.11.0, PyTorch 2.5.1+cu121 |
-| Official SAM3D source | `experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/repo`, commit `f91db411c50efee93d8db7aeb323885650f6f722` |
-| Official SAM3D weights | source checkout's `checkpoints/hf` |
-| DINOv2 source and pretrained ViT-L/14 registers | `.runtime/sam3d-torch/hub/` |
+`runs/<run_id>/`에는 정규화된 `input/source_image.png`, 후보 JSON, `masks/`, `objects/`의 GLB/pose, `scene.glb`, `scene_metadata.json`, `status.json`, `previews/`, `logs/`가 저장됩니다. 원격 결과는 ZIP/hash/입력 identity 검증 후 `done`을 마지막에 게시합니다.
 
-**Keep the SAM3D base environment at `experiments/image_first_scene_object_benchmark/model_setup/sam3d_objects/env`: `.venv-sam3d` uses its Python and native libraries.** These paths are persistent workspace files, not temporary caches. Do not upgrade the vision or SAM3D packages to run the web app. `npm ci` installs frontend dependencies only.
-
-Recovery provenance, exact package freeze, source and weight hashes, and GPU smoke results are documented in [runtime recovery](docs/sam3d_runtime_recovery.md). The official auxiliary cache can be restored without changing packages:
-
-```bash
-source scripts/sam3d_runtime_env.sh
-"$SAM3D_PYTHON" scripts/recover_dinov2.py
-"$SAM3D_PYTHON" scripts/sam3d_dino_smoke.py
-"$SAM3D_PYTHON" scripts/sam3d_checkpoint_preflight.py
-```
-
-## Implementation
-
-- `mapmaker/models.py:ram_tags()` runs the existing RAM++ checkpoint. `scene_vision.py` analyzes the original image and, for larger images, five fixed overlapping regions to improve small-object recall. These regions are only for tagging: SAM3 and SAM3D receive the original full image.
-- `object_candidates.py` normalizes aliases and excludes scene/background/appearance tags and minor furnishings using deterministic rules. Candidate labels are ranked by agreement across views, capped at 40. SAM3 confidence, mask area and duplicate/containment filtering select up to 12 instances. Every candidate and rejection is logged.
-- `scene_reconstruct.py` uses the original official `Inference`, `compile=False`, `seed=42`, preprocessing, and mesh export. Every mask produces a separate GLB and native pose JSON.
-- `scene_assembly.py` uses the official `compose_transform` used by `make_scene`. It undoes the official mesh export's axis rotation before applying the native pose. Each object is a named root node with its own mesh children. Sample vertices are checked against official `SceneVisualizer.object_pointcloud`, and exported transforms are checked after reloading the GLB. No new placement estimator is used.
-- The official `make_scene` also produces a posed Gaussian PLY and reference previews. Its display normalization affects previews only, not GLB object transforms.
-- `scene_pipeline.py` handles isolated model processes, artifacts and progress. `web.py` serves the local UI and generation API. `web/` uses locally installed Three.js, without a CDN.
-
-## Run artifacts
-
-```text
-runs/<run_id>/
-  input/source_image.png
-  input/analysis_region_*.png
-  object_candidates.json
-  masks/<object_id>.png
-  objects/<object_id>.glb
-  objects/<object_id>.pose.json
-  scene.glb
-  scene_metadata.json
-  status.json
-  previews/masks.png
-  previews/scene_posed.ply
-  previews/combined_preview.png
-  previews/combined_view_*.png
-  previews/meshes/*.png
-  logs/run.log
-  logs/vision.log
-  logs/segmentation.json
-  logs/reconstruction.log
-  logs/preview.log
-```
-
-Metadata records the actual RAM++ outputs, masks, object statuses, original poses, applied GLB matrices, model/source versions, implementation hashes, timing and errors. A failed object is recorded; successful objects can still form a scene. If every object fails, the run fails. Scene masks are binary images at original input resolution.
-
-## Validation
-
-```bash
-.venv/bin/python scripts/validate_scene_run.py runs/<run_id>
-# Compare input pixels and mask coverage against the frozen successful room:
-.venv/bin/python scripts/validate_scene_run.py runs/<run_id> \
-  --reference experiments/image_first_scene_object_benchmark/runs/sam3d/phase_c/main_living_room
-```
-
-The real browser test uploads an image, starts inference, checks progress, loads the GLB, toggles every object, exercises orbit/zoom/pan and compares the downloaded GLB hash:
-
-```bash
-export PLAYWRIGHT_BROWSERS_PATH="$PWD/.runtime/browsers"
-export LD_LIBRARY_PATH="$PWD/.runtime/browser-libs/usr/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH:-}"
-cd web
-node e2e.mjs /absolute/path/to/image.png
-```
-
-Browser validation requires the local server and Playwright Chromium. Its report is written to `.runtime/web-e2e.json` and the successful run's `logs/web_validation.json`. Browser dependencies are separate from model environments.
-
-Frozen successful benchmark artifacts remain as regression evidence. They are not the application's object inventory or generation entrypoint.
-
-## Verified results
-
-See [the actual GPU, regression and browser validation report](docs/sam3d_project_validation.md), including run paths, object counts, coordinate checks, cleanup details, and observed limitations.
+표시 전환은 viewer에만 적용하며 다운로드는 전체 scene입니다. 일부 객체 실패는 허용하고 전부 실패하면 run이 실패합니다. 벽·바닥·천장 복원이나 객체 편집 기능은 없습니다. 샘플 출처는 [ATTRIBUTION](samples/ATTRIBUTION.md)에 있습니다.

@@ -3,7 +3,7 @@
 from pathlib import Path
 import datetime, hashlib, json, os
 
-from .runtime_paths import ROOT, BENCH, SAM3D_REPO, SAM3_CHECKPOINT
+from .runtime_paths import ROOT, SAM3D_REPO, SAM3_CHECKPOINT
 
 
 def now():
