@@ -1,0 +1,1049 @@
+{
+  "created_at": "2026-09-28T18:03:08.367423+00:00",
+  "branch": "main",
+  "head": "476a8a4d64b5c3a9f8e53559e5ff04ac22e2d5dc",
+  "base_url": "http://127.0.0.1:8082",
+  "implementation_sha256": {
+    "mapmaker/cli.py": "6268045c8b92ea78ecb4dd2b53edfc68f4f367aa20f5ff45f436182170951f08",
+    "mapmaker/gpu_measurement.py": "0e5b9233dafb9bd3998c4e043e8cb68187fc802e23b412e0fa702447fff15cee",
+    "mapmaker/model_cache.py": "4a507cb6496c6ec83d56f48172fa6cc408d1891fd773faa4f3d15b4c57553ebd",
+    "mapmaker/object_candidates.py": "35b8e5b2a3ea82bba69302829dd45bf0c90b9abaf6b959b964aa1cec06a67e70",
+    "mapmaker/remote_settings.py": "b8715da7189215d18f0975a056e87459e21af8850c250992966a8420b7f4ddab",
+    "mapmaker/runtime_paths.py": "c3c576247be51eeb6e2ec76e972b06c4e5e13ec538c08e506760772f42be4bdf",
+    "mapmaker/scene_assembly.py": "077f9c106c8880b1d7838cfb5b384debeeeeff6f6bb3cbf08ac445cabbeb0966",
+    "mapmaker/scene_pipeline.py": "571a45e99f80ba80a77d07704a1c26f94ff9e66fa9b7650aaa564571d850103e",
+    "mapmaker/scene_placement.py": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63",
+    "mapmaker/scene_preview.py": "21507fde6b9a705ae885666e0f5e4793e0c4b130ceb923cf53a18a54e6a48886",
+    "mapmaker/scene_reconstruct.py": "9851036ee01dc93bce7996edb788fa1fb28b5887c7810871c0096893e006c1ed",
+    "mapmaker/scene_remote.py": "89fd196007e7ed6a4f8f24068818b7942cb15d6ff152cf2547e249cbc63a9e5f",
+    "mapmaker/scene_run.py": "2ae7ff4b67820d6a2d80e332d9665f826b48b6f64e6526522eba73436e28973f",
+    "mapmaker/scene_transfer.py": "1c332d1d5b7b0cccfacdf9a22ff702770f28cdf2288cb345b4b02328a62a1759",
+    "mapmaker/scene_vision.py": "d9680e2f7956e130575e39121bd8f573f4cd27272e1d7ea41697be114b9999b6",
+    "mapmaker/serverless_worker.py": "55926948a21e2bc20fb65d01872f4afd6314a7e134b99d16b90e2ffe9946a84a",
+    "mapmaker/web.py": "3ff2c80d62ff1ece5843c9480a381ca67ac72ba06545002a0dc164be3ee9857a",
+    "mapmaker/__init__.py": "41362a5ea4931c546433d4c48290c5707bf02dbbea1c3aafa9f43d1225e47003"
+  },
+  "samples": [
+    {
+      "sample": "samples/5MrJb0VLPeu5pWNey2XE3AE5mqAXdSIeMg3rOIJIeWpA4TcxyLh5AK3y9gCTXQWQ-2yh5n4XCU6M5aV6gCdLq_Co1O9RGajYjnlSbrrM9lcI409QFCL7dP_5HYuWz04mSDhrlM9zGxCaNrGI4-m7cUKm4ol253hpD9BQ79lcHzgFbr1qnzmPoiVsWJj3JAoo.jpg",
+      "sample_id": "f9ef89b95e32",
+      "sha256": "ba0a206ffa29076dcf29c638a48079034823466522bb3af847e0df294f5cee20",
+      "resolution": [
+        1024,
+        604
+      ],
+      "before": "09c38164b7784d95a2d8856875c497fd",
+      "before_candidates": [
+        "09c38164b7784d95a2d8856875c497fd"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/f9ef89b95e32",
+      "before_preview_source": "runs/09c38164b7784d95a2d8856875c497fd/previews/meshes/oblique.png",
+      "before_scene_sha256": "869b825ca19b4a4f30e3d62e6235cb5572b4508386ad111cf40b69dcc3403e6a",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "09c38164b7784d95a2d8856875c497fd",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "식탁·의자·수납장·식물이 기울어진 구도로 분리되어 있고 공통 바닥은 없다. 우측 상단에 작은 분리 조각도 보인다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/8xa39rx4u5sqcekrqskwxmnafwyz.png",
+      "sample_id": "b5323a704afc",
+      "sha256": "00f05c18c938636e5c1c7631328dafe1f594249e3979c68774838ebb040557b0",
+      "resolution": [
+        2320,
+        1080
+      ],
+      "before": "665e1cdbc01c454e81daa296ca3def4c",
+      "before_candidates": [
+        "665e1cdbc01c454e81daa296ca3def4c"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/b5323a704afc",
+      "before_preview_source": "runs/665e1cdbc01c454e81daa296ca3def4c/previews/meshes/oblique.png",
+      "before_scene_sha256": "4f83f385c854262b20c44631448afc432fe2b82e1133969d7c2c8650ec345758",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "665e1cdbc01c454e81daa296ca3def4c",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "풀이 붙은 긴 띠 모양의 mesh 하나가 보인다. 객체별 실내 배치 비교에 적합한 결과가 아니다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/a13d86d90a88538ce3427fe524a79857cbd9b0ae.png",
+      "sample_id": "ce503305aad4",
+      "sha256": "83aaaf9605921fc3d4dfb866d8fe50bffc3f054023648e8ef2f154086d75c3a5",
+      "resolution": [
+        586,
+        396
+      ],
+      "before": "21674af9d4fe41d48d57b0697b55c696",
+      "before_candidates": [
+        "21674af9d4fe41d48d57b0697b55c696"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/ce503305aad4",
+      "before_preview_source": "runs/21674af9d4fe41d48d57b0697b55c696/previews/meshes/oblique.png",
+      "before_scene_sha256": "a19cbe53997ea064afbe97923462fdd69d0dcd1a40bb421f552e08b36a2e16bf",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "21674af9d4fe41d48d57b0697b55c696",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "넓은 회색 평판과 검은 파편이 보이며 집·울타리의 입체 배치를 명확히 읽기 어렵다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/alexandra-gorn-JIUjvqe2ZHg-unsplash.jpg",
+      "sample_id": "fde132193c68",
+      "sha256": "7e07567119d14e22d73d467e7b6014a7f1692dedbe3fb3e7000525eea2114ed3",
+      "resolution": [
+        5141,
+        3432
+      ],
+      "before": null,
+      "before_candidates": [],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "FAIL",
+      "asset_dir": "docs/assets/sample_comparison/fde132193c68",
+      "attempted": true,
+      "attempt_scope": "local HTTP input validation only",
+      "http_status": 400,
+      "error": "{\"error\": \"Please use an image with at most 16 megapixels\"}",
+      "before_visual_note": "매칭되는 기존 완료 run/preview가 없어 Before를 평가할 수 없다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/B0yMng87-QPZy6YxEl1ssQEFb_12gluF-a3W_mDjVJXYAfZjJCTiz31ryltReAixhwtGZ3W2z-juGvI49scRNCrGm1OwbMpics6giwZNXhOeKeLiSxJStFGoy7_6ONvkieN2ukysror9ZTsCPxU5RdSBku9fHHRqEGuvK9SgR3Y9vZ8vI1-30bmfKLHI1-XC.jpg",
+      "sample_id": "16e5fb107e0e",
+      "sha256": "eb55fcc24d27bf3d9be6596ef731f9a7cdd9fa3db53d4424fcba8f4edc5b7344",
+      "resolution": [
+        1213,
+        832
+      ],
+      "before": "13904c85687049dfb0a592cfadf75ccf",
+      "before_candidates": [
+        "13904c85687049dfb0a592cfadf75ccf"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/16e5fb107e0e",
+      "before_preview_source": "runs/13904c85687049dfb0a592cfadf75ccf/previews/meshes/oblique.png",
+      "before_scene_sha256": "78c82c42cc56a1bb5ba4e6dea82b0980720ec95e8e47beec4418e557f6460fc6",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "13904c85687049dfb0a592cfadf75ccf",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "파라솔과 야외 좌석이 하나의 큰 구조로 묶여 보인다. 별도 생성 background floor는 없다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/b56sFfaPgkefPFYeBio8ADIH5j84GCngk7CWJnJ3RzaYXvvDZ7NODDOhzCsj1XdHE4CJMqEm6yuVIDXQ52oH8UcRik85dvvqqg32XO_sDJs0zi9uSCUhmWR88pALGx8Vh3ZyLgJ_6_wL_NevQv--kwsN-sdr38bODDTADOoOg52lgTQgsTtfuyPvaMB26kx-.jpg",
+      "sample_id": "61811e45ad53",
+      "sha256": "cf6c50c171c50eb1c1de33248500a5461f381737f25b6a56c4e7b44c97a53d8f",
+      "resolution": [
+        800,
+        448
+      ],
+      "before": "199672dbca6e4d2da59822262fae88a1",
+      "before_candidates": [
+        "199672dbca6e4d2da59822262fae88a1"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/61811e45ad53",
+      "before_preview_source": "runs/199672dbca6e4d2da59822262fae88a1/previews/meshes/oblique.png",
+      "before_scene_sha256": "2a3a067883001a25258cae887565655a65ab677bcac7f52fe9c47195a371347c",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "199672dbca6e4d2da59822262fae88a1",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "다색 칸이 있는 수납장 모양 구조 하나가 보인다. 원본 전체 공간의 객체별 복원 여부는 제한적이다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/ca4f0d0e-b693-4985-9abf-23a69a8b37a1.jpg",
+      "sample_id": "20095a1b8ef6",
+      "sha256": "ec9fa808d1dae327083b1aabeed6c0329c0c13078ef973593f2ecf7fee1b42dc",
+      "resolution": [
+        1950,
+        1300
+      ],
+      "before": "7dc137b805ce41f985ba9b37587b6670",
+      "before_candidates": [
+        "7dc137b805ce41f985ba9b37587b6670"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/20095a1b8ef6",
+      "before_preview_source": "runs/7dc137b805ce41f985ba9b37587b6670/previews/meshes/oblique.png",
+      "before_scene_sha256": "b695ba36af41e8f041c947bcf25956c7b82b820f4bd5ac53fb0c4f54a8a5ea73",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "7dc137b805ce41f985ba9b37587b6670",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "통과 벤치들이 서로 떨어져 있으며 일부 벤치는 다른 높이에 보인다. 공통 지지 바닥은 없다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/CbJCJsFdnzIdxwKJWBi44TSwXU7QZShGXq-wRSfSgF9XUi6g8AntJxejO0qTgSGHyy7XB1lQAhH7j_3jLb7X53yta1NPxNOc83NLO1W77OaD_NnosUASbc467Qch7tnVSw1w6BqynijZW9N3RS7VkA1mln-b5GbPwMhlqVjyMR3AqxqX7Bcpt17_me7qJdvs.jpg",
+      "sample_id": "8f8263a7cc26",
+      "sha256": "c46cb4319a66f1112cd3236d599e33ecffd4c920d0e500ae57681bdf989439f6",
+      "resolution": [
+        2560,
+        1707
+      ],
+      "before": "076a099b71814786acd3979a31b57124",
+      "before_candidates": [
+        "076a099b71814786acd3979a31b57124"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/8f8263a7cc26",
+      "before_preview_source": "runs/076a099b71814786acd3979a31b57124/previews/meshes/oblique.png",
+      "before_scene_sha256": "4d4b0a891dd505eb7507bbd3c8b62d9a77de662de7a668819fff962edc0cd3b6",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "076a099b71814786acd3979a31b57124",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "책상과 위의 물체들이 어둡게 보인다. 책상 다리는 있으나 공통 floor geometry는 없다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/dan-begel-YE7nAeaWS4w-unsplash.jpg",
+      "sample_id": "e818150c46a1",
+      "sha256": "09ba7aae88808b85676e4610c473220a42556d535e3380741d660f9126a99991",
+      "resolution": [
+        3937,
+        5905
+      ],
+      "before": null,
+      "before_candidates": [],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "FAIL",
+      "asset_dir": "docs/assets/sample_comparison/e818150c46a1",
+      "attempted": true,
+      "attempt_scope": "local HTTP input validation only",
+      "http_status": 400,
+      "error": "{\"error\": \"Please use an image with at most 16 megapixels\"}",
+      "before_visual_note": "매칭되는 기존 완료 run/preview가 없어 Before를 평가할 수 없다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/fp_eRye2yOmskbXBBLbNnJqI7wZNaZNfkP80C5SW8R81feBrndm8grXAruMEt7n3jCOPKapBKO1-BYfzQrVI70F2jclyDEQg7j_peFK-voT2rH3UYSjTRlLkxtP9JYKAs1P-fOYkti8gQ727Bqi54A0GyR8gyEqBEisFbncIsm4Qar-gL68R6cW8EqsvsuWI.jpg",
+      "sample_id": "0e5daf481f82",
+      "sha256": "0747c8c0d050aea1ad3553d9c3f7eef763f609d818c2dc9049e9149160420349",
+      "resolution": [
+        1200,
+        630
+      ],
+      "before": "0831486bdcf741e18fca7953be03090f",
+      "before_candidates": [
+        "0831486bdcf741e18fca7953be03090f"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/0e5daf481f82",
+      "before_preview_source": "runs/0831486bdcf741e18fca7953be03090f/previews/meshes/oblique.png",
+      "before_scene_sha256": "b9fa3f4cd4e3c1a5bcff53ae2b209641021b3d6903d00e019c4d23f800e2b161",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "0831486bdcf741e18fca7953be03090f",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "소파·테이블·의자가 넓게 흩어져 있으며 높이와 방향이 제각각인 구도다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/frank-huang-8E_RqlT7RUs-unsplash.jpg",
+      "sample_id": "d657a21b9b75",
+      "sha256": "00b740b795a06be262c5293fd69c2b4ccc9000bde43ba6efb3d3f0122c550f6b",
+      "resolution": [
+        3895,
+        5843
+      ],
+      "before": null,
+      "before_candidates": [],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "FAIL",
+      "asset_dir": "docs/assets/sample_comparison/d657a21b9b75",
+      "attempted": true,
+      "attempt_scope": "local HTTP input validation only",
+      "http_status": 400,
+      "error": "{\"error\": \"Please use an image with at most 16 megapixels\"}",
+      "before_visual_note": "매칭되는 기존 완료 run/preview가 없어 Before를 평가할 수 없다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/g31sErZDtH2kz-tEqjrjWker3lTDkJs7oPZFehc61eEp-0DfHYh8wIcTuk6qlwY9pgckesRSSQLokHEF8hWooWk-aHyZJ9D8_FtRwMIPalu4mI938wXfCKYCFLWtn_baGGbPdKoe3d8t0w_IP6EGmrBZ268ZoGGhYXUonftksdBEuBqChMtPUXu_Y9CI0T6R.jpg",
+      "sample_id": "79cbff65a058",
+      "sha256": "392dcbc64952d43f65a1d34db8da9e42c54e6a32dec3ed1af4e1d220a8ffde6c",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "before": "38abfa6472324289a0983cb386764aef",
+      "before_candidates": [
+        "38abfa6472324289a0983cb386764aef"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/79cbff65a058",
+      "before_preview_source": "runs/38abfa6472324289a0983cb386764aef/previews/meshes/oblique.png",
+      "before_scene_sha256": "a3bd80530270c79e635cc593c8e0ad562179855150580688e3bc7fbddb880e24",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "38abfa6472324289a0983cb386764aef",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "큰 갈색 지붕/상자 같은 구조만 두드러진다. 원본 야경의 여러 물체를 구분하기 어렵다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/hichem-meghachou-7I-Rj_E9ihI-unsplash.jpg",
+      "sample_id": "59c6e93b42ff",
+      "sha256": "325fa1c14554b510e1acaa717145992f692c639117bdcdddde4e9aabd33fff04",
+      "resolution": [
+        4979,
+        3154
+      ],
+      "before": "2b0568809830463899c2705b4321fb8c",
+      "before_candidates": [
+        "2b0568809830463899c2705b4321fb8c"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/59c6e93b42ff",
+      "before_preview_source": "runs/2b0568809830463899c2705b4321fb8c/previews/meshes/oblique.png",
+      "before_scene_sha256": "79595b055f9680267a49d1f48174c17b43e675ef47569721a0e677268520717e",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "2b0568809830463899c2705b4321fb8c",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "검고 뒤엉킨 식생/지형 mesh가 보인다. 개별 물체의 바닥 접촉은 판별하기 어렵다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/HJBLjCUWEAAMNIM.jpg",
+      "sample_id": "a5b1af66982a",
+      "sha256": "425e292f40171b952d3eeab709b3959152c623ace04a10c14e782eefa40a44c7",
+      "resolution": [
+        1199,
+        675
+      ],
+      "before": "7f61267de9764daabb786f0a3fc94540",
+      "before_candidates": [
+        "7f61267de9764daabb786f0a3fc94540"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/a5b1af66982a",
+      "before_preview_source": "runs/7f61267de9764daabb786f0a3fc94540/previews/meshes/oblique.png",
+      "before_scene_sha256": "8e253f73d38b9a0f3b94dada0ed660a2a392ed39ed13ec0c0a81a990f001fd85",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "7f61267de9764daabb786f0a3fc94540",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "얇고 넓은 검은 판 위주의 결과로, 측면에 일부 도시 텍스처가 보인다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/image_0001.jpg",
+      "sample_id": "7de905c84802",
+      "sha256": "8ae922380666d4ab1c5c059a632de49685c5c687f5fbbf56fbab52a637c54168",
+      "resolution": [
+        1216,
+        690
+      ],
+      "before": "574cb4de90e34bb684518fd4a459164a",
+      "before_candidates": [
+        "574cb4de90e34bb684518fd4a459164a"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/7de905c84802",
+      "before_preview_source": "runs/574cb4de90e34bb684518fd4a459164a/previews/meshes/oblique.png",
+      "before_scene_sha256": "7632241d89dd598abc843d2a43556e3f06b4bc9885c2d57177550b505b35445c",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "574cb4de90e34bb684518fd4a459164a",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "건물 전면과 지면 일부가 사각형 조각으로 묶여 보인다. 별도 배경 바닥은 없다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/images.jpg",
+      "sample_id": "d5204e7dcee4",
+      "sha256": "ed9e390568e274e9b0782eebb41f64d2726d533c53684cb1870a8e7395a6df1c",
+      "resolution": [
+        275,
+        183
+      ],
+      "before": "ac50e4379b3a4a278f470514e44d0516",
+      "before_candidates": [
+        "ac50e4379b3a4a278f470514e44d0516",
+        "2e58128c189949f0a959803306afc83f"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/d5204e7dcee4",
+      "before_preview_source": "runs/ac50e4379b3a4a278f470514e44d0516/previews/meshes/oblique.png",
+      "before_scene_sha256": "88da089016efa25986ebd20caa4b14d63f5880df449a57fff15087b1e0cd52a6",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "ac50e4379b3a4a278f470514e44d0516",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "도시 skyline과 식생이 긴 띠에 배열되어 있고 아래로 길게 뻗는 가는 조각이 있다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/input.jpg",
+      "sample_id": "dec7ebaa0033",
+      "sha256": "2d1fe4b724766a5b74c74f095a59412e1bba658f7c71a8ae57f7ce4b1e4ccf02",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "before": "85f5814232a74b77ab05e21e252027ae",
+      "before_candidates": [
+        "85f5814232a74b77ab05e21e252027ae"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/dec7ebaa0033",
+      "before_preview_source": "runs/85f5814232a74b77ab05e21e252027ae/previews/meshes/oblique.png",
+      "before_scene_sha256": "c21c0187e9b3a7ef014357011f10ad80a91dd120c24bfedd622743cd7c2dd0d6",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "85f5814232a74b77ab05e21e252027ae",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "큰 회색 사각 프레임/평판 구조가 보인다. 어두운 원본의 세부 물체 구분은 제한적이다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/julia-aX1TTOuq83M-unsplash.jpg",
+      "sample_id": "2c7bfb715811",
+      "sha256": "d25c7faff7ea26646da36e08cb3d5d8b29832fd3968dec084af335536ba40f54",
+      "resolution": [
+        3443,
+        5165
+      ],
+      "before": null,
+      "before_candidates": [],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "FAIL",
+      "asset_dir": "docs/assets/sample_comparison/2c7bfb715811",
+      "attempted": true,
+      "attempt_scope": "local HTTP input validation only",
+      "http_status": 400,
+      "error": "{\"error\": \"Please use an image with at most 16 megapixels\"}",
+      "before_visual_note": "매칭되는 기존 완료 run/preview가 없어 Before를 평가할 수 없다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/KakaoTalk_20260829_164738573.jpg",
+      "sample_id": "f129f63fbff3",
+      "sha256": "9877b7dc938a4fd98fa7ea3979b658bea7589358942ea6db350cdc939c21e285",
+      "resolution": [
+        3024,
+        4032
+      ],
+      "before": "d57fea2928e6401683c9499f3f4a4a4f",
+      "before_candidates": [
+        "d57fea2928e6401683c9499f3f4a4a4f"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/f129f63fbff3",
+      "before_preview_source": "runs/d57fea2928e6401683c9499f3f4a4a4f/previews/meshes/oblique.png",
+      "before_scene_sha256": "1edd6e8fef026c9759734a9f6633ef8cf1dcdaf8a3725fdf3adae7c7ccc0b8aa",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "d57fea2928e6401683c9499f3f4a4a4f",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "책상·의자와 책상 위 소품들이 기울어져 보인다. 공통 floor 없이 독립 물체들만 보인다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/l4Oe0Mu-LKBiOcEUE3ShgfPgdMIGE0hoTei-xgsPPlhAaMJ5HoZ7mOjtNhmYq74wdZcE5bCSkJDzc-pQQmt8qZO_8Ww6-_CO8B6HnEjpfwv6M_cOx_nWKQNsaIAtzAKaYGIwbEoAwRKmXdySd6VZIdHev7ufXxGdI3_vUH0UxPRWF_u3ffY5GhFOfC4ibA6l.jpg",
+      "sample_id": "0f398f6104a6",
+      "sha256": "0f36093ff890d34c7f12d2c500a51e18cf6ee6cfb95e6fbb1bce7c34e286bfb3",
+      "resolution": [
+        1920,
+        1920
+      ],
+      "before": "f26922c3015947b0b14ae08dac796932",
+      "before_candidates": [
+        "f26922c3015947b0b14ae08dac796932"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/0f398f6104a6",
+      "before_preview_source": "runs/f26922c3015947b0b14ae08dac796932/previews/meshes/oblique.png",
+      "before_scene_sha256": "2cd36ff6628a329057c15d8a3f20f461b45b6c34774ef72cce898a47924438ee",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "f26922c3015947b0b14ae08dac796932",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "문과 벽을 포함한 작은 room-shell 같은 mesh 하나가 보인다. 이는 기존 SAM3D 객체이며 새 background floor가 아니다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/living_room.jpg",
+      "sample_id": "98eb1fbb5704",
+      "sha256": "1a92e6520244da4d9890e1a784cd717ca54906e4c5fa491e192a2f52f4a5a9bc",
+      "resolution": [
+        1280,
+        854
+      ],
+      "before": "7bcd165489c84f6e9436e983f474c017",
+      "before_candidates": [
+        "7bcd165489c84f6e9436e983f474c017",
+        "bdb87bacea354d3db4965630840dd9fb",
+        "65db3225cab34978868d888c014268d7",
+        "a0d1b9737bd14b99ac8abf7002688ef5",
+        "5614756e06bd4580a2e432d9198b8be3",
+        "83b8a7a8fde840bf81abcff40ef25c82"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/98eb1fbb5704",
+      "before_preview_source": "runs/7bcd165489c84f6e9436e983f474c017/previews/meshes/oblique.png",
+      "before_scene_sha256": "7aebddfb823114b7f07762a1200cf12f9eb3a157fa0cced3b0ed93b1f3538577",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "7bcd165489c84f6e9436e983f474c017",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "소파·테이블·수납장·TV·식물이 분리되어 있다. 소파와 수납장의 최저 높이가 다르고 별도 바닥은 없다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/p4oC_SMMAWoxQP0Xb92NkrPRCk-o_WPNRIKgnRpyd58T8Xxihjpkh8_TvVFr8XKHqUAkQIeFmq4idGkwmNBPUn-Uy55tm1l30lca6QdZ0x2S1pwVRthYaLVkOG0bGYj3d_GMohI6hlRjn0Ic3INlwTjtuwnisYxzsJoPUeQ2o2X6JCASeT-hL1Jyn4sxoCgP.jpg",
+      "sample_id": "871e9dc0c025",
+      "sha256": "41169fc3b4900300f74b4af02b037b051f0601b4e0e1a3d68cc186f97acae151",
+      "resolution": [
+        3840,
+        2160
+      ],
+      "before": "d66a457c4e6a4aba8d619d646a50fc68",
+      "before_candidates": [
+        "d66a457c4e6a4aba8d619d646a50fc68"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/871e9dc0c025",
+      "before_preview_source": "runs/d66a457c4e6a4aba8d619d646a50fc68/previews/meshes/oblique.png",
+      "before_scene_sha256": "5228cc5c18f0f30d40b370eb4be295f10df43eb09533ba4a1775174a9dfd5276",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "d66a457c4e6a4aba8d619d646a50fc68",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "게임 지형과 식생이 긴 디오라마 형태로 한 덩어리로 보인다. 개별 furniture correction 평가 대상은 제한적이다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/pexels-baran-kilic-640071598-18151871.jpg",
+      "sample_id": "1e564e2726c2",
+      "sha256": "c85a699d47f6b674bc08a46df41a3e5d41021b03385bdefa557353884b6022f3",
+      "resolution": [
+        4159,
+        5199
+      ],
+      "before": null,
+      "before_candidates": [],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "FAIL",
+      "asset_dir": "docs/assets/sample_comparison/1e564e2726c2",
+      "attempted": true,
+      "attempt_scope": "local HTTP input validation only",
+      "http_status": 400,
+      "error": "{\"error\": \"Please use an image with at most 16 megapixels\"}",
+      "before_visual_note": "매칭되는 기존 완료 run/preview가 없어 Before를 평가할 수 없다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/pexels-padrechaks-20422959.jpg",
+      "sample_id": "b78641a9dc1f",
+      "sha256": "a57910c0e1c9d36ecd310e33da393b26860699ee66df67e4093f8646507538d6",
+      "resolution": [
+        5184,
+        3456
+      ],
+      "before": null,
+      "before_candidates": [],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "FAIL",
+      "asset_dir": "docs/assets/sample_comparison/b78641a9dc1f",
+      "attempted": true,
+      "attempt_scope": "local HTTP input validation only",
+      "http_status": 400,
+      "error": "{\"error\": \"Please use an image with at most 16 megapixels\"}",
+      "before_visual_note": "매칭되는 기존 완료 run/preview가 없어 Before를 평가할 수 없다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/PGnAvG-MUEDZ146fq1MHxdqV-UyNuwFLaiTdCZ_8S2N1eS-bTv24RN6OuyPQvUMbDiZwrSqbpCKcrCEEIx8HAEkcgJpE1eW155RNycHBcqyZXgI7KjZgsHU1CG1F-7sP2GiANdefEyFxmOdMtwp6Q5Ilp-K1JXFsSKlBxEz_EyrvGh1UDPl9AY7X4y5KhN-4.jpg",
+      "sample_id": "ee42ca360cda",
+      "sha256": "5088de00aaf91406426d2f5e68fcdd7258a1d7ede20b78b30f50753939b2c5ed",
+      "resolution": [
+        1812,
+        1147
+      ],
+      "before": "b3d5939515de4d5ba97e4777c195c634",
+      "before_candidates": [
+        "b3d5939515de4d5ba97e4777c195c634"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/ee42ca360cda",
+      "before_preview_source": "runs/b3d5939515de4d5ba97e4777c195c634/previews/meshes/oblique.png",
+      "before_scene_sha256": "bb025acfa94d3f547792d789203f39c670144436ab79321fb72270588b0b89b3",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "b3d5939515de4d5ba97e4777c195c634",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "갈색 지붕의 상자형 건물 mesh가 두드러진다. 원본의 세부 야경 구조는 제한적으로 복원되었다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/qLNgF9x-U_xG3reZP3Px6-uHxTOgcdVjej0ta7o3o_JALtaLvp6OpWVZW9B9H2JNz9C9d-UingHLFHmtWpzZFx7thrDhHRtpVlPk7GJrju3MurHGxOhEwW-Lwu8O8AEc8es3C5mRb6wJ97zAqOxj0RpXy_5KvOW7sIpU5LFlwZcZmuIIoZamEllBZ8MRaY3p.jpg",
+      "sample_id": "34eb6c2a71ac",
+      "sha256": "7c9a5d9d7de79165f48b8691ad8177b46ca16fba91cb5a64b3e961549e00acd9",
+      "resolution": [
+        1448,
+        2048
+      ],
+      "before": "67281f01271b4c86975c9cdbd5767ff8",
+      "before_candidates": [
+        "67281f01271b4c86975c9cdbd5767ff8"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/34eb6c2a71ac",
+      "before_preview_source": "runs/67281f01271b4c86975c9cdbd5767ff8/previews/meshes/oblique.png",
+      "before_scene_sha256": "d4d30cfce889a3a87eb1b5d695619ef1d643a0adc94da2c3f191b4b196adc786",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "67281f01271b4c86975c9cdbd5767ff8",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "테이블·스툴·통과 긴 막대가 서로 분리되어 있다. 막대들이 X자로 교차하고 높이가 제각각이다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/slR2ZfS3jpf_xRfH8yirgKg2ZFNhT9KPhM97Yn59E5L7aWfgzmblOYRWqQJV6ucxlqTF0YjQk1W0g6vfEjr2Dz7CSoArUiKBKlGmbCKz-aCSL3qITYgZH7m04K30cfSDm1NnpmoyN7-wDu4FptSSs8XjA9TgVSIZMw0jAAesfkGaEwET35zT6NXHrrL4EBAd.jpg",
+      "sample_id": "2170d5a1d3df",
+      "sha256": "ae06b9d95e62dae6892387ca276c069e6167296c4e6094f19b31f25fe68f442a",
+      "resolution": [
+        1293,
+        1080
+      ],
+      "before": "8c4ac2b9b70d4ca7a0336ff065db5176",
+      "before_candidates": [
+        "8c4ac2b9b70d4ca7a0336ff065db5176"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/2170d5a1d3df",
+      "before_preview_source": "runs/8c4ac2b9b70d4ca7a0336ff065db5176/previews/meshes/oblique.png",
+      "before_scene_sha256": "853977c4ce04e30195bf2cc84709f74105f2841073f682e70855d044cd998212",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "8c4ac2b9b70d4ca7a0336ff065db5176",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "침대·책상·협탁·식물·벽 장식이 분리되어 있고 공통 floor가 없다. 전체가 기울어진 구도다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/spacejoy-9M66C_w_ToM-unsplash.jpg",
+      "sample_id": "eb2dcf17206c",
+      "sha256": "92f13358e80b5a4facb2b31b5bd95f176b5df2bab4c3a159eafca8c92837787f",
+      "resolution": [
+        6144,
+        3240
+      ],
+      "before": null,
+      "before_candidates": [],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "FAIL",
+      "asset_dir": "docs/assets/sample_comparison/eb2dcf17206c",
+      "attempted": true,
+      "attempt_scope": "local HTTP input validation only",
+      "http_status": 400,
+      "error": "{\"error\": \"Please use an image with at most 16 megapixels\"}",
+      "before_visual_note": "매칭되는 기존 완료 run/preview가 없어 Before를 평가할 수 없다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    },
+    {
+      "sample": "samples/vKDU8NwlREulF-1NM8tvH43BmkrpfmuojXHL74imAbahig4hhJfFFG6DwpMty-HMRb35uM-NNEKZC5nArYwPefMkld_eUOxo0_mFg_Z3fm3XwC3-BD0YwbVdGehOMuUu5QyzHqafsuC7wRAlUHRPOLBkTMRfZhEqpgds5LQzOoDcuVdYJVdnq6RnW2COLaBN.jpg",
+      "sample_id": "1f7cac62154d",
+      "sha256": "ba8da31b721fe7856b4700588ef90086de203f1b1dcd2e4cc21b532eba24c51b",
+      "resolution": [
+        1024,
+        684
+      ],
+      "before": "9d0fe038d6c34b5cb9d5e61af49fc035",
+      "before_candidates": [
+        "9d0fe038d6c34b5cb9d5e61af49fc035"
+      ],
+      "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
+      "status": "BLOCKED",
+      "asset_dir": "docs/assets/sample_comparison/1f7cac62154d",
+      "before_preview_source": "runs/9d0fe038d6c34b5cb9d5e61af49fc035/previews/meshes/oblique.png",
+      "before_scene_sha256": "87cb946d0016a358b6f42315708f7f75ce229b1176fda05a677a721f578834e1",
+      "attempted": false,
+      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "before_viewer_valid": true,
+      "before_browser": {
+        "run": "9d0fe038d6c34b5cb9d5e61af49fc035",
+        "mode": "before",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": false,
+        "passed": true
+      },
+      "before_visual_note": "큰 사각형 trim/벽 조각과 소파·테이블이 흩어져 있다. 일부 소파가 큰 프레임 밖으로 떨어져 보인다.",
+      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+    }
+  ],
+  "execution_status": "blocked_by_automatic_approval_review",
+  "blocked_reason": "External image transfer and GPU batch cost were deemed insufficiently specifically authorized by automatic approval review.",
+  "fresh_inference_requested": true,
+  "fresh_inference_completed": false,
+  "environment": {
+    "os": "Windows-10-10.0.26200-SP0",
+    "python": "3.11.9",
+    "runtime": "existing RunPod/S3 settings; no endpoint changes"
+  },
+  "tests": {
+    "pytest": "46 passed",
+    "node_syntax": [
+      "web/app.js",
+      "web/compare-sample.mjs"
+    ]
+  },
+  "git_commit_scope": "new documentation, compact input/before images and new validation scripts only; pre-existing implementation changes remain unstaged"
+}
