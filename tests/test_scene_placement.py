@@ -5,7 +5,7 @@ import pytest
 import trimesh
 
 from mapmaker.scene_placement import (
-    FLOOR_NODE, align_floor_objects, add_floor, bounds_of, correct_placement, finalize_scene, object_vertices,
+    FLOOR_NODE, align_objects, add_floor, bounds_of, correct_placement, finalize_scene, object_vertices,
 )
 from mapmaker.scene_run import read, write, sha
 
@@ -149,7 +149,7 @@ def test_finalize_idempotent_and_hash_checked(tmp_path):
         finalize_scene(tmp_path, render=False)
 
 
-@pytest.mark.parametrize("version", [1, 2])
+@pytest.mark.parametrize("version", [1, 2, 3])
 def test_old_placement_version_is_not_reapplied(tmp_path, version):
     write(tmp_path / "scene_metadata.json", {"placement": {"version": version}})
     with pytest.raises(ValueError, match="uncorrected"):
@@ -170,14 +170,16 @@ def test_individual_upright_around_own_pivot_and_ground(angle):
     vertices = {k: g.vertices.copy() for k, g in scene.geometry.items()}
     report = correct_placement(scene, objects)
     before = {o["id"]: scene.graph[o["id"]][0].copy() for o in objects}
-    align_floor_objects(scene, objects, report)
+    align_objects(scene, objects, report)
     for o in objects[:2]:
         mat = scene.graph[o["id"]][0]
         np.testing.assert_allclose(mat[:3, 1] / np.linalg.norm(mat[:3, 1]), [0, 1, 0], atol=1e-12)
         np.testing.assert_allclose(mat[[0, 2], 3], before[o["id"]][[0, 2], 3], atol=1e-12)
         np.testing.assert_allclose(np.linalg.norm(mat[:3, :3], axis=0), np.linalg.norm(before[o["id"]][:3, :3], axis=0))
         assert object_vertices(scene, o["id"])[:, 1].min() == pytest.approx(0., abs=1e-12)
-    np.testing.assert_allclose(scene.graph['object_2'][0], before['object_2'], atol=1e-12)
+    np.testing.assert_allclose(scene.graph['object_2'][0][:3, 3], before['object_2'][:3, 3], atol=1e-12)
+    up = scene.graph['object_2'][0][:3, 1]
+    np.testing.assert_allclose(up / np.linalg.norm(up), [0, 1, 0], atol=1e-12)
     assert [o["pose"] for o in objects] == poses
     for k, g in scene.geometry.items():np.testing.assert_array_equal(g.vertices, vertices[k])
     assert report["individual_metrics"]["after"]["floating_count"] == 0
@@ -190,13 +192,23 @@ def test_individual_upright_around_own_pivot_and_ground(angle):
         assert np.all(floor[1, [0, 2]] > b[1, [0, 2]])
 
 
-def test_props_unknown_and_integrated_scene_are_not_individually_moved():
+def test_all_non_floor_categories_rotate_without_grounding():
     scene, objects = fixture_scene((0, 1, 2, 3), ("pillow", "plant", "book", "living room"))
+    for i, o in enumerate(objects):
+        matrix = trimesh.transformations.rotation_matrix(.3 * (i + 1), [1, 0, 0])
+        matrix[:3, 3] = [i*3, i+2, 0]
+        scene.graph.update(frame_from="Scene", frame_to=o["id"], matrix=matrix)
     report = correct_placement(scene, objects)
     before = {o["id"]: scene.graph[o["id"]][0].copy() for o in objects}
-    align_floor_objects(scene, objects, report)
-    assert report["individual_object_ids"] == []
-    for o in objects:np.testing.assert_array_equal(scene.graph[o["id"]][0], before[o["id"]])
+    align_objects(scene, objects, report)
+    assert report["grounded_object_ids"] == []
+    assert len(report["individual_object_ids"]) == 4
+    for o in objects:
+        mat = scene.graph[o["id"]][0]
+        np.testing.assert_allclose(mat[:3, 3], before[o["id"]][:3, 3], atol=1e-12)
+        np.testing.assert_allclose(mat[:3, 1]/np.linalg.norm(mat[:3, 1]), [0, 1, 0], atol=1e-12)
+        assert o["placement"]["individual"]["ground_shift_y"] == 0
+        assert not o["placement"]["individual"]["grounded"]
 
 
 def test_individual_rotation_preserves_heading_when_already_upright():
@@ -206,5 +218,5 @@ def test_individual_rotation_preserves_heading_when_already_upright():
     scene.graph.update(frame_from="Scene", frame_to="object_0", matrix=root)
     report = correct_placement(scene, objects)
     before = scene.graph['object_0'][0].copy()
-    align_floor_objects(scene, objects, report)
+    align_objects(scene, objects, report)
     np.testing.assert_allclose(scene.graph['object_0'][0][:3, :3], before[:3, :3], atol=1e-12)

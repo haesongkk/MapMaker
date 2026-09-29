@@ -1,7 +1,7 @@
 """CPU placement in the assembled GLB frame: +Y up, column-vector matrices.
 
 Never normalize individual meshes: their exported origins, child transforms and
-SAM3D poses must stay paired. All roots receive global alignment; floor furniture then gets individual upright/grounding.
+SAM3D poses must stay paired. All roots receive global alignment; all objects become upright, and floor furniture is grounded.
 """
 
 import copy
@@ -13,12 +13,12 @@ import numpy as np
 import trimesh
 
 CONTACT_TOLERANCE_RATIO = 0.01
-PLACEMENT_VERSION = 3
+PLACEMENT_VERSION = 4
 MEAN_UP_EPSILON = 1e-6
 FLOOR_NODE = "background_floor"
 FLOOR_MARGIN_RATIO = 0.15
 
-# Exact category matches: unknowns, plants, tabletop props and wall objects stay global-only.
+# Grounding categories only; every generated object receives individual upright rotation.
 FLOOR_CATEGORIES = frozenset({
     "sofa", "couch", "loveseat", "chair", "armchair", "office chair",
     "table", "coffee table", "dining table", "desk", "computer desk",
@@ -143,10 +143,10 @@ def correct_placement(scene, objects):
             "metrics": metrics}
 
 
-def align_floor_objects(scene, objects, placement):
-    """Upright floor furniture around its own root, then ground its actual vertices.
+def align_objects(scene, objects, placement):
+    """Upright every object around its own root; ground only floor furniture.
 
-    Props retain the global transform only. No attachment inference or contact-area search.
+    Non-floor objects retain their root position. No attachment inference or contact-area search.
     """
     selected = []
     for obj in objects:
@@ -158,9 +158,9 @@ def align_floor_objects(scene, objects, placement):
         delta = np.eye(4)
         pivot = before[:3, 3].copy()
         ground_shift = 0.
+        delta[:3, :3] = rotation_to_world_up(up)
+        delta[:3, 3] = pivot - delta[:3, :3] @ pivot
         if eligible:
-            delta[:3, :3] = rotation_to_world_up(up)
-            delta[:3, 3] = pivot - delta[:3, :3] @ pivot
             rotated = trimesh.transform_points(points, delta)
             ground_shift = -float(rotated[:, 1].min())
             delta[1, 3] += ground_shift
@@ -174,12 +174,13 @@ def align_floor_objects(scene, objects, placement):
         record["world_bounds_global"] = record["world_bounds_after"]
         record["world_up_global"] = up.tolist()
         record["individual"] = {
-            "applied": eligible, "reason": "floor_category" if eligible else "category_not_floor_supported",
+            "applied": True, "grounded": eligible,
+            "reason": "upright_and_ground" if eligible else "upright_only",
             "pivot": pivot.tolist(), "pivot_kind": "object_root_world_position",
             "transform": delta.tolist(), "ground_shift_y": ground_shift,
-            "rotation_degrees": float(np.degrees(np.arccos(np.clip(up[1], -1., 1.)))) if eligible else 0.,
+            "rotation_degrees": float(np.degrees(np.arccos(np.clip(up[1], -1., 1.)))),
         }
-        record["reason"] = "individual_upright_and_ground" if eligible else "global_mean_up_alignment"
+        record["reason"] = "individual_upright_and_ground" if eligible else "individual_upright_only"
         record["world_bounds_after"] = bounds.tolist()
         record["world_up_after"] = (after[:3, 1] / np.linalg.norm(after[:3, 1])).tolist()
         record["world_center"] = bounds.mean(axis=0).tolist()
@@ -199,8 +200,9 @@ def align_floor_objects(scene, objects, placement):
             "max_absolute_contact_error": float(np.max(abs(offsets))) if len(offsets) else 0.}
     ups = np.array([o["placement"]["world_up_after"] for o in objects])
     mean = ups.mean(axis=0); length = float(np.linalg.norm(mean))
-    placement.update(individual_correction=True, individual_object_ids=selected,
-        individual_method="floor_category_local_up_to_world_up_then_ground; no prop following",
+    placement.update(individual_correction=True, individual_object_ids=[o["id"] for o in objects],
+        grounded_object_ids=selected,
+        individual_method="all_objects_local_up_to_world_up; floor_categories_only_ground; no prop following",
         individual_metrics=support_metrics, global_metrics=placement.pop("metrics"),
         global_mean_up_after=placement.pop("mean_up_after"),
         global_minimum_y_after=placement.pop("minimum_y_after"),
@@ -211,7 +213,7 @@ def align_floor_objects(scene, objects, placement):
         "object_count": len(objects), "floating_count": int(np.sum(offsets > tolerance)),
         "penetrating_count": int(np.sum(offsets < -tolerance)),
         "mean_absolute_contact_error": float(np.mean(abs(offsets)))}}
-    placement["method"] = "global_mean_up_then_individual_floor_upright_and_ground"
+    placement["method"] = "global_mean_up_then_all_object_upright_and_floor_ground"
     return placement
 
 
@@ -256,7 +258,7 @@ def finalize_scene(run, *, render=True):
         raise ValueError("Unversioned background floor already exists")
     original_hash = sha(run / "scene.glb")
     placement = correct_placement(scene, objects)
-    align_floor_objects(scene, objects, placement)
+    align_objects(scene, objects, placement)
     meta["background"] = [add_floor(scene, objects, placement)]
     scene.export(run / "scene.glb")
     reloaded = trimesh.load(run / "scene.glb", force="scene", process=False)
@@ -266,11 +268,11 @@ def finalize_scene(run, *, render=True):
         if not np.allclose(bounds_of(object_vertices(reloaded, obj["id"])), obj["placement"]["world_bounds_after"], atol=1e-6):
             raise ValueError(f"Placement bounds changed in GLB: {obj['id']}")
     meta.setdefault("assembly", {}).update(bounds=reloaded.bounds.tolist(), geometry_nodes=len(reloaded.graph.nodes_geometry))
-    meta["assembly"]["method"] = "official SAM3D assembly followed by shared mean-up alignment, then individual floor-furniture upright/grounding; separate background floor"
+    meta["assembly"]["method"] = "official SAM3D assembly followed by shared mean-up alignment, then all-object upright and floor-furniture grounding; separate background floor"
     placement.update(version=PLACEMENT_VERSION, original_scene_sha256=original_hash,
                      scene_sha256=sha(run / "scene.glb"), implementation_sha256=sha(Path(__file__)))
     meta["placement"] = placement
-    meta["pipeline"].update(placement_method="official SAM3D + global mean-up + individual floor-furniture upright/grounding", structural_geometry=True)
+    meta["pipeline"].update(placement_method="official SAM3D + global mean-up + all-object upright and floor-furniture grounding", structural_geometry=True)
     meta["preview_method"] = "CPU mesh preview of final scene.glb; Gaussian previews retain original SAM3D pose and contain no floor"
     write(run / "scene_metadata.json", meta)
     if render:

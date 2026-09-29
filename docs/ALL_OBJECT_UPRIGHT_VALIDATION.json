@@ -1,0 +1,1195 @@
+{
+  "placement_version": 4,
+  "tests_passed": 57,
+  "mode": "22 numeric replays; 3 scenes with saved v4 artifacts and matched-camera v3/v4 browser comparisons",
+  "rows": [
+    {
+      "source": "a738b5f0653a430bbfa9650a6b98316a",
+      "sample": "samples/5MrJb0VLPeu5pWNey2XE3AE5mqAXdSIeMg3rOIJIeWpA4TcxyLh5AK3y9gCTXQWQ-2yh5n4XCU6M5aV6gCdLq_Co1O9RGajYjnlSbrrM9lcI409QFCL7dP_5HYuWz04mSDhrlM9zGxCaNrGI4-m7cUKm4ol253hpD9BQ79lcHzgFbr1qnzmPoiVsWJj3JAoo.jpg",
+      "objects": 12,
+      "passed": true,
+      "minimum_y": -5.551115123125783e-17,
+      "non_target_matrix_max_error": 1.3877787807814457e-17,
+      "selected": 9,
+      "upright": 12,
+      "metrics": {
+        "before": {
+          "object_count": 9,
+          "floating_count": 9,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 8.225008929828325,
+          "max_absolute_contact_error": 0.3170261599934565
+        },
+        "after": {
+          "object_count": 9,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 1.3877787807814457e-17
+        }
+      }
+    },
+    {
+      "source": "ceb9b530a33847998e287357e0aadc86",
+      "sample": "samples/8xa39rx4u5sqcekrqskwxmnafwyz.png",
+      "objects": 1,
+      "passed": true,
+      "minimum_y": 0.0,
+      "non_target_matrix_max_error": 0,
+      "selected": 0,
+      "upright": 1,
+      "metrics": {
+        "before": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        },
+        "after": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        }
+      }
+    },
+    {
+      "source": "f0cd8821cd764c54b6c83bc32e000503",
+      "sample": "samples/a13d86d90a88538ce3427fe524a79857cbd9b0ae.png",
+      "objects": 5,
+      "passed": true,
+      "minimum_y": 0.07068050745956297,
+      "non_target_matrix_max_error": 1.1102230246251565e-16,
+      "selected": 0,
+      "upright": 5,
+      "metrics": {
+        "before": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        },
+        "after": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        }
+      }
+    },
+    {
+      "source": "85a4480ddfdc4e7fad506194143fc175",
+      "sample": "samples/B0yMng87-QPZy6YxEl1ssQEFb_12gluF-a3W_mDjVJXYAfZjJCTiz31ryltReAixhwtGZ3W2z-juGvI49scRNCrGm1OwbMpics6giwZNXhOeKeLiSxJStFGoy7_6ONvkieN2ukysror9ZTsCPxU5RdSBku9fHHRqEGuvK9SgR3Y9vZ8vI1-30bmfKLHI1-XC.jpg",
+      "objects": 1,
+      "passed": true,
+      "minimum_y": 0.0,
+      "non_target_matrix_max_error": 0,
+      "selected": 0,
+      "upright": 1,
+      "metrics": {
+        "before": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        },
+        "after": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        }
+      }
+    },
+    {
+      "source": "ae39389c95a24234b919073ba1fc9057",
+      "sample": "samples/b56sFfaPgkefPFYeBio8ADIH5j84GCngk7CWJnJ3RzaYXvvDZ7NODDOhzCsj1XdHE4CJMqEm6yuVIDXQ52oH8UcRik85dvvqqg32XO_sDJs0zi9uSCUhmWR88pALGx8Vh3ZyLgJ_6_wL_NevQv--kwsN-sdr38bODDTADOoOg52lgTQgsTtfuyPvaMB26kx-.jpg",
+      "objects": 1,
+      "passed": true,
+      "minimum_y": 0.0,
+      "non_target_matrix_max_error": 0,
+      "selected": 0,
+      "upright": 1,
+      "metrics": {
+        "before": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        },
+        "after": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        }
+      }
+    },
+    {
+      "source": "bc18279a89b344edaeeeb0329fdd4d06",
+      "sample": "samples/ca4f0d0e-b693-4985-9abf-23a69a8b37a1.jpg",
+      "objects": 6,
+      "passed": true,
+      "minimum_y": -6.245004513516506e-17,
+      "non_target_matrix_max_error": 1.3877787807814457e-17,
+      "selected": 2,
+      "upright": 6,
+      "metrics": {
+        "before": {
+          "object_count": 2,
+          "floating_count": 1,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 26.570512648019903,
+          "max_absolute_contact_error": 0.2007348907475548
+        },
+        "after": {
+          "object_count": 2,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        }
+      }
+    },
+    {
+      "source": "38b6e971702f4a549ef13e0833d5589b",
+      "sample": "samples/CbJCJsFdnzIdxwKJWBi44TSwXU7QZShGXq-wRSfSgF9XUi6g8AntJxejO0qTgSGHyy7XB1lQAhH7j_3jLb7X53yta1NPxNOc83NLO1W77OaD_NnosUASbc467Qch7tnVSw1w6BqynijZW9N3RS7VkA1mln-b5GbPwMhlqVjyMR3AqxqX7Bcpt17_me7qJdvs.jpg",
+      "objects": 12,
+      "passed": true,
+      "minimum_y": 1.1102230246251565e-16,
+      "non_target_matrix_max_error": 1.1102230246251565e-16,
+      "selected": 1,
+      "upright": 12,
+      "metrics": {
+        "before": {
+          "object_count": 1,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 1.155977776747839,
+          "max_absolute_contact_error": 0.0
+        },
+        "after": {
+          "object_count": 1,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 8.673617379884035e-19
+        }
+      }
+    },
+    {
+      "source": "c20feb3c7ba14e11a394ff3dd3d5b558",
+      "sample": "samples/fp_eRye2yOmskbXBBLbNnJqI7wZNaZNfkP80C5SW8R81feBrndm8grXAruMEt7n3jCOPKapBKO1-BYfzQrVI70F2jclyDEQg7j_peFK-voT2rH3UYSjTRlLkxtP9JYKAs1P-fOYkti8gQ727Bqi54A0GyR8gyEqBEisFbncIsm4Qar-gL68R6cW8EqsvsuWI.jpg",
+      "objects": 9,
+      "passed": true,
+      "minimum_y": -5.551115123125783e-17,
+      "non_target_matrix_max_error": 0,
+      "selected": 7,
+      "upright": 9,
+      "metrics": {
+        "before": {
+          "object_count": 7,
+          "floating_count": 6,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 6.980870236790558,
+          "max_absolute_contact_error": 0.21719639413376157
+        },
+        "after": {
+          "object_count": 7,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 3.469446951953614e-18
+        }
+      }
+    },
+    {
+      "source": "34534587988241088830cdb0a296cbbb",
+      "sample": "samples/g31sErZDtH2kz-tEqjrjWker3lTDkJs7oPZFehc61eEp-0DfHYh8wIcTuk6qlwY9pgckesRSSQLokHEF8hWooWk-aHyZJ9D8_FtRwMIPalu4mI938wXfCKYCFLWtn_baGGbPdKoe3d8t0w_IP6EGmrBZ268ZoGGhYXUonftksdBEuBqChMtPUXu_Y9CI0T6R.jpg",
+      "objects": 1,
+      "passed": true,
+      "minimum_y": -1.1102230246251565e-16,
+      "non_target_matrix_max_error": 0,
+      "selected": 0,
+      "upright": 1,
+      "metrics": {
+        "before": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        },
+        "after": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        }
+      }
+    },
+    {
+      "source": "f818c1ee82294857a1146591d6e29b9c",
+      "sample": "samples/hichem-meghachou-7I-Rj_E9ihI-unsplash.jpg",
+      "objects": 1,
+      "passed": true,
+      "minimum_y": 0.0,
+      "non_target_matrix_max_error": 0,
+      "selected": 0,
+      "upright": 1,
+      "metrics": {
+        "before": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        },
+        "after": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        }
+      }
+    },
+    {
+      "source": "dcff34e672034156b9a72d453a5fdbe0",
+      "sample": "samples/HJBLjCUWEAAMNIM.jpg",
+      "objects": 8,
+      "passed": true,
+      "minimum_y": 0.207024468190652,
+      "non_target_matrix_max_error": 4.440892098500626e-16,
+      "selected": 0,
+      "upright": 8,
+      "metrics": {
+        "before": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        },
+        "after": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        }
+      }
+    },
+    {
+      "source": "006bf0d5a4d3428ab1b8eb9e1d0061f5",
+      "sample": "samples/image_0001.jpg",
+      "objects": 1,
+      "passed": true,
+      "minimum_y": 2.220446049250313e-16,
+      "non_target_matrix_max_error": 0,
+      "selected": 0,
+      "upright": 1,
+      "metrics": {
+        "before": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        },
+        "after": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        }
+      }
+    },
+    {
+      "source": "ecbbf289880e45a5b8c1e8726944b982",
+      "sample": "samples/images.jpg",
+      "objects": 3,
+      "passed": true,
+      "minimum_y": 0.2093805603746134,
+      "non_target_matrix_max_error": 2.220446049250313e-16,
+      "selected": 0,
+      "upright": 3,
+      "metrics": {
+        "before": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        },
+        "after": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        }
+      }
+    },
+    {
+      "source": "e88df9777116431e9d6ce93b0adf8186",
+      "sample": "samples/input.jpg",
+      "objects": 5,
+      "passed": true,
+      "minimum_y": 0.013970804555531902,
+      "non_target_matrix_max_error": 1.1102230246251565e-16,
+      "selected": 0,
+      "upright": 5,
+      "metrics": {
+        "before": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        },
+        "after": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        }
+      }
+    },
+    {
+      "source": "2a2d9c3e0eb64d80862fc6b697217d8a",
+      "sample": "samples/KakaoTalk_20260829_164738573.jpg",
+      "objects": 10,
+      "passed": true,
+      "minimum_y": -5.551115123125783e-17,
+      "non_target_matrix_max_error": 2.220446049250313e-16,
+      "selected": 6,
+      "upright": 10,
+      "metrics": {
+        "before": {
+          "object_count": 6,
+          "floating_count": 5,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 173.50745585537658,
+          "max_absolute_contact_error": 0.3242753978166937
+        },
+        "after": {
+          "object_count": 6,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        }
+      }
+    },
+    {
+      "source": "330daeb866454b17a0a95f62a58706c0",
+      "sample": "samples/l4Oe0Mu-LKBiOcEUE3ShgfPgdMIGE0hoTei-xgsPPlhAaMJ5HoZ7mOjtNhmYq74wdZcE5bCSkJDzc-pQQmt8qZO_8Ww6-_CO8B6HnEjpfwv6M_cOx_nWKQNsaIAtzAKaYGIwbEoAwRKmXdySd6VZIdHev7ufXxGdI3_vUH0UxPRWF_u3ffY5GhFOfC4ibA6l.jpg",
+      "objects": 1,
+      "passed": true,
+      "minimum_y": -1.1102230246251565e-16,
+      "non_target_matrix_max_error": 0,
+      "selected": 0,
+      "upright": 1,
+      "metrics": {
+        "before": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        },
+        "after": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        }
+      }
+    },
+    {
+      "source": "88e01c90565644c79b5e31312ebebca7",
+      "sample": "samples/living_room.jpg",
+      "objects": 6,
+      "passed": true,
+      "minimum_y": -5.551115123125783e-17,
+      "non_target_matrix_max_error": 5.551115123125783e-17,
+      "selected": 3,
+      "upright": 6,
+      "metrics": {
+        "before": {
+          "object_count": 3,
+          "floating_count": 2,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 175.1725993896963,
+          "max_absolute_contact_error": 0.0756885243503379
+        },
+        "after": {
+          "object_count": 3,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 8.673617379884035e-19
+        }
+      }
+    },
+    {
+      "source": "8c3edc6d589d4b988ba21938a36e52d4",
+      "sample": "samples/p4oC_SMMAWoxQP0Xb92NkrPRCk-o_WPNRIKgnRpyd58T8Xxihjpkh8_TvVFr8XKHqUAkQIeFmq4idGkwmNBPUn-Uy55tm1l30lca6QdZ0x2S1pwVRthYaLVkOG0bGYj3d_GMohI6hlRjn0Ic3INlwTjtuwnisYxzsJoPUeQ2o2X6JCASeT-hL1Jyn4sxoCgP.jpg",
+      "objects": 1,
+      "passed": true,
+      "minimum_y": 1.1102230246251565e-16,
+      "non_target_matrix_max_error": 0,
+      "selected": 0,
+      "upright": 1,
+      "metrics": {
+        "before": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        },
+        "after": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        }
+      }
+    },
+    {
+      "source": "827ffb7b8d474c84aa972e5032233a8f",
+      "sample": "samples/PGnAvG-MUEDZ146fq1MHxdqV-UyNuwFLaiTdCZ_8S2N1eS-bTv24RN6OuyPQvUMbDiZwrSqbpCKcrCEEIx8HAEkcgJpE1eW155RNycHBcqyZXgI7KjZgsHU1CG1F-7sP2GiANdefEyFxmOdMtwp6Q5Ilp-K1JXFsSKlBxEz_EyrvGh1UDPl9AY7X4y5KhN-4.jpg",
+      "objects": 1,
+      "passed": true,
+      "minimum_y": -1.1102230246251565e-16,
+      "non_target_matrix_max_error": 0,
+      "selected": 0,
+      "upright": 1,
+      "metrics": {
+        "before": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        },
+        "after": {
+          "object_count": 0,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        }
+      }
+    },
+    {
+      "source": "345b637123704f62984036f96631fe47",
+      "sample": "samples/qLNgF9x-U_xG3reZP3Px6-uHxTOgcdVjej0ta7o3o_JALtaLvp6OpWVZW9B9H2JNz9C9d-UingHLFHmtWpzZFx7thrDhHRtpVlPk7GJrju3MurHGxOhEwW-Lwu8O8AEc8es3C5mRb6wJ97zAqOxj0RpXy_5KvOW7sIpU5LFlwZcZmuIIoZamEllBZ8MRaY3p.jpg",
+      "objects": 12,
+      "passed": true,
+      "minimum_y": -5.551115123125783e-17,
+      "non_target_matrix_max_error": 2.220446049250313e-16,
+      "selected": 6,
+      "upright": 12,
+      "metrics": {
+        "before": {
+          "object_count": 6,
+          "floating_count": 5,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 5.4246217759757025,
+          "max_absolute_contact_error": 0.23950438590885215
+        },
+        "after": {
+          "object_count": 6,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 6.938893903907228e-18
+        }
+      }
+    },
+    {
+      "source": "4e11dbfa61c549dcb96216005d8fea87",
+      "sample": "samples/slR2ZfS3jpf_xRfH8yirgKg2ZFNhT9KPhM97Yn59E5L7aWfgzmblOYRWqQJV6ucxlqTF0YjQk1W0g6vfEjr2Dz7CSoArUiKBKlGmbCKz-aCSL3qITYgZH7m04K30cfSDm1NnpmoyN7-wDu4FptSSs8XjA9TgVSIZMw0jAAesfkGaEwET35zT6NXHrrL4EBAd.jpg",
+      "objects": 12,
+      "passed": true,
+      "minimum_y": 0.0,
+      "non_target_matrix_max_error": 1.3877787807814457e-16,
+      "selected": 4,
+      "upright": 12,
+      "metrics": {
+        "before": {
+          "object_count": 4,
+          "floating_count": 3,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 7.501914081243716,
+          "max_absolute_contact_error": 0.04402498054302906
+        },
+        "after": {
+          "object_count": 4,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 0.0
+        }
+      }
+    },
+    {
+      "source": "a69ab48af7454c58a574baed787f4a6e",
+      "sample": "samples/vKDU8NwlREulF-1NM8tvH43BmkrpfmuojXHL74imAbahig4hhJfFFG6DwpMty-HMRb35uM-NNEKZC5nArYwPefMkld_eUOxo0_mFg_Z3fm3XwC3-BD0YwbVdGehOMuUu5QyzHqafsuC7wRAlUHRPOLBkTMRfZhEqpgds5LQzOoDcuVdYJVdnq6RnW2COLaBN.jpg",
+      "objects": 11,
+      "passed": true,
+      "minimum_y": -2.7755575615628914e-17,
+      "non_target_matrix_max_error": 0,
+      "selected": 8,
+      "upright": 11,
+      "metrics": {
+        "before": {
+          "object_count": 8,
+          "floating_count": 8,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 6.740729476070569,
+          "max_absolute_contact_error": 0.18311140287399785
+        },
+        "after": {
+          "object_count": 8,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "max_up_angle_degrees": 0.0,
+          "max_absolute_contact_error": 6.938893903907228e-18
+        }
+      }
+    }
+  ],
+  "visual_comparisons": [
+    {
+      "source": "a738b5f0653a430bbfa9650a6b98316a",
+      "before": "548e695e69c64739a2fc342bc8fffd68",
+      "after": "921b384520ca42a3bd8c4aa8326a4cef",
+      "object_count": 12,
+      "angles": [
+        {
+          "id": "greenery_00",
+          "before_angle_degrees": 3.859845648269534,
+          "after_angle_degrees": 0.0
+        },
+        {
+          "id": "centerpiece_00",
+          "before_angle_degrees": 2.147365780639801,
+          "after_angle_degrees": 0.0
+        },
+        {
+          "id": "greenery_01",
+          "before_angle_degrees": 69.77541270643655,
+          "after_angle_degrees": 0.0
+        }
+      ],
+      "max_root_position_difference": 1.3877787807814457e-17,
+      "max_furniture_matrix_difference": 0.0,
+      "observation": "가구 9개의 자세와 접지는 그대로다. 큰 식물과 장식의 회전은 작고, 공중의 작은 greenery 조각은 눈에 띄게 회전했다. 조각의 부유·분리 상태는 해결되지 않았다.",
+      "assessment": "비가구의 축 정렬은 확인했으나 전체 장면 품질 개선은 제한적이다.",
+      "viewer": {
+        "before": "548e695e69c64739a2fc342bc8fffd68",
+        "after": "921b384520ca42a3bd8c4aa8326a4cef",
+        "sharedCamera": {
+          "center": [
+            0.23594612143546895,
+            0.5509901658009877,
+            1.5837865334668404
+          ],
+          "distance": 5.424395421566093,
+          "views": {
+            "front": [
+              -0.25,
+              0.22,
+              -1
+            ],
+            "reverse": [
+              0.8,
+              0.35,
+              1
+            ]
+          }
+        },
+        "runs": [
+          {
+            "run": "548e695e69c64739a2fc342bc8fffd68",
+            "stage": "before",
+            "checks": {
+              "floor": true,
+              "webgl": true,
+              "toggle": true,
+              "orbit": true,
+              "download": true
+            },
+            "errors": [],
+            "cameras": {
+              "front": {
+                "position": [
+                  -1.1201527339560553,
+                  1.7443571585455278,
+                  -3.8406088880992524
+                ],
+                "target": [
+                  0.23594612143546892,
+                  0.5509901658009877,
+                  1.5837865334668404
+                ],
+                "projection": [
+                  2.1138877165730765,
+                  0,
+                  0,
+                  0,
+                  0,
+                  2.414213562373095,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -1.000020000200002,
+                  -1,
+                  0,
+                  0,
+                  -0.010848899332125506,
+                  0
+                ]
+              },
+              "reverse": {
+                "position": [
+                  4.575462458688343,
+                  2.44952856334912,
+                  7.008181955032933
+                ],
+                "target": [
+                  0.23594612143546892,
+                  0.5509901658009877,
+                  1.5837865334668404
+                ],
+                "projection": [
+                  2.1138877165730765,
+                  0,
+                  0,
+                  0,
+                  0,
+                  2.414213562373095,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -1.000020000200002,
+                  -1,
+                  0,
+                  0,
+                  -0.010848899332125506,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "run": "921b384520ca42a3bd8c4aa8326a4cef",
+            "stage": "after",
+            "checks": {
+              "floor": true,
+              "webgl": true,
+              "toggle": true,
+              "orbit": true,
+              "download": true
+            },
+            "errors": [],
+            "cameras": {
+              "front": {
+                "position": [
+                  -1.1201527339560553,
+                  1.7443571585455278,
+                  -3.8406088880992524
+                ],
+                "target": [
+                  0.23594612143546892,
+                  0.5509901658009877,
+                  1.5837865334668404
+                ],
+                "projection": [
+                  2.1138877165730765,
+                  0,
+                  0,
+                  0,
+                  0,
+                  2.414213562373095,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -1.000020000200002,
+                  -1,
+                  0,
+                  0,
+                  -0.010848899332125506,
+                  0
+                ]
+              },
+              "reverse": {
+                "position": [
+                  4.575462458688343,
+                  2.44952856334912,
+                  7.008181955032933
+                ],
+                "target": [
+                  0.23594612143546892,
+                  0.5509901658009877,
+                  1.5837865334668404
+                ],
+                "projection": [
+                  2.1138877165730765,
+                  0,
+                  0,
+                  0,
+                  0,
+                  2.414213562373095,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -1.000020000200002,
+                  -1,
+                  0,
+                  0,
+                  -0.010848899332125506,
+                  0
+                ]
+              }
+            }
+          }
+        ],
+        "passed": true
+      },
+      "artifact_audit": true
+    },
+    {
+      "source": "2a2d9c3e0eb64d80862fc6b697217d8a",
+      "before": "a2a4105556154c45a9283f98b50a0c6b",
+      "after": "2e20f63f57144522af726de15a0cd618",
+      "object_count": 10,
+      "angles": [
+        {
+          "id": "appliance_00",
+          "before_angle_degrees": 157.77010198423525,
+          "after_angle_degrees": 0.0
+        },
+        {
+          "id": "kitchen_counter_00",
+          "before_angle_degrees": 3.023830762940986,
+          "after_angle_degrees": 0.0
+        },
+        {
+          "id": "package_00",
+          "before_angle_degrees": 7.797483391465169,
+          "after_angle_degrees": 0.0
+        },
+        {
+          "id": "bag_00",
+          "before_angle_degrees": 7.849728471330601,
+          "after_angle_degrees": 0.0
+        }
+      ],
+      "max_root_position_difference": 2.220446049250313e-16,
+      "max_furniture_matrix_difference": 0.0,
+      "observation": "기울어진 appliance 상자형 객체가 세워져 정면/반대편에서 자세 차이가 뚜렷하다. package와 bag은 소폭 회전했다. 식탁·의자 등 기존 가구 6개의 변환은 유지됐다.",
+      "assessment": "가장 눈에 띄는 변화다. appliance의 약 157.8도 회전은 로컬 +Y 기준이며, 실제 의미적 위쪽이나 다른 물체와의 접촉이 맞는다는 보장은 없다.",
+      "viewer": {
+        "before": "a2a4105556154c45a9283f98b50a0c6b",
+        "after": "2e20f63f57144522af726de15a0cd618",
+        "sharedCamera": {
+          "center": [
+            0.33198208465279455,
+            0.417875944501245,
+            1.6940932210514639
+          ],
+          "distance": 5.536399502579725,
+          "views": {
+            "front": [
+              -0.25,
+              0.22,
+              -1
+            ],
+            "reverse": [
+              0.8,
+              0.35,
+              1
+            ]
+          }
+        },
+        "runs": [
+          {
+            "run": "a2a4105556154c45a9283f98b50a0c6b",
+            "stage": "before",
+            "checks": {
+              "floor": true,
+              "webgl": true,
+              "toggle": true,
+              "orbit": true,
+              "download": true
+            },
+            "errors": [],
+            "cameras": {
+              "front": {
+                "position": [
+                  -1.0521177909921378,
+                  1.635883835068784,
+                  -3.842306281528261
+                ],
+                "target": [
+                  0.33198208465279455,
+                  0.41787594450124504,
+                  1.694093221051464
+                ],
+                "projection": [
+                  2.101161693845595,
+                  0,
+                  0,
+                  0,
+                  0,
+                  2.4142135623730954,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -1.0000200002000021,
+                  -1,
+                  0,
+                  0,
+                  -0.011072909734256791,
+                  0
+                ]
+              },
+              "reverse": {
+                "position": [
+                  4.761101686716575,
+                  2.3556157704041487,
+                  7.230492723631189
+                ],
+                "target": [
+                  0.33198208465279455,
+                  0.41787594450124504,
+                  1.694093221051464
+                ],
+                "projection": [
+                  2.101161693845595,
+                  0,
+                  0,
+                  0,
+                  0,
+                  2.4142135623730954,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -1.0000200002000021,
+                  -1,
+                  0,
+                  0,
+                  -0.011072909734256791,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "run": "2e20f63f57144522af726de15a0cd618",
+            "stage": "after",
+            "checks": {
+              "floor": true,
+              "webgl": true,
+              "toggle": true,
+              "orbit": true,
+              "download": true
+            },
+            "errors": [],
+            "cameras": {
+              "front": {
+                "position": [
+                  -1.0521177909921378,
+                  1.635883835068784,
+                  -3.842306281528261
+                ],
+                "target": [
+                  0.33198208465279455,
+                  0.41787594450124504,
+                  1.694093221051464
+                ],
+                "projection": [
+                  2.101161693845595,
+                  0,
+                  0,
+                  0,
+                  0,
+                  2.4142135623730954,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -1.0000200002000021,
+                  -1,
+                  0,
+                  0,
+                  -0.011072909734256791,
+                  0
+                ]
+              },
+              "reverse": {
+                "position": [
+                  4.761101686716575,
+                  2.3556157704041487,
+                  7.230492723631189
+                ],
+                "target": [
+                  0.33198208465279455,
+                  0.41787594450124504,
+                  1.694093221051464
+                ],
+                "projection": [
+                  2.101161693845595,
+                  0,
+                  0,
+                  0,
+                  0,
+                  2.4142135623730954,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -1.0000200002000021,
+                  -1,
+                  0,
+                  0,
+                  -0.011072909734256791,
+                  0
+                ]
+              }
+            }
+          }
+        ],
+        "passed": true
+      },
+      "artifact_audit": true
+    },
+    {
+      "source": "88e01c90565644c79b5e31312ebebca7",
+      "before": "5f4a0ad8b71847eb9e457b2a110ea9e6",
+      "after": "216bb631fd1e455691fa79f675e15f2c",
+      "object_count": 6,
+      "angles": [
+        {
+          "id": "television_00",
+          "before_angle_degrees": 2.338695777568939,
+          "after_angle_degrees": 0.0
+        },
+        {
+          "id": "plant_00",
+          "before_angle_degrees": 1.5969782278910374,
+          "after_angle_degrees": 0.0
+        },
+        {
+          "id": "book_00",
+          "before_angle_degrees": 1.2234367406806452,
+          "after_angle_degrees": 0.0
+        }
+      ],
+      "max_root_position_difference": 5.551115123125783e-17,
+      "max_furniture_matrix_difference": 0.0,
+      "observation": "소파·테이블·수납장 3개는 그대로다. TV·식물·책의 변화는 약 1~2도 수준으로 화면에서는 작게 보인다. TV의 부유 및 책과 테이블 사이의 기존 접촉 문제는 남는다.",
+      "assessment": "수치 정렬은 성공했지만 이 장면의 시각적 변화는 작다.",
+      "viewer": {
+        "before": "5f4a0ad8b71847eb9e457b2a110ea9e6",
+        "after": "216bb631fd1e455691fa79f675e15f2c",
+        "sharedCamera": {
+          "center": [
+            0.04864773096150565,
+            0.5164452534048226,
+            1.2666888421845108
+          ],
+          "distance": 4.893690788806996,
+          "views": {
+            "front": [
+              -0.25,
+              0.22,
+              -1
+            ],
+            "reverse": [
+              0.8,
+              0.35,
+              1
+            ]
+          }
+        },
+        "runs": [
+          {
+            "run": "5f4a0ad8b71847eb9e457b2a110ea9e6",
+            "stage": "before",
+            "checks": {
+              "floor": true,
+              "webgl": true,
+              "toggle": true,
+              "orbit": true,
+              "download": true
+            },
+            "errors": [],
+            "cameras": {
+              "front": {
+                "position": [
+                  -1.1747749662402445,
+                  1.5930572269423617,
+                  -3.627001946622486
+                ],
+                "target": [
+                  0.048647730961505646,
+                  0.5164452534048226,
+                  1.2666888421845108
+                ],
+                "projection": [
+                  2.101161693845595,
+                  0,
+                  0,
+                  0,
+                  0,
+                  2.4142135623730954,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -1.0000200002000021,
+                  -1,
+                  0,
+                  0,
+                  -0.009787479452408519,
+                  0
+                ]
+              },
+              "reverse": {
+                "position": [
+                  3.9636003620071025,
+                  2.229237029487271,
+                  6.160379630991507
+                ],
+                "target": [
+                  0.048647730961505646,
+                  0.5164452534048226,
+                  1.2666888421845108
+                ],
+                "projection": [
+                  2.101161693845595,
+                  0,
+                  0,
+                  0,
+                  0,
+                  2.4142135623730954,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -1.0000200002000021,
+                  -1,
+                  0,
+                  0,
+                  -0.009787479452408519,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "run": "216bb631fd1e455691fa79f675e15f2c",
+            "stage": "after",
+            "checks": {
+              "floor": true,
+              "webgl": true,
+              "toggle": true,
+              "orbit": true,
+              "download": true
+            },
+            "errors": [],
+            "cameras": {
+              "front": {
+                "position": [
+                  -1.1747749662402445,
+                  1.5930572269423617,
+                  -3.627001946622486
+                ],
+                "target": [
+                  0.048647730961505646,
+                  0.5164452534048226,
+                  1.2666888421845108
+                ],
+                "projection": [
+                  2.101161693845595,
+                  0,
+                  0,
+                  0,
+                  0,
+                  2.4142135623730954,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -1.0000200002000021,
+                  -1,
+                  0,
+                  0,
+                  -0.009787479452408519,
+                  0
+                ]
+              },
+              "reverse": {
+                "position": [
+                  3.9636003620071025,
+                  2.229237029487271,
+                  6.160379630991507
+                ],
+                "target": [
+                  0.048647730961505646,
+                  0.5164452534048226,
+                  1.2666888421845108
+                ],
+                "projection": [
+                  2.101161693845595,
+                  0,
+                  0,
+                  0,
+                  0,
+                  2.4142135623730954,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -1.0000200002000021,
+                  -1,
+                  0,
+                  0,
+                  -0.009787479452408519,
+                  0
+                ]
+              }
+            }
+          }
+        ],
+        "passed": true
+      },
+      "artifact_audit": true
+    }
+  ]
+}

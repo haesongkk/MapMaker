@@ -2,7 +2,7 @@
 
 최신 업데이트: 2026-09-29, Windows `D:\MapMaker`. 시작 HEAD는
 `476a8a4d64b5c3a9f8e53559e5ff04ac22e2d5dc`이며 기존 README 변경, untracked samples 및
-샘플 검증 스크립트/테스트는 보존했다. 문서 마지막의 개별 객체 정렬 업데이트(version 3)가 과거 기록보다 우선한다.
+샘플 검증 스크립트/테스트는 보존했다. 문서 마지막의 전체 객체 Y-up 업데이트(version 4)가 과거 기록보다 우선한다.
 
 ## 이전 구현: placement correction + floor (version 1)
 
@@ -211,3 +211,12 @@ root XZ/크기/원본 mesh/pose는 유지한다. 비대상 객체는 공통 정�
 충돌은 보장하지 않는다. 바닥 크기는 최종 객체 bounds로 다시 계산한다.
 메타데이터에 global_matrix, individual.transform/pivot/ground_shift_y와 두 단계의 통계를 구분한다.
 검증: [INDIVIDUAL_ALIGNMENT_VALIDATION](docs/INDIVIDUAL_ALIGNMENT_VALIDATION.md).
+
+
+## 전체 객체 Y-up 업데이트 (version 4)
+
+생성 성공 객체 모두에 자기 root 원점 중심의 개별 Y-up 정렬을 적용한다. 카테고리와 무관하다.
+바닥으로 이동하는 대상은 기존 FLOOR_CATEGORIES 가구만이다. 나머지는 root XYZ를 보존한다.
+메타데이터 individual.applied와 individual.grounded를 분리하고 grounded_object_ids를 기록한다.
+비가구는 회전 후 메시가 바닥을 관통할 수도 있으며 추가 접지나 소품 추종은 하지 않는다.
+검증: [ALL_OBJECT_UPRIGHT_VALIDATION](docs/ALL_OBJECT_UPRIGHT_VALIDATION.md).
