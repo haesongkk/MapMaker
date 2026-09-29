@@ -26,6 +26,8 @@ def render(manifest):
         if row.get('after'):
             run = ROOT/'runs'/row['after']
             row['after_metadata'] = read(run/'scene_metadata.json')
+            if row['after_metadata'].get('placement', {}).get('version') == 2:
+                raise ValueError('This historical report describes individual correction v1; use the global alignment report for v2')
             for key, file in [('timing', run/'logs/runpod_timing.json'),
                               ('browser', manifest.parent/row['sample_id']/'browser.json'),
                               ('artifact_audit', run/'logs/artifact_validation.json')]:

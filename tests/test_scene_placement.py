@@ -24,19 +24,30 @@ def fixture_scene(bottoms=(0, 0.2, -0.1), names=("chair", "table", "cabinet")):
     return scene, objects
 
 
-def test_floor_contact_preserves_pose_xz_rotation_and_scale():
+def test_shared_alignment_preserves_relative_transforms_meshes_and_pose():
     scene, objects = fixture_scene()
-    originals = copy.deepcopy(objects)
+    common = trimesh.transformations.rotation_matrix(.6, [1, 0, 1])
+    common[:3, 3] = [2, -4, 7]
+    for obj in objects:
+        scene.graph.update(frame_from="Scene", frame_to=obj["id"], matrix=common @ np.array(obj["transform"]["matrix"]))
+    originals = {o["id"]: scene.graph[o["id"]][0].copy() for o in objects}
+    geometry = {k: v.vertices.copy() for k, v in scene.geometry.items()}
+    poses = [copy.deepcopy(o["pose"]) for o in objects]
     report = correct_placement(scene, objects)
-    assert report["metrics"]["before"]["floating_count"] == 1
-    assert report["metrics"]["before"]["penetrating_count"] == 1
-    for obj, original in zip(objects, originals):
-        before = np.array(original["transform"]["matrix"])
-        after = np.array(obj["transform"]["matrix"])
-        assert np.array_equal(before[:3, :3], after[:3, :3])
-        assert np.array_equal(before[[0, 2], 3], after[[0, 2], 3])
-        assert obj["pose"] == original["pose"]
-        assert bounds_of(object_vertices(scene, obj["id"]))[0, 1] == pytest.approx(0)
+    np.testing.assert_allclose(report["mean_up_after"], [0, 1, 0], atol=1e-12)
+    assert report["minimum_y_after"] == pytest.approx(0, abs=1e-12)
+    assert report["individual_correction"] is False
+    for i, obj in enumerate(objects):
+        before = originals[obj["id"]]
+        after = scene.graph[obj["id"]][0]
+        np.testing.assert_allclose(after, np.array(report["common_transform"]) @ before, atol=1e-12)
+        np.testing.assert_allclose(np.linalg.inv(scene.graph[objects[0]["id"]][0]) @ after,
+                                   np.linalg.inv(originals[objects[0]["id"]]) @ before, atol=1e-12)
+        assert obj["pose"] == poses[i]
+    for k, v in scene.geometry.items():
+        np.testing.assert_array_equal(v.vertices, geometry[k])
+    # Global grounding leaves original differences between object bottoms intact.
+    assert report["metrics"]["after"]["floating_count"] == 2
 
 
 def test_nested_instances_rotated_scaled_nonzero_pivot_bounds():
@@ -54,28 +65,58 @@ def test_nested_instances_rotated_scaled_nonzero_pivot_bounds():
     # A shared geometry instance must contribute independently.
     scene.graph.update(frame_from="object_0", frame_to="instance", matrix=np.eye(4), geometry=scene.graph['object_0__mesh'][1])
     assert len(object_vertices(scene, "object_0")) == 2 * len(mesh.vertices)
+    before = object_vertices(scene, "object_0").copy()
+    report = correct_placement(scene, objects)
+    expected = trimesh.transform_points(before, report["common_transform"])
+    np.testing.assert_allclose(object_vertices(scene, "object_0"), expected, atol=1e-12)
+    assert object_vertices(scene, "object_0")[:, 1].min() == pytest.approx(0., abs=1e-12)
 
 
-def test_unknown_and_large_shift_not_snapped():
-    scene, objects = fixture_scene((0, 0, 10, 2), ("chair", "chair", "chair", "houseplant"))
-    originals = copy.deepcopy(objects)
-    correct_placement(scene, objects)
-    assert objects[2]["placement"]["reason"] == "excessive_shift_skipped"
-    assert objects[3]["placement"]["reason"] == "category_not_floor_supported"
-    for i in (2, 3):
-        assert objects[i]["transform"]["matrix"] == originals[i]["transform"]["matrix"]
+def test_all_categories_equal_weight_after_normalizing_scale():
+    scene, objects = fixture_scene((0, 10), ("chair", "unknown"))
+    root = trimesh.transformations.rotation_matrix(np.pi / 3, [0, 0, 1])
+    root[:3, :3] @= np.diag([2, 20, 4])
+    root[:3, 3] = [3, 10, 0]
+    scene.graph.update(frame_from="Scene", frame_to="object_1", matrix=root)
+    report = correct_placement(scene, objects)
+    np.testing.assert_allclose(report["mean_up_before"], [-.5, np.sqrt(3)/2, 0], atol=1e-12)
+    assert report["object_ids"] == ["object_0", "object_1"]
+    np.testing.assert_allclose(objects[1]["transform"]["scale"], [2, 20, 4])
+    matrix = trimesh.transformations.quaternion_matrix(objects[1]["transform"]["rotation_quaternion_wxyz"])
+    np.testing.assert_allclose(matrix[:3, :3] @ np.diag([2, 20, 4]), np.array(objects[1]["transform"]["matrix"])[:3, :3], atol=1e-12)
 
 
-def test_bedding_follows_bed_without_changing_relative_position():
-    scene, objects = fixture_scene((0, .2, .2), ("bed", "chair", "chair"))
-    matrix = np.eye(4)
-    matrix[1, 3] = 2
-    scene.graph.update(frame_from="Scene", frame_to="pillow", matrix=matrix)
-    scene.add_geometry(trimesh.creation.box(extents=[.4, .2, .4]), parent_node_name="pillow", node_name="pillow_mesh")
-    objects.append({"id": "pillow", "name": "bedding", "transform": {"matrix": matrix.tolist()}})
-    correct_placement(scene, objects)
-    assert objects[-1]["placement"]["support_object"] == "object_0"
-    assert objects[-1]["placement"]["delta_y"] == pytest.approx(.2)
+@pytest.mark.parametrize("angle", [0., np.pi, np.pi - 1e-8])
+def test_parallel_and_antiparallel_up(angle):
+    scene, objects = fixture_scene((2,), ("unknown",))
+    root = trimesh.transformations.rotation_matrix(angle, [1, 0, 0])
+    scene.graph.update(frame_from="Scene", frame_to="object_0", matrix=root)
+    report = correct_placement(scene, objects)
+    np.testing.assert_allclose(report["mean_up_after"], [0, 1, 0], atol=1e-10)
+    assert np.linalg.det(report["rotation_matrix"]) == pytest.approx(1.)
+    assert report["minimum_y_after"] == pytest.approx(0.)
+
+
+@pytest.mark.parametrize("angle", [np.pi, np.pi - 1e-7])
+def test_cancelled_mean_fails_before_mutation(angle):
+    scene, objects = fixture_scene((0, 0), ("chair", "unknown"))
+    root = trimesh.transformations.rotation_matrix(angle, [1, 0, 0])
+    scene.graph.update(frame_from="Scene", frame_to="object_1", matrix=root)
+    original = copy.deepcopy(objects)
+    with pytest.raises(ValueError, match="nearly cancels"):
+        correct_placement(scene, objects)
+    assert objects == original
+    np.testing.assert_array_equal(scene.graph['object_1'][0], root)
+
+
+def test_invalid_transform_and_empty_scene_fail():
+    scene, objects = fixture_scene((0,), ("chair",))
+    root = np.eye(4); root[1, 1] = 0
+    scene.graph.update(frame_from="Scene", frame_to="object_0", matrix=root)
+    with pytest.raises(ValueError, match="Invalid object transform"):
+        correct_placement(scene, objects)
+    with pytest.raises(ValueError, match="empty"):
+        correct_placement(scene, [])
 
 
 def test_floor_top_footprint_and_glb_roundtrip(tmp_path):
@@ -108,10 +149,7 @@ def test_finalize_idempotent_and_hash_checked(tmp_path):
         finalize_scene(tmp_path, render=False)
 
 
-def test_no_known_support_uses_scene_bottom_without_moving_objects():
-    scene, objects = fixture_scene((2,), ("unknown",))
-    original = copy.deepcopy(objects)
-    report = correct_placement(scene, objects)
-    assert report["floor_y"] == 2
-    assert report["floor_source"] == "scene_bottom"
-    assert objects[0]["transform"]["matrix"] == original[0]["transform"]["matrix"]
+def test_old_placement_version_is_not_reapplied(tmp_path):
+    write(tmp_path / "scene_metadata.json", {"placement": {"version": 1}})
+    with pytest.raises(ValueError, match="uncorrected"):
+        finalize_scene(tmp_path, render=False)

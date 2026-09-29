@@ -112,29 +112,33 @@ exit code 0입니다. 원격 timeout/cancel은 기존 backend 정책을 사용�
 
 표시 전환은 viewer에만 적용하며 다운로드는 바닥을 포함한 전체 scene입니다. 일부 객체 실패는 허용하고 전부 실패하면 run이 실패합니다. 벽·천장 복원이나 객체 편집 기능은 없습니다. 샘플 출처는 [ATTRIBUTION](samples/ATTRIBUTION.md)에 있습니다.
 
-## 가구 배치 보정과 바닥
+## 전체 좌표계 정렬과 바닥
 
-SAM3D 조립 뒤 CPU에서 명확한 가구 category의 world-space 최저점을 공통 Y 바닥에 맞춥니다.
-원본 mesh·pose·회전·크기·XZ 위치를 유지하며, 가구 높이의 50%를 넘는 이동은 건너뜁니다.
-기존 가구 위의 일부 소품은 category와 bounding box가 일치할 때 같은 수직 이동을 따릅니다.
-공통 바닥은 가구 최저점의 중앙값이고, 가구 footprint에 각 방향 15% 여유를 둔 얇은 중립색 slab을
-`background_floor` node로 저장합니다. 가구를 찾지 못하면 이동 없이 scene 최저점에 바닥만 생성합니다.
+생성에 성공한 모든 객체의 로컬 +Y를 최종 조립 행렬로 변환하고 각각 정규화합니다.
+동일 가중치로 단순 평균한 방향을 월드 +Y로 맞추는 최소 회전을 전체 객체에 적용합니다.
+이어 전체 메시 정점의 최저 Y가 0이 되도록 공통 이동합니다. 객체 종류나 크기에 따른
+가중치/이상치 제외는 없으며 기존 개별 Y 보정 및 소품 따라 이동은 실행하지 않습니다.
+객체 간 상대 변환과 원본 mesh/pose는 보존하고, 최종 matrix/position/quaternion/scale을 갱신합니다.
 
-Local pipeline과 원격 결과 수신 경로 모두 적용합니다. 원격 archive/input/scene hash 검증 후
-staging 영역에서 보정과 preview를 끝내고 `done`을 게시합니다. 기존 worker 재배포는 필요 없습니다.
-`logs/remote_integrity.json`은 worker 원본과 로컬 최종 scene hash를 구분합니다.
+평균 길이가 1e-6 미만이면 임의 방향 대신 실패를 기록합니다. 반대 방향은 고정 X축 180도 회전입니다.
+로컬 +Y가 실제 위쪽이라는 가정이 필요하며, 개별 기울기나 부유까지 해결하지는 않습니다.
+바닥은 정렬된 전체 객체의 XZ 범위에 양쪽 15% 여백을 둔 얇은 단색 slab입니다.
+윗면은 Y=0이며, 바닥 자체는 정렬 계산에서 제외합니다.
 
-기존 결과를 원본 보존 상태로 재처리하려면:
+로컬 생성과 원격 결과 수신 양쪽에 적용됩니다. 원격 결과는 해시 검증 후 staging에서
+정렬/preview를 완료하고 done을 게시합니다. 기존 원본 worker의 재배포는 필요 없습니다.
+
+보정되지 않은 저장 결과를 새 run으로 재처리하려면:
 
 ```powershell
 .venv\Scripts\python.exe scripts/reprocess_scene.py runs/<original-run-id>
 ```
 
-새 run 경로가 출력됩니다. 이 명령은 저장된 실제 추론 결과를 재사용하며 새 AI 추론을 하지 않습니다.
-반환된 ID를 `http://127.0.0.1:8082/?run=<new-run-id>`에서 열 수 있습니다.
-`scene_metadata.json`의 `placement`, 각 객체의 `placement`, `background`에 보정 전후 bbox·matrix·이동량이 있습니다.
-`previews/meshes/`는 최종 GLB 기준입니다. 기존 Gaussian preview는 원래 pose이며 바닥이 없습니다.
+GPU 추론 없이 저장 결과를 사용합니다. 새 ID는 `http://127.0.0.1:8082/?run=<new-run-id>`에서 열 수 있습니다.
+`placement` version 2에 평균 Y-up, 공통 변환, 최저점과 객체별 원본 행렬/전후 bounds를 기록합니다.
+동일 버전과 해시에는 재적용하지 않습니다. version 1 결과는 직접 재처리하지 않고 원본 조립 결과를 사용해야 합니다.
+GLB/mesh preview가 최종 정렬 결과입니다. Gaussian preview가 있다면 원래 pose이며 바닥이 없습니다.
 
-이는 추정 바닥 접촉 보정입니다. 카메라 기울기, 잘못된 SAM3D orientation, 애매한 식물/벽걸이 객체,
-물체 간 충돌, 실제 room layout은 해결하지 않습니다. 세 실제 저장 결과 비교와 검증 한계는
-[배치 검증 보고서](docs/placement_validation.md)에 기록했습니다.
+이전 개별 보정의 역사적 결과는 [배치 검증](docs/placement_validation.md)과
+[전체 샘플 비교](docs/SAMPLES_BEFORE_AFTER_COMPARISON.md)에 보존되어 있습니다.
+이번 검증은 [전체 좌표계 정렬 검증](docs/GLOBAL_ALIGNMENT_VALIDATION.md)을 참고하세요.

@@ -2,9 +2,9 @@
 
 최신 업데이트: 2026-09-29, Windows `D:\MapMaker`. 시작 HEAD는
 `476a8a4d64b5c3a9f8e53559e5ff04ac22e2d5dc`이며 기존 README 변경, untracked samples 및
-샘플 검증 스크립트/테스트는 보존했다. 아래 최신 절이 과거 기록보다 우선한다.
+샘플 검증 스크립트/테스트는 보존했다. 문서 마지막의 전체 좌표계 정렬 업데이트(version 2)가 과거 기록보다 우선한다.
 
-## 최신: placement correction + floor
+## 이전 구현: placement correction + floor (version 1)
 
 - 이미지 → RAM++ → SAM3 → SAM3D 객체 GLB/pose → 공식 scene assembly 경로는 유지한다.
 - `scene_placement.py`는 공식 조립 후 CPU에서 실행한다. GLB/Three.js world +Y를 사용하며
@@ -189,3 +189,14 @@ Ignored/untracked: `.runtime` private credential 3종, endpoint 설정, `.runtim
 - 품질 검증은 제한된 입력 기준이다. 구조물/room shell/편집/인증 기능은 구현되지 않았다. CPU preview는 orthographic painter와 triangle-centroid UV sampling으로 원본 camera 정합 평가가 아니다.
 
 처음 읽는 순서: 이 문서 → scene_pipeline → scene_remote/serverless_worker → scene_vision → scene_reconstruct/scene_assembly → web. 배포 변경 시 runtime_paths, model manifest, source revisions, ABI별 freeze를 함께 확인한다. 기존 successful artifacts를 지우기 전에 reference/evidence 사용처를 먼저 확인한다.
+
+
+## 전체 좌표계 정렬 업데이트 (2026-09-29)
+
+현재 production 후처리는 placement version 2다. 생성 성공 객체 전체의 조립된 로컬 +Y를
+각각 정규화하고 동일 가중치로 평균하여 월드 +Y에 정렬한다. 전체 정점의 최저 Y를 0으로
+맞추는 공통 이동을 적용하며, 기존 개별 Y 보정/소품 추종은 실행하지 않는다.
+바닥 윗면은 Y=0이며 크기는 정렬된 전체 객체의 XZ 범위를 사용한다.
+평균 길이 <1e-6은 실패, 정확한 반대 방향은 X축 180도 회전, v1 결과에는 중복 적용하지 않는다.
+원본 객체 mesh/pose 및 객체 간 상대 변환은 보존한다. 이전 절의 개별 배치 검증은 역사적 결과다.
+검증 근거와 CPU 재처리 뷰어 링크: [GLOBAL_ALIGNMENT_VALIDATION](docs/GLOBAL_ALIGNMENT_VALIDATION.md).
