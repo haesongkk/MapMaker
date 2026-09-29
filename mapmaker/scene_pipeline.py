@@ -113,6 +113,9 @@ class Pipeline:
                     check=True,
                 )
             self.reconstruct(run)
+            from .scene_placement import finalize_scene
+
+            finalize_scene(run, render=False)
             with (run / "logs/preview.log").open("w") as log:
                 subprocess.run(
                     [

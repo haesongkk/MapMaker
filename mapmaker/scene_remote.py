@@ -133,12 +133,15 @@ class RemotePipeline:
                         status(run, "exporting", "Downloading and verifying scene...")
                         archive = Path(tmp) / "result.zip"
                         self.store.download(run.name, archive)
-                        materialize(archive, run, output)
+                        from .scene_placement import finalize_scene
+                        materialize(archive, run, output, finalize=finalize_scene)
                         if not output.get("success", True):
                             raise RuntimeError("Worker pipeline failed; diagnostics downloaded to this run's logs")
                         write(run / "logs/remote_integrity.json", {
                             "job_id": job, "archive_sha256": sha(archive),
                             "scene_sha256": sha(run / "scene.glb"), "verified": True,
+                            "worker_scene_sha256": output.get("scene_sha256"),
+                            "local_finalization": read(run / "scene_metadata.json").get("placement"),
                             "round_trip_seconds": time.monotonic() - started,
                         })
                         return

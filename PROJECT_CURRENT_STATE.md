@@ -1,5 +1,69 @@
 # PROJECT CURRENT STATE — SAM3D Scene Studio
 
+최신 업데이트: 2026-09-29, Windows `D:\MapMaker`. 시작 HEAD는
+`476a8a4d64b5c3a9f8e53559e5ff04ac22e2d5dc`이며 기존 README 변경, untracked samples 및
+샘플 검증 스크립트/테스트는 보존했다. 아래 최신 절이 과거 기록보다 우선한다.
+
+## 최신: placement correction + floor
+
+- 이미지 → RAM++ → SAM3 → SAM3D 객체 GLB/pose → 공식 scene assembly 경로는 유지한다.
+- `scene_placement.py`는 공식 조립 후 CPU에서 실행한다. GLB/Three.js world +Y를 사용하며
+  기존 `native_row.T @ inverse_export` matrix와 child/node transform을 그대로 존중한다.
+  local vertex나 pivot을 다시 정규화하지 않는다. pose 원본 파일도 수정하지 않는다.
+- 실제 문제: 가구 world bbox 최저점이 서로 달랐고 바닥 접촉 제약/geometry가 없었다.
+  기존 공식 좌표 검증은 통과한 상태다. 이번 조사에서 축 변환/중복 transform 오류를 입증하지 못했다.
+  공통 카메라 기울기와 SAM3D 자체 orientation 오류는 여전히 남는다.
+- 확실한 가구 이름 whitelist의 최저점 중앙값을 floor_y로 잡는다. world bbox는 모든 descendant
+  geometry instance의 전체 transform을 적용한 모든 vertex에서 계산한다.
+  `delta_y = floor_y - bbox_min_y`; 높이 50%를 넘는 보정은 skip한다.
+  XZ, rotation, scale은 불변. 소품 whitelist + footprint 겹침 + 수직 범위로 지지 가구가
+  정확히 하나인 경우 그 가구의 delta_y만 따라간다. 새 위치로 snap하지 않는다.
+- 메타데이터에 원본 matrix, local/world bbox, 최저/최고점, 중심, bottom center, 이동량,
+  skip 이유, 지지 객체 및 before/after metric을 기록한다. 최종 GLB 재로드로 bbox/matrix를 검증한다.
+- 바닥: 지지 가구 footprint(없으면 전체 scene) + 각 변 15% margin, scene scale의 0.5% 두께.
+  slab 위쪽이 정확히 floor_y. 별도 `background_floor` node이고 기존 객체를 제거하지 않는다.
+- Local `Pipeline.run`은 reconstruct 후 보정하고 mesh preview를 만든다. 원격 경로는
+  `materialize(..., finalize=finalize_scene)`에서 archive/input/원본 GLB hash 검증 후,
+  staging 내부에서 보정/preview를 완료한 다음 status를 마지막에 게시한다.
+  새/기존 worker 모두 지원하며 version+최종 hash 검사로 이중 보정을 방지한다.
+  원격 worker/endpoint/image는 변경하거나 배포하지 않았다.
+- `previews/meshes`는 최종 scene 기준. CPU painter의 큰 바닥 삼각형 occlusion 오류는
+  backdrop 우선 그리기로 수정했다. 정밀한 depth 판단은 WebGL이 기준이다.
+  Gaussian PNG/PLY는 공식 원래 pose를 보존하며 바닥이 없다는 점을 metadata에 명시한다.
+- MakeYourBrick 실제 조사: `mesh/orient.py`의 longest-axis 추정(1.2 dominance)과 명시적 Y-up 회전,
+  `mesh/inspect.py`의 transform을 포함한 Scene flatten/finite bounds 검사를 확인했다.
+  bbox/transform 검사 방식을 참고했지만 소파의 긴 축을 세우는 오류를 피하려고 auto orientation은
+  포팅하지 않았다. 직접 복사한 upstream 코드는 없다. source 링크는 검증 보고서에 있다.
+- 벽, 새 모델, physics/collision solver, PCA/자동 방향 추론은 의도적으로 제외. 추가 dependency 없음.
+
+## 최신 검증 범위
+
+- CPU 회귀 46 passed; 기존 공식 assembly 축 검증 테스트도 통과. 새 테스트는 nested node/shared
+  instance, 비균일 scale/회전/pivot bbox, floor contact, outlier skip, 소품 이동, floor GLB,
+  idempotence/hash, 원격 검증/게시 순서와 실패 원자성을 검사한다.
+- 거실/식당/침실의 저장된 실제 SAM3D 결과 3개를 CPU 재처리했다. 30/30 객체 mesh·pose·mask·입력은
+  보존, 회전/scale/XZ 불변. 선정한 가구 16개에서 추정 floor 기준 floating 7→0, penetration 7→0.
+  이는 실제 이미지 바닥 ground truth 평가가 아니며 category 밖 객체의 floating을 포함하지 않는다.
+- Before는 기존 inference artifact 복사 + 현재 CPU preview 재실행이다. After는 같은 mesh/pose의
+  실제 새 GLB/preview 생성이다. 새 이미지→GPU 전체 inference E2E는 이번 환경에서 실행하지 않았다.
+  Windows에는 GPU 모델 환경이 없고 셸 외부 연결/Chromium 실행 제한이 있어 추가 자원 설정을 하지 않았다.
+- 3개 scene의 artifact validator, 실제 HTTP 다운로드 hash 검사가 통과했다.
+  앱 내 브라우저로 before/after 3개 scene을 열고 floor/객체를 확인했다.
+  세부 UI 검증 결과/미검증 범위와 screenshot은 `docs/placement_validation.md` 및
+  `runs/placement_validation/`에 기록한다.
+- 품질 한계: camera tilt와 잘못된 canonical orientation을 유지하므로 모든 다리가 바닥에 닿는 것은
+  아니다. 식물/벽 장식은 보수적으로 제외. large AABB overlap은 식당에서 6→7쌍으로 증가했다
+  (table/chair 빈 공간도 포함하는 proxy); 충돌 해결/전반적인 품질 개선을 주장하지 않는다.
+
+커밋은 `.git/index.lock` 쓰기 권한 제한으로 생성하지 못했다. 사용자 추가 승인 없이
+변경 파일과 `runs/placement_validation/changes.patch`를 보존했다. push 없음.
+
+상세 결과와 재실행 방법: [placement validation](docs/placement_validation.md).
+
+---
+
+# 이전 상태 기록 — 2026-09-28 (아래 내용은 보정 도입 전)
+
 조사·정리 기준: 2026-09-28, Windows `D:\MapMaker`. 실제 import/call graph, subprocess/CLI entrypoint, Docker, scripts/tests/frontend, 고정 upstream source와 S3 model YAML을 교차 확인했다. 기존 작업 tree는 깨끗했다. 실행 절차는 [README](README.md), 배포·복구는 [runtime guide](docs/runtime.md)가 담당한다.
 
 ## 1. 제품과 현행 실행 경로

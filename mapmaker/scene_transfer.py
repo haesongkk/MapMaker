@@ -67,7 +67,7 @@ def unpack_run(archive, target):
                 shutil.copyfileobj(src, dst, 1024 * 1024)
 
 
-def materialize(archive, run, output):
+def materialize(archive, run, output, *, finalize=None):
     run = Path(run)
     if sha(archive) != output["archive_sha256"]:
         raise ValueError("Result archive SHA-256 mismatch")
@@ -88,6 +88,8 @@ def materialize(archive, run, output):
                 raise ValueError("Remote scene asset missing")
             if sha(staged / "scene.glb") != output["scene_sha256"]:
                 raise ValueError("Scene GLB SHA-256 mismatch")
+            if finalize is not None:
+                finalize(staged)
         # Publish status last: the viewer must never see done before every file exists.
         for path in sorted(staged.rglob("*")):
             if path.is_file() and path.name != "status.json":

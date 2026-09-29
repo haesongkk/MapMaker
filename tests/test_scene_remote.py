@@ -7,6 +7,8 @@ from pathlib import Path
 
 import pytest
 from PIL import Image
+import numpy as np
+import trimesh
 
 from mapmaker.scene_pipeline import create_run, configured_pipeline
 from mapmaker.scene_remote import RemotePipeline
@@ -41,10 +43,15 @@ def make_run(tmp_path):
 def remote_result(run, tmp_path):
     remote = tmp_path / "worker" / run.name
     shutil.copytree(run, remote)
-    (remote / "scene.glb").write_bytes(b"test-glb")
+    scene = trimesh.Scene(base_frame="Scene")
+    scene.graph.update(frame_from="Scene", frame_to="chair_00", matrix=np.eye(4))
+    scene.add_geometry(trimesh.creation.box(), node_name="chair_00__0", parent_node_name="chair_00")
+    scene.export(remote / "scene.glb")
     write(remote / "object_candidates.json", {"raw_tags": ["chair"]})
     meta = read(remote / "scene_metadata.json")
     meta["scene_asset"] = "scene.glb"
+    meta["objects"] = [{"id": "chair_00", "name": "chair", "status": "generated",
+                        "transform": {"matrix": np.eye(4).tolist(), "position": [0, 0, 0]}}]
     write(remote / "scene_metadata.json", meta)
     status(remote, "done", "Done")
     archive = tmp_path / "result.zip"
@@ -80,6 +87,30 @@ def test_verified_materialization(tmp_path):
     materialize(archive, run, output)
     assert read(run / "status.json")["stage"] == "done"
     assert sha(run / "scene.glb") == output["scene_sha256"]
+
+
+def test_finalization_failure_never_publishes_done(tmp_path):
+    run = make_run(tmp_path)
+    archive, output = remote_result(run, tmp_path)
+
+    def fail(staged):
+        (staged / "scene.glb").write_bytes(b"partial")
+        raise ValueError("Finalization failed")
+
+    with pytest.raises(ValueError, match="Finalization failed"):
+        materialize(archive, run, output, finalize=fail)
+    assert not (run / "scene.glb").exists()
+    assert read(run / "status.json")["stage"] == "queued"
+
+
+def test_finalization_runs_only_after_worker_hash_verification(tmp_path):
+    run = make_run(tmp_path)
+    archive, output = remote_result(run, tmp_path)
+    output["scene_sha256"] = "wrong"
+    calls = []
+    with pytest.raises(ValueError, match="SHA-256 mismatch"):
+        materialize(archive, run, output, finalize=lambda staged: calls.append(staged))
+    assert not calls
 
 
 def test_materialization_publishes_status_last(tmp_path, monkeypatch):

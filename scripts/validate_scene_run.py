@@ -46,6 +46,25 @@ assert kind == 0x4E4F534A
 gltf = json.loads(raw[20 : 20 + length])
 names = {n.get("name") for n in gltf["nodes"]}
 assert all(o["id"] in names for o in objects)
+placement_checks = None
+if meta.get("placement"):
+    from mapmaker.scene_placement import bounds_of, object_vertices
+    from mapmaker.scene_run import sha
+    assert sha(run / "scene.glb") == meta["placement"]["scene_sha256"]
+    for obj in objects:
+        bounds = bounds_of(object_vertices(scene, obj["id"]))
+        assert np.allclose(bounds, obj["placement"]["world_bounds_after"], atol=1e-6)
+        before = np.asarray(obj["placement"]["original_matrix"])
+        after = np.asarray(obj["transform"]["matrix"])
+        assert np.array_equal(before[:3, :3], after[:3, :3])
+        assert np.array_equal(before[[0, 2], 3], after[[0, 2], 3])
+        if obj["placement"]["reason"] == "floor_contact":
+            assert abs(bounds[0, 1] - meta["placement"]["floor_y"]) < 1e-6
+    floor = meta["background"][0]
+    assert floor["node"] in names
+    bounds = bounds_of(object_vertices(scene, floor["node"]))
+    assert abs(bounds[1, 1] - floor["top_y"]) < 1e-6
+    placement_checks = {"floor": True, "transforms_preserved": True, "world_bounds": True}
 report = {
     "passed": True,
     "run": str(run),
@@ -53,6 +72,7 @@ report = {
     "node_count": len(objects),
     "gltf_node_count": len(gltf["nodes"]),
     "errors": meta["errors"],
+    "placement": placement_checks,
     "previews": [str(p.relative_to(run)) for p in (run / "previews").rglob("*.png")],
 }
 assert report["previews"]

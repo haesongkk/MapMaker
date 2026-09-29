@@ -1,0 +1,246 @@
+{
+  "date": "2026-09-29",
+  "start_head": "476a8a4d64b5c3a9f8e53559e5ff04ac22e2d5dc",
+  "validation_mode": "saved real inference artifacts; CPU reprocessing, not fresh GPU E2E",
+  "tests": {
+    "pytest_passed": 46,
+    "node_app_syntax": true,
+    "artifact_validation": 3
+  },
+  "browser": {
+    "method": "Codex in-app browser, visible UI/screenshot verification",
+    "before_after_loaded": 3,
+    "floor_visible": 3,
+    "living_room_all_six_toggles": true,
+    "orbit": true,
+    "zoom": true,
+    "pan": "not revalidated; standalone Playwright launch blocked (EPERM)",
+    "download_link_clicked": true,
+    "http_download_hash_verified": 3,
+    "fresh_upload_gpu_e2e": false
+  },
+  "samples": [
+    {
+      "sample": "living",
+      "source": "bdb87bacea354d3db4965630840dd9fb",
+      "before": "884a54d6d58046c6a45ad4230a6abb50",
+      "after": "95a8306281d6410b97a146aabe174b55",
+      "objects": 6,
+      "input_sha256": "dd8fbcf1f705cd1be9980298bfd3fe6586562c61c9ad1548c173731c41a941e5",
+      "metrics": {
+        "before": {
+          "floor_supported_count": 3,
+          "floating_count": 1,
+          "penetrating_count": 1,
+          "mean_absolute_contact_error": 0.02900949397776979,
+          "large_aabb_overlap_pairs": []
+        },
+        "after": {
+          "floor_supported_count": 3,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "mean_absolute_contact_error": 0.0,
+          "large_aabb_overlap_pairs": []
+        }
+      },
+      "max_delta_y": 0.05590138206456341,
+      "preserved": [
+        "input_pixels",
+        "object_ids",
+        "meshes",
+        "poses",
+        "rotations",
+        "scales",
+        "xz_positions"
+      ],
+      "attachments": [
+        [
+          "book_00",
+          "coffee_table_00"
+        ]
+      ],
+      "download_http_sha256_verified": true
+    },
+    {
+      "sample": "dining",
+      "source": "09c38164b7784d95a2d8856875c497fd",
+      "before": "7381dfed42e94b6094549875304f249c",
+      "after": "7b399cd5944b42b89e20c241f3253953",
+      "objects": 12,
+      "input_sha256": "e4ec6b4712cd1707d46de909a70adef606a319dfe3b3ef39b3fdc3399d73b286",
+      "metrics": {
+        "before": {
+          "floor_supported_count": 9,
+          "floating_count": 4,
+          "penetrating_count": 4,
+          "mean_absolute_contact_error": 0.08024396562047681,
+          "large_aabb_overlap_pairs": [
+            [
+              "dining_table_00",
+              "chair_00",
+              0.7096171040757128
+            ],
+            [
+              "dining_table_00",
+              "chair_01",
+              0.8579574842886147
+            ],
+            [
+              "dining_table_00",
+              "chair_02",
+              0.7799836565226921
+            ],
+            [
+              "dining_table_00",
+              "chair_03",
+              0.7719657427192765
+            ],
+            [
+              "dining_table_00",
+              "chair_04",
+              0.5523859265533075
+            ],
+            [
+              "dining_table_00",
+              "chair_05",
+              0.8960622100801796
+            ]
+          ]
+        },
+        "after": {
+          "floor_supported_count": 9,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "mean_absolute_contact_error": 0.0,
+          "large_aabb_overlap_pairs": [
+            [
+              "dining_table_00",
+              "chair_00",
+              0.7096171040757128
+            ],
+            [
+              "dining_table_00",
+              "chair_01",
+              0.8579574842886147
+            ],
+            [
+              "dining_table_00",
+              "chair_02",
+              0.7799836565226921
+            ],
+            [
+              "dining_table_00",
+              "chair_03",
+              0.7719657427192765
+            ],
+            [
+              "dining_table_00",
+              "chair_04",
+              0.6451608586144673
+            ],
+            [
+              "dining_table_00",
+              "chair_05",
+              0.9301628744860516
+            ],
+            [
+              "chair_00",
+              "chair_03",
+              0.2865036699605624
+            ]
+          ]
+        }
+      },
+      "max_delta_y": 0.14661162187203214,
+      "preserved": [
+        "input_pixels",
+        "object_ids",
+        "meshes",
+        "poses",
+        "rotations",
+        "scales",
+        "xz_positions"
+      ],
+      "attachments": [
+        [
+          "centerpiece_00",
+          "dining_table_00"
+        ]
+      ],
+      "download_http_sha256_verified": true
+    },
+    {
+      "sample": "bedroom",
+      "source": "8c4ac2b9b70d4ca7a0336ff065db5176",
+      "before": "7a55c125f8714a1faa94ef7b636e508e",
+      "after": "b4e1cfd9b740491b9c68c881119467cd",
+      "objects": 12,
+      "input_sha256": "b2d41ffcbd1d5a8061c793544d4bb53f4657c3bb21750e4b721eeae103c63947",
+      "metrics": {
+        "before": {
+          "floor_supported_count": 4,
+          "floating_count": 2,
+          "penetrating_count": 2,
+          "mean_absolute_contact_error": 0.06027203295302552,
+          "large_aabb_overlap_pairs": [
+            [
+              "computer_desk_00",
+              "chair_00",
+              1.0
+            ]
+          ]
+        },
+        "after": {
+          "floor_supported_count": 4,
+          "floating_count": 0,
+          "penetrating_count": 0,
+          "mean_absolute_contact_error": 0.0,
+          "large_aabb_overlap_pairs": [
+            [
+              "computer_desk_00",
+              "chair_00",
+              1.0
+            ]
+          ]
+        }
+      },
+      "max_delta_y": 0.10113569365684144,
+      "preserved": [
+        "input_pixels",
+        "object_ids",
+        "meshes",
+        "poses",
+        "rotations",
+        "scales",
+        "xz_positions"
+      ],
+      "attachments": [
+        [
+          "desktop_00",
+          "computer_desk_00"
+        ],
+        [
+          "bedding_00",
+          "bed_00"
+        ],
+        [
+          "bedding_01",
+          "bed_00"
+        ]
+      ],
+      "download_http_sha256_verified": true
+    }
+  ],
+  "limitations": [
+    "Floor inferred from support bbox medians, no ground truth floor",
+    "Camera tilt and existing orientation errors preserved",
+    "Ambiguous plants and wall-mounted objects unchanged",
+    "AABB overlap dining 6->7; no collision solver",
+    "CPU painter floor backdrop is approximate, WebGL has depth testing"
+  ],
+  "git": {
+    "commit": null,
+    "reason": "git add failed: .git/index.lock Permission denied",
+    "patch": "runs/placement_validation/changes.patch"
+  }
+}

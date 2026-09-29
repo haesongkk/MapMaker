@@ -50,6 +50,7 @@ def run_scene(run):
             "scene_vision.py",
             "scene_reconstruct.py",
             "scene_assembly.py",
+            "scene_placement.py",
             "scene_pipeline.py",
         )
     }

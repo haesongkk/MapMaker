@@ -19,6 +19,7 @@ out.mkdir(parents=True, exist_ok=True)
 s = trimesh.load(a.asset, force="scene", process=False)
 tris = []
 colors = []
+background = []
 palette = np.array(
     [
         [65, 130, 200],
@@ -39,6 +40,7 @@ for k, node in enumerate(s.graph.nodes_geometry):
     v = trimesh.transform_points(g.vertices, tf)
     tri = v[g.faces]
     tris.append(tri)
+    background.append(np.full(len(tri), node == "background_floor", dtype=bool))
     col = np.tile(
         palette[k % len(palette)] if not a.material else [185, 185, 185], (len(tri), 1)
     )
@@ -65,6 +67,7 @@ for k, node in enumerate(s.graph.nodes_geometry):
 t = np.concatenate(tris)
 t = t * np.array([1, -1, -1]) if a.opencv_frame else t
 c = np.concatenate(colors)
+is_background = np.concatenate(background)
 lo = t.min((0, 1))
 hi = t.max((0, 1))
 t = t - (lo + hi) / 2
@@ -91,6 +94,9 @@ for name, rot in views.items():
     xy[:, :, 1] *= -1
     xy += 256
     idx = np.argsort(tr[:, :, 2].mean(1))
+    # Large floor triangles break centroid painter sorting. Draw the support
+    # backdrop first; WebGL remains the authoritative depth-tested preview.
+    idx = np.concatenate([idx[is_background[idx]], idx[~is_background[idx]]])
     im = Image.new("RGB", (512, 550), "#f4f4f4")
     d = ImageDraw.Draw(im)
     for j in idx:
@@ -109,7 +115,7 @@ for name, rot in views.items():
 (out / "render_note.json").write_text(
     json.dumps(
         {
-            "method": "orthographic painter rendering of every original triangle, graph transforms respected; per-view bounds fitted to frame",
+            "method": "orthographic painter rendering of every original triangle, graph transforms respected; floor backdrop first; per-view bounds fitted to frame",
             "source_asset": str(Path(a.asset).resolve()),
             "texture_rendered": a.material,
             "texture_limit": "CPU per-triangle centroid UV sampling, not full raster interpolation; no fine-detail quality claims",

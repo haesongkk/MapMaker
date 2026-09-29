@@ -98,7 +98,8 @@ async function showScene(meta) {
     $("#objects").append(row);
   }
   $("#object-count").textContent = objects.length;
-  $("#scene-summary").textContent = `${objects.length} independent objects`;
+  const hasFloor = (meta.background || []).some((o) => o.kind === "floor");
+  $("#scene-summary").textContent = `${objects.length} independent objects${hasFloor ? " + floor" : ""}`;
   const link = $("#export");
   link.href = `/runs/${runId}/scene.glb?download`;
   link.download = "scene.glb";
