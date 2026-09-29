@@ -1,21 +1,115 @@
-# SAM3D Scene Studio
+# MapMaker
 
-이미지 한 장에서 RAM++ 후보 → SAM3 instance mask → SAM3D 객체 mesh/pose → 독립 object node의 `scene.glb`를 생성합니다. Three.js에서 orbit/zoom/pan, 객체 표시 전환, 전체 GLB 다운로드와 기존 run URL 복원을 지원합니다.
+**단일 이미지에서 객체별 3D 모델을 생성하고 하나의 장면으로 조립하는 졸업 프로젝트**
 
-현재 구조·검증 범위는 [PROJECT_CURRENT_STATE.md](PROJECT_CURRENT_STATE.md), worker 배포와 복구 절차는 [runtime guide](docs/runtime.md)를 참조하세요.
+MapMaker는 이미지 한 장을 입력받아 주요 객체를 찾아 분리하고, 각 객체의 3D 형상과 배치를 추정하여 웹에서 확인할 수 있는 3D 장면을 생성합니다. RAM++, SAM3, SAM3D Objects를 하나의 처리 과정으로 연결하며, 생성된 객체는 개별 노드로 유지한 채 GLB 파일로 내보냅니다.
 
-## Windows 실행
+프로젝트의 목표는 **단일 이미지 기반 3D 생성 기술을 실제로 동작하는 시스템으로 구현하는 것**입니다. 기존 모델을 활용한 생성 과정부터 장면 조립·배치 보정, 원격 GPU 실행, 웹 시각화까지 연결한 1차 구현을 정리합니다.
 
-이미 설정된 checkout:
+장기적으로는 방과 주변을 포함한 온전한 장면 복원과 편집을 목표로 합니다. 이번 1차 구현은 객체별 3D 생성과 장면 구성까지이며, 주변 공간 전체 복원과 객체 편집 UI는 후속 범위로 남아 있습니다.
 
-```powershell
-.venv\Scripts\python.exe -m mapmaker.cli doctor
-powershell -ExecutionPolicy Bypass -File scripts/start_scene_web.ps1
+초기 실험과 개선 전후 비교는 [개발 과정과 개선 기록](docs/DEVELOPMENT_HISTORY.md), 모델 연결·좌표 변환·배치 보정·원격 실행의 구체적인 방식은 [상세 구현 문서](docs/IMPLEMENTATION.md)에 정리했습니다.
+
+## 주요 기능
+
+| 기능 | 설명 |
+|---|---|
+| 이미지 입력 | PNG·JPEG·WebP 업로드, 이미지 방향 및 색상 형식 정규화 |
+| 객체 탐색·분리 | RAM++의 객체 후보를 바탕으로 SAM3가 객체별 마스크 생성 |
+| 객체별 3D 생성 | SAM3D Objects로 메시와 위치·회전·크기 추정 |
+| 장면 조립·보정 | 객체별 노드를 가진 장면 구성, 위쪽 방향 정렬, 지정된 가구의 바닥 접지 및 바닥 생성 |
+| 웹 시각화 | 회전·확대·축소·이동, 객체별 표시 전환, 생성 진행 상태 확인 |
+| 결과 저장·내보내기 | 전체 장면 GLB 다운로드, 실행 ID 기반 결과 다시 열기, 중간 산출물·로그 보존 |
+
+현재 입력 제한은 **25 MiB / 16 megapixels**, 장면당 분리 대상은 최대 **12개 객체**입니다. 일부 객체 생성에 실패하면 성공한 객체로 장면을 구성하고, 모든 객체가 실패하면 해당 실행을 실패 처리합니다. 객체 표시 전환은 뷰어에만 적용되며, 다운로드에는 바닥을 포함한 전체 장면이 저장됩니다.
+
+## 처리 과정
+
+```mermaid
+flowchart LR
+    A[이미지 입력] --> B[RAM++ 객체 후보 추출]
+    B --> C[SAM3 객체별 마스크 생성]
+    C --> D[SAM3D 객체별 3D 생성]
+    D --> E[장면 조립 및 배치 보정]
+    E --> F[Three.js 시각화 및 GLB 내보내기]
 ```
 
-[로컬 앱](http://127.0.0.1:8082)을 열어 이미지를 업로드합니다. Windows 기본 backend는 RunPod이며 실제 생성에는 GPU 비용이 발생합니다. 완료까지 backend를 유지하세요. 브라우저 새로고침은 URL의 run을 복원합니다. Backend 재시작은 중단된 원격 run을 실패 처리하고 취소를 시도합니다.
+1. **입력 준비**: 이미지의 EXIF 방향을 반영하고 RGB PNG로 정규화합니다.
+2. **객체 후보 추출**: RAM++가 이미지의 태그를 추출합니다. 배경·재질·동작 등 독립 객체로 보기 어려운 태그를 제외하고 후보 이름을 정리합니다.
+3. **객체 분리**: 후보 이름을 SAM3의 프롬프트로 사용하여 객체별 영역을 구합니다. 신뢰도·면적·중복 기준으로 마스크를 선택합니다.
+4. **3D 생성**: SAM3D Objects에 원본 전체 이미지와 객체별 마스크를 전달하여 각 객체의 메시와 위치·회전·크기를 추정합니다.
+5. **장면 구성**: 모델의 좌표계를 GLB에 맞게 변환하여 객체를 조립한 뒤, 방향과 바닥 배치를 보정합니다.
+6. **결과 확인**: Three.js 뷰어에서 장면을 탐색하고 GLB를 다운로드합니다. 입력·마스크·객체 모델·메타데이터를 함께 저장하여 결과를 추적할 수 있습니다.
 
-새 checkout 준비 (Python 3.11, Node.js와 uv 필요):
+## 직접 구현한 부분
+
+### 기존 모델 연결
+
+RAM++ → SAM3 → SAM3D Objects의 입출력을 연결하고, 이미지 한 장으로 객체 탐색부터 3D 생성까지 진행되는 파이프라인을 구성했습니다. 모델별 Python·PyTorch·CUDA 의존성 차이를 고려해 비전 처리와 3D 생성 환경을 분리하고, 실행 상태와 오류를 하나의 작업 단위로 관리합니다.
+
+각 모델은 객체 인식·분할·3D 추정을 담당하며, 본 프로젝트의 구현 기여는 이 모델들을 연결하고 생성 결과를 사용할 수 있는 시스템으로 구성한 부분에 있습니다.
+
+### 장면 조립·배치 보정
+
+객체의 메시와 추정된 위치·회전·크기를 이용하여 하나의 장면을 구성합니다. 각 객체는 독립 노드로 유지하고, 모델의 좌표계와 GLB 좌표계 사이의 변환을 처리합니다.
+
+현재 보정은 다음 순서로 적용됩니다.
+
+- 전체 객체의 위쪽 축 방향을 평균하여 장면을 월드 +Y 방향으로 정렬하고, 전체 메시의 최저점을 Y=0으로 이동합니다.
+- 각 객체의 로컬 +Y 축을 개별적으로 월드 +Y에 정렬합니다.
+- 의자·테이블·소파 등 지정된 가구는 메시의 최저점이 Y=0에 닿도록 이동합니다. 그 외 객체는 개별 회전 시 기준점 위치를 유지합니다.
+- 최종 객체 범위를 바탕으로 단색 바닥을 추가합니다. 이 바닥은 원본 이미지에서 복원한 실제 바닥 형상이 아닙니다.
+
+원본 객체 메시와 모델이 추정한 pose는 보존하고, 보정 변환을 별도로 기록합니다. 축 정렬과 접지를 위한 기하학적 후처리이며, 물리 시뮬레이션이나 객체 간 충돌 해결은 포함하지 않습니다.
+
+### 원격 GPU 처리
+
+Windows의 로컬 Python 서버가 RunPod Serverless에 생성 작업을 제출하고, S3를 통해 입력과 결과를 주고받습니다. GPU worker가 모델 추론을 수행하며, 로컬 서버는 진행 상태를 조회하고 결과 파일의 해시와 입력 일치 여부를 확인한 뒤 후처리·결과 게시를 마칩니다.
+
+시간 초과·실패·취소 요청과 중복 생성 요청을 처리하고 실행별 로그를 남깁니다. 서버 재시작으로 중단된 원격 작업은 실패 처리 후 취소를 시도하며, 자동 재개는 지원하지 않습니다.
+
+### 웹 뷰어
+
+Three.js 기반으로 이미지 업로드, 생성 상태 표시, 3D 장면 탐색, 객체 표시 전환, GLB 다운로드를 구현했습니다. `/?run=<run_id>` 주소로 저장된 결과를 다시 열 수 있습니다.
+
+## 구현 결과와 검증
+
+아래는 현재 배치 보정을 적용한 거실 장면의 WebGL 렌더링 예시입니다. 가구의 형태와 배치를 확인할 수 있으며, TV·책 등 일부 객체의 부유와 접촉 문제도 남아 있습니다.
+
+![거실 이미지에서 생성한 객체별 3D 장면](docs/assets/all_object_upright/88e01c90_after_front.png)
+
+저장소에 보존된 검증 기록은 다음과 같습니다. 각 기록은 수행 당시의 구현과 입력을 기준으로 합니다.
+
+| 검증 범위 | 기록된 결과 | 해석 범위 |
+|---|---|---|
+| 기존 GPU 생성·뷰어 검증 | 당시 29개 입력 중 22개 PASS, 7개는 16MP 입력 제한으로 실패 | 이전 배치 보정 버전의 전체 생성 경로 검증 |
+| 현재 배치 보정(v4) 수치 검증 | 저장된 22개 장면·120개 객체의 축 정렬, 가구 46개의 접지 검사 통과 | 기존 추론 결과를 사용한 보정 검증이며 GPU 재추론은 아님 |
+| 현재 보정의 화면 비교 | 대표 3개 장면·28개 객체를 재처리하고 전후 6개 뷰어 검사 통과 | 동일 카메라 조건의 비교 및 표시 전환·다운로드 등 동작 확인 |
+
+검증 PASS는 파일·좌표 변환·뷰어 동작이 검사 기준을 충족했다는 의미입니다. 실제 공간과의 복원 정확도나 시각적 완성도를 나타내는 점수는 아닙니다. 상세 근거와 비교 이미지는 [전체 샘플 생성 기록](docs/SAMPLES_BEFORE_AFTER_COMPARISON.md), [현재 배치 보정 검증](docs/ALL_OBJECT_UPRIGHT_VALIDATION.md)에 있습니다.
+
+## 현재 한계
+
+- **형상과 배치의 불확실성**: 한 장의 이미지에서 추정하므로 가려진 부분, 얇은 구조, 작은 소품의 형상이 부정확하거나 객체가 누락될 수 있습니다. 실제 치수나 정확한 상대 배치를 보장하지 않습니다.
+- **접촉·충돌 문제**: 로컬 +Y가 실제 위쪽이라는 가정으로 정렬합니다. 가구의 모든 다리가 바닥에 닿거나 소품이 지지 가구에 붙어 있는 상태를 보장하지 않으며, 부유·관통·겹침이 남을 수 있습니다.
+- **장면 범위**: 객체 중심의 장면을 생성합니다. 벽·천장을 포함한 공간 전체 복원과 객체 위치·크기를 수정하는 편집 기능은 구현하지 않았습니다.
+- **실행 환경**: 실제 생성에는 준비된 GPU 모델 환경이 필요합니다. 초기 모델 로딩과 파일 전송 시간이 있으며, RunPod 사용 시 GPU·스토리지 비용이 발생합니다.
+
+## 기술 구성
+
+| 구분 | 사용 기술 |
+|---|---|
+| 객체 인식·분할·생성 | RAM++, SAM3, SAM3D Objects, PyTorch |
+| 파이프라인·장면 처리 | Python, NumPy, Pillow, trimesh |
+| 원격 실행·저장 | RunPod Serverless, S3, Docker |
+| 웹 화면 | HTML, CSS, JavaScript, Three.js |
+| 검증 | pytest, Playwright, 산출물·좌표 변환 검증 스크립트 |
+
+## 실행 방법
+
+기본 사용 환경은 **Windows 로컬 서버 + RunPod 원격 GPU**입니다. Python 3.11, Node.js, uv와 별도로 배포된 RunPod endpoint 및 S3 접근 설정이 필요합니다. 모델과 인증 정보는 저장소에 포함하지 않습니다.
+
+처음 준비할 때는 저장소 루트에서 실행합니다.
 
 ```powershell
 uv sync --frozen --extra remote
@@ -24,129 +118,31 @@ powershell -ExecutionPolicy Bypass -File scripts/configure_runpod_api.ps1
 powershell -ExecutionPolicy Bypass -File scripts/configure_runpod_s3.ps1
 ```
 
-별도로 배포된 RunPod endpoint와 artifact/model S3 권한이 필요합니다. `RUNPOD_ENDPOINT_ID`, `MAPMAKER_S3_BUCKET`, `MAPMAKER_S3_ENDPOINT`, `AWS_DEFAULT_REGION`을 환경 변수 또는 ignored `.runtime/runpod-settings.json`에 설정합니다. 두 인증 스크립트는 비공개 입력을 `.runtime`에 저장합니다. 기존 인증 점검 용도로 재실행하지 마세요. 명시적 환경 변수가 파일 설정보다 우선합니다.
-
-`doctor`는 파일·설정 존재 검사이며 원격 인증/추론 성공 검사가 아닙니다. HTTP 입력은 최대 25 MiB, 16 megapixels입니다. 내장 인증이 없으므로 Windows launcher는 localhost에 바인딩합니다.
-
-## CLI와 검증
+`RUNPOD_ENDPOINT_ID`, `MAPMAKER_S3_BUCKET`, `MAPMAKER_S3_ENDPOINT`, `AWS_DEFAULT_REGION`을 환경 변수 또는 `.runtime/runpod-settings.json`에 설정합니다. 인증 스크립트는 최초 설정용이며, 이미 설정된 환경에서는 아래 명령으로 실행합니다.
 
 ```powershell
-# 실제 GPU 생성: 자동 UUID 디렉터리 사용
-.venv\Scripts\python.exe -m mapmaker.cli run samples/living_room.jpg
-# CPU mesh preview
-.venv\Scripts\python.exe -m mapmaker.cli render runs/<run_id>/scene.glb --output <preview-directory>
-
-$env:PYTHONDONTWRITEBYTECODE = '1'
-.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider
-node --check web/app.js
-.venv\Scripts\python.exe scripts/validate_scene_run.py runs/<run_id>
-.venv\Scripts\python.exe scripts/validate_scene_run.py runs/<run_id> --reference .runtime/reference-living-room
+.venv\Scripts\python.exe -m mapmaker.cli doctor
+powershell -ExecutionPolicy Bypass -File scripts/start_scene_web.ps1
 ```
 
-Remote `--output`은 존재하지 않는 32자리 lowercase hex 이름이어야 합니다. 생략하는 편이 안전합니다. Reference는 동일 입력의 production-format run이어야 하며 clone에는 포함되지 않습니다. 검증 스크립트는 run의 `logs`에 보고서를 작성합니다.
+[로컬 앱](http://127.0.0.1:8082)에서 이미지를 선택하고 **Generate 3D Scene**을 누릅니다. 생성이 끝날 때까지 서버를 유지해야 합니다. `doctor`는 설정·파일 존재 검사이며 실제 원격 인증이나 추론 성공을 확인하는 명령은 아닙니다.
 
-Browser E2E는 개발 의존성과 Chromium을 추가로 설치합니다. 서버를 실행한 상태에서 기존 run을 재사용하세요.
+CLI 실행, 테스트, 기존 결과 재처리와 샘플 일괄 검증은 [실행 및 검증 가이드](docs/usage.md), GPU worker 배포는 [런타임 가이드](docs/runtime.md)를 참고하세요.
 
-```powershell
-npm.cmd ci --prefix web
-$env:PLAYWRIGHT_BROWSERS_PATH = "$PWD\.runtime\browsers"
-node web/node_modules/playwright/cli.js install chromium
-$env:RESUME_RUN = '<existing-run-id>'
-node web/e2e.mjs
+## 저장소와 결과 구성
+
+```text
+mapmaker/       Python 서버, 모델 연결, 원격 처리, 장면 조립·보정
+web/            Three.js 뷰어와 브라우저 검증
+configs/        모델·런타임 설정과 고정 소스 버전
+deploy/runpod/  GPU worker Docker 구성
+scripts/        실행·배포·검증·재처리 도구
+tests/          파이프라인·좌표 변환·원격 처리 회귀 테스트
+samples/        입력 예시
+docs/           사용법과 검증 보고서
+runs/           실행별 산출물 (Git 제외)
 ```
 
-`RESUME_RUN`을 지정하지 않으면 샘플 또는 전달한 이미지로 새 GPU job을 생성합니다. 보고서는 `.runtime/web-e2e.json`과 run의 `logs/web_validation.json`에 저장됩니다.
+각 `runs/<run_id>/`에는 정규화한 입력 이미지, 객체 후보, 마스크, 객체별 GLB·pose, 최종 `scene.glb`, 메타데이터, 미리보기와 로그가 저장됩니다. 저장된 결과를 다시 보려면 해당 실행 폴더와 로컬 서버가 필요합니다.
 
-### 전체 samples 실제 GPU / browser 검증
-
-Backend를 실행한 상태에서 다음 한 명령으로 현재 `samples/`를 재귀 스캔하고 순차 실행합니다.
-
-```powershell
-.venv\Scripts\python.exe scripts/validate_samples.py
-```
-
-PNG/JPEG/WebP 원본을 브라우저에서 업로드하고 Generate를 누릅니다. 첫 입력으로
-preflight를 통과한 후 나머지를 실행하며, 원본 파일을 자동 축소하지 않습니다.
-16MP/25MiB 제한 초과는 실제 웹 제출 실패로 기록합니다. 기본 실행은 기존 run을
-재사용하지 않습니다. `--scan-only`는 GPU 요청 없이 목록과 SHA-256만 기록합니다.
-
-결과는 `runs/sample_validation/<UTC timestamp>/index.json`, `report.md`와
-각 sample 상대경로 hash 폴더의 `browser.json`, `viewer.png`, `full_page.png`에
-보존합니다. 실패 화면은 `failure.png`입니다. 생성 run은 기존 `runs/<run_id>/`에
-그대로 남습니다. 새 browser context에서 `http://127.0.0.1:8082/?run=<run_id>`를
-열어 입력 복원, 실제 WebGL 픽셀/삼각형, object toggle, orbit, GLB export hash를
-검사하고 기존 artifact validator도 실행합니다. 입력 정규화 픽셀도 원본과 대조합니다.
-자동 검사 PASS 이후 screenshot을 직접 확인하여 재구성 품질을 판단하세요.
-
-Preflight 실패나 공통 infrastructure 실패는 후속 제출을 멈추며 미실행 입력은
-`FAIL`, `attempted=false`, `blocked_before_submission`으로 구분합니다. 생성 결과가
-일부만 있거나 artifact 검증/객체 오류가 있으면 PARTIAL입니다. PASS만 있는 경우에만
-exit code 0입니다. 원격 timeout/cancel은 기존 backend 정책을 사용하며, backend의
-최대 허용 시간과 전송 여유를 넘겨도 종료되지 않으면 다음 job을 제출하지 않습니다.
-
-이번 세션처럼 이미 **직접 제출한 preflight**를 이어서 검증할 때만 다음을 사용합니다.
-현재 sample과 저장된 normalized input의 픽셀이 일치해야 하며 browser 검사는 다시 실행합니다.
-
-```powershell
-.venv\Scripts\python.exe scripts/validate_samples.py --preflight-sample samples/living_room.jpg --preflight-run <run_id>
-```
-
-중단된 batch는 `--resume-report runs/sample_validation/<timestamp>/index.json`으로
-이어갈 수 있습니다. 샘플 목록과 SHA-256이 같아야 하며, 이미 검증한 결과는 입력과
-스크린샷 존재를 재확인합니다. 제출된 run ID가 있으면 해당 run만 다시 열고,
-제출 여부가 불명확하면 중복 GPU job을 만들지 않고 중단합니다. 재검증 스크린샷은
-별도 `retry-<timestamp>` 폴더에 남습니다.
-이미 최종 FAIL인 입력은 resume에서 다시 제출하지 않습니다. 원인을 해결한 후
-정확히 한 입력을 다시 GPU 실행하려면 `--retry-sample samples/<filename>`을 함께
-지정하세요. 이전 시도는 index의 `previous_attempts`와 원래 run 폴더에 보존됩니다.
-
-설치된 Playwright와 `.runtime/browsers`를 사용합니다. 실행 준비는 위 Browser E2E
-설치 절차와 동일합니다. 저장된 API 키를 쓰려는데 상속된 `RUNPOD_API_KEY`가 401을
-반환하는 경우, backend를 시작할 터미널에서만
-`Remove-Item Env:RUNPOD_API_KEY -ErrorAction SilentlyContinue`로 override를 제외합니다.
-인증 파일의 값은 출력하거나 수정하지 않습니다.
-
-## 결과
-
-`runs/<run_id>/`에는 정규화된 `input/source_image.png`, 후보 JSON, `masks/`, `objects/`의 GLB/pose, `scene.glb`, `scene_metadata.json`, `status.json`, `previews/`, `logs/`가 저장됩니다. 원격 결과는 ZIP/hash/입력 identity 검증 후 `done`을 마지막에 게시합니다.
-
-표시 전환은 viewer에만 적용하며 다운로드는 바닥을 포함한 전체 scene입니다. 일부 객체 실패는 허용하고 전부 실패하면 run이 실패합니다. 벽·천장 복원이나 객체 편집 기능은 없습니다. 샘플 출처는 [ATTRIBUTION](samples/ATTRIBUTION.md)에 있습니다.
-
-## 전체 좌표계 정렬과 바닥
-
-생성에 성공한 모든 객체의 로컬 +Y를 최종 조립 행렬로 변환하고 각각 정규화합니다.
-동일 가중치로 단순 평균한 방향을 월드 +Y로 맞추는 최소 회전을 전체 객체에 적용합니다.
-이어 전체 메시 정점의 최저 Y가 0이 되도록 공통 이동합니다. 객체 종류나 크기에 따른
-가중치/이상치 제외는 없습니다. 공통 정렬 후 지정된 바닥 지지 가구는 자기 root 원점을 중심으로
-로컬 +Y를 월드 +Y에 맞추는 최소 회전을 적용하고, 실제 메시 최저점을 Y=0에 맞춥니다.
-바닥 이동 대상은 chair/table/sofa/bed/cabinet 계열 등 `FLOOR_CATEGORIES`의 정확한 이름 목록입니다.
-가구 root의 XZ 위치와 크기, 원본 mesh/pose는 보존하고 matrix/position/quaternion/scale을 갱신합니다.
-소품·식물·벽걸이·unknown·통합 장면도 회전하며 자기 root의 XYZ 위치는 유지합니다.
-이들의 밑면 위치는 회전으로 바뀔 수 있어 바닥 관통/부유는 별도로 해결하지 않습니다. 소품 추종은 이번 단계에
-포함하지 않아 가구와 소품 사이의 기존 접촉이 달라질 수 있습니다. 객체 간 상대 배치는 개별 보정에서 바뀝니다.
-
-평균 길이가 1e-6 미만이면 임의 방향 대신 실패를 기록합니다. 반대 방향은 고정 X축 180도 회전입니다.
-로컬 +Y가 실제 위쪽이라는 가정이 필요하며, 원본 메시 자체의 기울기·다리 길이 오차, 충돌은 해결하지 않습니다. 다리 끝 접촉 면적을 최대화하는 추가 회전은 없습니다.
-바닥은 정렬된 전체 객체의 XZ 범위에 양쪽 15% 여백을 둔 얇은 단색 slab입니다.
-윗면은 Y=0이며, 바닥 자체는 정렬 계산에서 제외합니다.
-
-로컬 생성과 원격 결과 수신 양쪽에 적용됩니다. 원격 결과는 해시 검증 후 staging에서
-정렬/preview를 완료하고 done을 게시합니다. 기존 원본 worker의 재배포는 필요 없습니다.
-
-보정되지 않은 저장 결과를 새 run으로 재처리하려면:
-
-```powershell
-.venv\Scripts\python.exe scripts/reprocess_scene.py runs/<original-run-id>
-```
-
-GPU 추론 없이 저장 결과를 사용합니다. 새 ID는 `http://127.0.0.1:8082/?run=<new-run-id>`에서 열 수 있습니다.
-`placement` version 4에 평균 Y-up, 공통 변환, 최저점과 객체별 원본 행렬/전후 bounds를 기록합니다.
-동일 버전과 해시에는 재적용하지 않습니다. version 1/2/3 결과는 직접 재처리하지 않고 원본 조립 결과를 사용해야 합니다.
-GLB/mesh preview가 최종 정렬 결과입니다. Gaussian preview가 있다면 원래 pose이며 바닥이 없습니다.
-
-이전 개별 보정의 역사적 결과는 [배치 검증](docs/placement_validation.md)과
-[전체 샘플 비교](docs/SAMPLES_BEFORE_AFTER_COMPARISON.md)에 보존되어 있습니다.
-공통 정렬만의 검증은 [전체 좌표계 정렬 검증](docs/GLOBAL_ALIGNMENT_VALIDATION.md),
-이전 가구 한정 개별 정렬 검증은 [개별 객체 정렬 검증](docs/INDIVIDUAL_ALIGNMENT_VALIDATION.md)을 참고하세요.
-
-전체 객체 Y-up 적용 검증: [ALL_OBJECT_UPRIGHT_VALIDATION](docs/ALL_OBJECT_UPRIGHT_VALIDATION.md).
+세부 구현 및 변경 이력은 [프로젝트 상태 기록](PROJECT_CURRENT_STATE.md)에, `living_room.jpg`의 출처는 [샘플 출처 문서](samples/ATTRIBUTION.md)에 정리되어 있습니다.
