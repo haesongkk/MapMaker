@@ -117,11 +117,15 @@ exit code 0입니다. 원격 timeout/cancel은 기존 backend 정책을 사용�
 생성에 성공한 모든 객체의 로컬 +Y를 최종 조립 행렬로 변환하고 각각 정규화합니다.
 동일 가중치로 단순 평균한 방향을 월드 +Y로 맞추는 최소 회전을 전체 객체에 적용합니다.
 이어 전체 메시 정점의 최저 Y가 0이 되도록 공통 이동합니다. 객체 종류나 크기에 따른
-가중치/이상치 제외는 없으며 기존 개별 Y 보정 및 소품 따라 이동은 실행하지 않습니다.
-객체 간 상대 변환과 원본 mesh/pose는 보존하고, 최종 matrix/position/quaternion/scale을 갱신합니다.
+가중치/이상치 제외는 없습니다. 공통 정렬 후 지정된 바닥 지지 가구는 자기 root 원점을 중심으로
+로컬 +Y를 월드 +Y에 맞추는 최소 회전을 적용하고, 실제 메시 최저점을 Y=0에 맞춥니다.
+대상은 chair/table/sofa/bed/cabinet 계열 등 `FLOOR_CATEGORIES`의 정확한 이름 목록입니다.
+가구 root의 XZ 위치와 크기, 원본 mesh/pose는 보존하고 matrix/position/quaternion/scale을 갱신합니다.
+소품·식물·벽걸이·unknown·통합 장면은 공통 정렬 결과를 유지합니다. 소품 추종은 이번 단계에
+포함하지 않아 가구와 소품 사이의 기존 접촉이 달라질 수 있습니다. 객체 간 상대 배치는 개별 보정에서 바뀝니다.
 
 평균 길이가 1e-6 미만이면 임의 방향 대신 실패를 기록합니다. 반대 방향은 고정 X축 180도 회전입니다.
-로컬 +Y가 실제 위쪽이라는 가정이 필요하며, 개별 기울기나 부유까지 해결하지는 않습니다.
+로컬 +Y가 실제 위쪽이라는 가정이 필요하며, 원본 메시 자체의 기울기·다리 길이 오차, 충돌은 해결하지 않습니다. 다리 끝 접촉 면적을 최대화하는 추가 회전은 없습니다.
 바닥은 정렬된 전체 객체의 XZ 범위에 양쪽 15% 여백을 둔 얇은 단색 slab입니다.
 윗면은 Y=0이며, 바닥 자체는 정렬 계산에서 제외합니다.
 
@@ -135,10 +139,11 @@ exit code 0입니다. 원격 timeout/cancel은 기존 backend 정책을 사용�
 ```
 
 GPU 추론 없이 저장 결과를 사용합니다. 새 ID는 `http://127.0.0.1:8082/?run=<new-run-id>`에서 열 수 있습니다.
-`placement` version 2에 평균 Y-up, 공통 변환, 최저점과 객체별 원본 행렬/전후 bounds를 기록합니다.
-동일 버전과 해시에는 재적용하지 않습니다. version 1 결과는 직접 재처리하지 않고 원본 조립 결과를 사용해야 합니다.
+`placement` version 3에 평균 Y-up, 공통 변환, 최저점과 객체별 원본 행렬/전후 bounds를 기록합니다.
+동일 버전과 해시에는 재적용하지 않습니다. version 1/2 결과는 직접 재처리하지 않고 원본 조립 결과를 사용해야 합니다.
 GLB/mesh preview가 최종 정렬 결과입니다. Gaussian preview가 있다면 원래 pose이며 바닥이 없습니다.
 
 이전 개별 보정의 역사적 결과는 [배치 검증](docs/placement_validation.md)과
 [전체 샘플 비교](docs/SAMPLES_BEFORE_AFTER_COMPARISON.md)에 보존되어 있습니다.
-이번 검증은 [전체 좌표계 정렬 검증](docs/GLOBAL_ALIGNMENT_VALIDATION.md)을 참고하세요.
+공통 정렬만의 검증은 [전체 좌표계 정렬 검증](docs/GLOBAL_ALIGNMENT_VALIDATION.md),
+현재 개별 정렬 검증은 [개별 객체 정렬 검증](docs/INDIVIDUAL_ALIGNMENT_VALIDATION.md)을 참고하세요.

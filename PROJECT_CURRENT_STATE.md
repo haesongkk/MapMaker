@@ -2,7 +2,7 @@
 
 최신 업데이트: 2026-09-29, Windows `D:\MapMaker`. 시작 HEAD는
 `476a8a4d64b5c3a9f8e53559e5ff04ac22e2d5dc`이며 기존 README 변경, untracked samples 및
-샘플 검증 스크립트/테스트는 보존했다. 문서 마지막의 전체 좌표계 정렬 업데이트(version 2)가 과거 기록보다 우선한다.
+샘플 검증 스크립트/테스트는 보존했다. 문서 마지막의 개별 객체 정렬 업데이트(version 3)가 과거 기록보다 우선한다.
 
 ## 이전 구현: placement correction + floor (version 1)
 
@@ -200,3 +200,14 @@ Ignored/untracked: `.runtime` private credential 3종, endpoint 설정, `.runtim
 평균 길이 <1e-6은 실패, 정확한 반대 방향은 X축 180도 회전, v1 결과에는 중복 적용하지 않는다.
 원본 객체 mesh/pose 및 객체 간 상대 변환은 보존한다. 이전 절의 개별 배치 검증은 역사적 결과다.
 검증 근거와 CPU 재처리 뷰어 링크: [GLOBAL_ALIGNMENT_VALIDATION](docs/GLOBAL_ALIGNMENT_VALIDATION.md).
+
+
+## 개별 객체 정렬 업데이트 (2026-09-29, version 3)
+
+공통 정렬(v2 알고리즘)을 유지한 뒤 FLOOR_CATEGORIES의 지정된 가구를 자기 root 원점
+주위에서 최소 회전하여 로컬 +Y를 월드 +Y로 맞추고 실제 메시 최저점을 Y=0으로 맞춘다.
+root XZ/크기/원본 mesh/pose는 유지한다. 비대상 객체는 공통 정렬 결과를 그대로 유지한다.
+소품 추종 및 접촉 면적을 늘리는 추가 회전은 아직 없다. 따라서 소품-가구 접촉이나 물체 간
+충돌은 보장하지 않는다. 바닥 크기는 최종 객체 bounds로 다시 계산한다.
+메타데이터에 global_matrix, individual.transform/pivot/ground_shift_y와 두 단계의 통계를 구분한다.
+검증: [INDIVIDUAL_ALIGNMENT_VALIDATION](docs/INDIVIDUAL_ALIGNMENT_VALIDATION.md).

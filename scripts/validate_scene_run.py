@@ -56,17 +56,31 @@ if meta.get("placement"):
         assert np.allclose(bounds, obj["placement"]["world_bounds_after"], atol=1e-6)
         before = np.asarray(obj["placement"]["original_matrix"])
         after = np.asarray(obj["transform"]["matrix"])
-        if meta["placement"].get("version") == 2:
+        if meta["placement"].get("version") in (2, 3):
             common = np.asarray(meta["placement"]["common_transform"])
-            assert np.allclose(after, common @ before, atol=1e-6)
+            global_matrix = common @ before
+            if meta["placement"]["version"] == 3:
+                individual = obj["placement"]["individual"]
+                delta = np.asarray(individual["transform"])
+                assert np.allclose(after, delta @ global_matrix, atol=1e-6)
+                assert np.allclose(delta[:3, :3].T @ delta[:3, :3], np.eye(3), atol=1e-6)
+                assert np.isclose(np.linalg.det(delta[:3, :3]), 1.)
+                if individual["applied"]:
+                    assert np.allclose(after[:3, 1] / np.linalg.norm(after[:3, 1]), [0, 1, 0], atol=1e-6)
+                    assert abs(bounds[0, 1]) < 1e-6
+                    assert np.allclose(after[[0, 2], 3], global_matrix[[0, 2], 3], atol=1e-6)
+                else:
+                    assert np.allclose(after, global_matrix, atol=1e-6)
+            else:
+                assert np.allclose(after, global_matrix, atol=1e-6)
             assert bounds[0, 1] >= -1e-6
         else:
             assert np.array_equal(before[:3, :3], after[:3, :3])
             assert np.array_equal(before[[0, 2], 3], after[[0, 2], 3])
         if obj["placement"]["reason"] == "floor_contact":
             assert abs(bounds[0, 1] - meta["placement"]["floor_y"]) < 1e-6
-    if meta["placement"].get("version") == 2:
-        ups = np.array([scene.graph[o["id"]][0][:3, 1] for o in objects])
+    if meta["placement"].get("version") in (2, 3):
+        ups = np.array([(common @ np.asarray(o["placement"]["original_matrix"]))[:3, 1] for o in objects])
         ups /= np.linalg.norm(ups, axis=1)[:, None]
         mean = ups.mean(axis=0)
         assert np.allclose(mean / np.linalg.norm(mean), [0, 1, 0], atol=1e-6)
@@ -77,7 +91,7 @@ if meta.get("placement"):
     assert floor["node"] in names
     bounds = bounds_of(object_vertices(scene, floor["node"]))
     assert abs(bounds[1, 1] - floor["top_y"]) < 1e-6
-    placement_checks = {"floor": True, "transforms_preserved": True, "world_bounds": True}
+    placement_checks = {"floor": True, "transform_composition": True, "world_bounds": True}
 report = {
     "passed": True,
     "run": str(run),

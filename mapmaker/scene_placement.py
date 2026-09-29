@@ -1,7 +1,7 @@
 """CPU placement in the assembled GLB frame: +Y up, column-vector matrices.
 
 Never normalize individual meshes: their exported origins, child transforms and
-SAM3D poses must stay paired. All object roots receive one shared rigid rotation and translation.
+SAM3D poses must stay paired. All roots receive global alignment; floor furniture then gets individual upright/grounding.
 """
 
 import copy
@@ -13,10 +13,30 @@ import numpy as np
 import trimesh
 
 CONTACT_TOLERANCE_RATIO = 0.01
-PLACEMENT_VERSION = 2
+PLACEMENT_VERSION = 3
 MEAN_UP_EPSILON = 1e-6
 FLOOR_NODE = "background_floor"
 FLOOR_MARGIN_RATIO = 0.15
+
+# Exact category matches: unknowns, plants, tabletop props and wall objects stay global-only.
+FLOOR_CATEGORIES = frozenset({
+    "sofa", "couch", "loveseat", "chair", "armchair", "office chair",
+    "table", "coffee table", "dining table", "desk", "computer desk",
+    "bed", "cabinet", "bureau", "dresser", "wardrobe", "nightstand",
+    "refrigerator", "bookcase", "bookshelf", "ottoman", "hassock", "bar stool",
+})
+
+
+def update_transform(obj, matrix):
+    scale = np.linalg.norm(matrix[:3, :3], axis=0)
+    orientation = np.eye(4)
+    orientation[:3, :3] = matrix[:3, :3] / scale[None, :]
+    obj["transform"] = copy.deepcopy(obj["transform"])
+    obj["transform"].update(
+        matrix=matrix.tolist(), position=matrix[:3, 3].tolist(), scale=scale.tolist(),
+        rotation_quaternion_wxyz=trimesh.transformations.quaternion_from_matrix(orientation).tolist(),
+        matrix_convention="column vectors; individual transform @ global alignment @ official GLB transform",
+    )
 
 
 def object_vertices(scene, object_id):
@@ -101,15 +121,7 @@ def correct_placement(scene, objects):
             "world_center": after.mean(axis=0).tolist(),
             "world_bottom_center": [float(after[:, 0].mean()), float(after[0, 1]), float(after[:, 2].mean())],
         }
-        obj["transform"] = copy.deepcopy(obj["transform"])
-        scale = np.linalg.norm(matrix[:3, :3], axis=0)
-        orientation = np.eye(4)
-        orientation[:3, :3] = matrix[:3, :3] / scale[None, :]
-        obj["transform"].update(
-            matrix=matrix.tolist(), position=matrix[:3, 3].tolist(), scale=scale.tolist(),
-            rotation_quaternion_wxyz=trimesh.transformations.quaternion_from_matrix(orientation).tolist(),
-            matrix_convention="column vectors; shared global alignment @ official GLB object transform",
-        )
+        update_transform(obj, matrix)
     tolerance = max(float(np.median([b[1, 1] - b[0, 1] for b in all_bounds])) * CONTACT_TOLERANCE_RATIO, 1e-6)
     metrics = {}
     for phase in ("before", "after"):
@@ -129,6 +141,78 @@ def correct_placement(scene, objects):
             "minimum_y_rotated": minimum, "minimum_y_after": min(float(b[0, 1]) for b in all_bounds),
             "contact_tolerance": tolerance, "metrics_scope": "all generated objects vs Y=0; not support classification",
             "metrics": metrics}
+
+
+def align_floor_objects(scene, objects, placement):
+    """Upright floor furniture around its own root, then ground its actual vertices.
+
+    Props retain the global transform only. No attachment inference or contact-area search.
+    """
+    selected = []
+    for obj in objects:
+        oid = obj["id"]
+        before = np.asarray(scene.graph[oid][0], dtype=float).copy()
+        points = object_vertices(scene, oid)
+        up = before[:3, 1] / np.linalg.norm(before[:3, 1])
+        eligible = obj.get("name", "").strip().lower() in FLOOR_CATEGORIES
+        delta = np.eye(4)
+        pivot = before[:3, 3].copy()
+        ground_shift = 0.
+        if eligible:
+            delta[:3, :3] = rotation_to_world_up(up)
+            delta[:3, 3] = pivot - delta[:3, :3] @ pivot
+            rotated = trimesh.transform_points(points, delta)
+            ground_shift = -float(rotated[:, 1].min())
+            delta[1, 3] += ground_shift
+            selected.append(oid)
+        after = delta @ before
+        final_points = trimesh.transform_points(points, delta)
+        bounds = bounds_of(final_points)
+        scene.graph.update(frame_from=scene.graph.base_frame, frame_to=oid, matrix=after)
+        record = obj["placement"]
+        record["global_matrix"] = before.tolist()
+        record["world_bounds_global"] = record["world_bounds_after"]
+        record["world_up_global"] = up.tolist()
+        record["individual"] = {
+            "applied": eligible, "reason": "floor_category" if eligible else "category_not_floor_supported",
+            "pivot": pivot.tolist(), "pivot_kind": "object_root_world_position",
+            "transform": delta.tolist(), "ground_shift_y": ground_shift,
+            "rotation_degrees": float(np.degrees(np.arccos(np.clip(up[1], -1., 1.)))) if eligible else 0.,
+        }
+        record["reason"] = "individual_upright_and_ground" if eligible else "global_mean_up_alignment"
+        record["world_bounds_after"] = bounds.tolist()
+        record["world_up_after"] = (after[:3, 1] / np.linalg.norm(after[:3, 1])).tolist()
+        record["world_center"] = bounds.mean(axis=0).tolist()
+        record["world_bottom_center"] = [float(bounds[:, 0].mean()), float(bounds[0, 1]), float(bounds[:, 2].mean())]
+        update_transform(obj, after)
+    tolerance = placement["contact_tolerance"]
+    support_metrics = {}
+    for phase, bounds_key, up_key in (("before", "world_bounds_global", "world_up_global"),
+                                      ("after", "world_bounds_after", "world_up_after")):
+        supports = [o["placement"] for o in objects if o["id"] in selected]
+        offsets = np.array([r[bounds_key][0][1] for r in supports])
+        angles = [float(np.degrees(np.arccos(np.clip(r[up_key][1], -1., 1.)))) for r in supports]
+        support_metrics[phase] = {"object_count": len(supports),
+            "floating_count": int(np.sum(offsets > tolerance)),
+            "penetrating_count": int(np.sum(offsets < -tolerance)),
+            "max_up_angle_degrees": max(angles, default=0.),
+            "max_absolute_contact_error": float(np.max(abs(offsets))) if len(offsets) else 0.}
+    ups = np.array([o["placement"]["world_up_after"] for o in objects])
+    mean = ups.mean(axis=0); length = float(np.linalg.norm(mean))
+    placement.update(individual_correction=True, individual_object_ids=selected,
+        individual_method="floor_category_local_up_to_world_up_then_ground; no prop following",
+        individual_metrics=support_metrics, global_metrics=placement.pop("metrics"),
+        global_mean_up_after=placement.pop("mean_up_after"),
+        global_minimum_y_after=placement.pop("minimum_y_after"),
+        mean_up_after=(mean / length).tolist() if length >= MEAN_UP_EPSILON else None,
+        minimum_y_after=min(o["placement"]["world_bounds_after"][0][1] for o in objects))
+    offsets = np.array([o["placement"]["world_bounds_after"][0][1] for o in objects])
+    placement["metrics"] = {"before": placement["global_metrics"]["before"], "after": {
+        "object_count": len(objects), "floating_count": int(np.sum(offsets > tolerance)),
+        "penetrating_count": int(np.sum(offsets < -tolerance)),
+        "mean_absolute_contact_error": float(np.mean(abs(offsets)))}}
+    placement["method"] = "global_mean_up_then_individual_floor_upright_and_ground"
+    return placement
 
 
 def add_floor(scene, objects, placement):
@@ -172,6 +256,7 @@ def finalize_scene(run, *, render=True):
         raise ValueError("Unversioned background floor already exists")
     original_hash = sha(run / "scene.glb")
     placement = correct_placement(scene, objects)
+    align_floor_objects(scene, objects, placement)
     meta["background"] = [add_floor(scene, objects, placement)]
     scene.export(run / "scene.glb")
     reloaded = trimesh.load(run / "scene.glb", force="scene", process=False)
@@ -181,11 +266,11 @@ def finalize_scene(run, *, render=True):
         if not np.allclose(bounds_of(object_vertices(reloaded, obj["id"])), obj["placement"]["world_bounds_after"], atol=1e-6):
             raise ValueError(f"Placement bounds changed in GLB: {obj['id']}")
     meta.setdefault("assembly", {}).update(bounds=reloaded.bounds.tolist(), geometry_nodes=len(reloaded.graph.nodes_geometry))
-    meta["assembly"]["method"] = "official SAM3D assembly followed by shared mean-up rotation and global grounding; separate background floor"
+    meta["assembly"]["method"] = "official SAM3D assembly followed by shared mean-up alignment, then individual floor-furniture upright/grounding; separate background floor"
     placement.update(version=PLACEMENT_VERSION, original_scene_sha256=original_hash,
                      scene_sha256=sha(run / "scene.glb"), implementation_sha256=sha(Path(__file__)))
     meta["placement"] = placement
-    meta["pipeline"].update(placement_method="official SAM3D + equal-weight all-object mean-up alignment", structural_geometry=True)
+    meta["pipeline"].update(placement_method="official SAM3D + global mean-up + individual floor-furniture upright/grounding", structural_geometry=True)
     meta["preview_method"] = "CPU mesh preview of final scene.glb; Gaussian previews retain original SAM3D pose and contain no floor"
     write(run / "scene_metadata.json", meta)
     if render:

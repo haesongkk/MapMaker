@@ -5,7 +5,7 @@ import pytest
 import trimesh
 
 from mapmaker.scene_placement import (
-    FLOOR_NODE, add_floor, bounds_of, correct_placement, finalize_scene, object_vertices,
+    FLOOR_NODE, align_floor_objects, add_floor, bounds_of, correct_placement, finalize_scene, object_vertices,
 )
 from mapmaker.scene_run import read, write, sha
 
@@ -149,7 +149,62 @@ def test_finalize_idempotent_and_hash_checked(tmp_path):
         finalize_scene(tmp_path, render=False)
 
 
-def test_old_placement_version_is_not_reapplied(tmp_path):
-    write(tmp_path / "scene_metadata.json", {"placement": {"version": 1}})
+@pytest.mark.parametrize("version", [1, 2])
+def test_old_placement_version_is_not_reapplied(tmp_path, version):
+    write(tmp_path / "scene_metadata.json", {"placement": {"version": version}})
     with pytest.raises(ValueError, match="uncorrected"):
         finalize_scene(tmp_path, render=False)
+
+
+@pytest.mark.parametrize("angle", [.65, np.pi])
+def test_individual_upright_around_own_pivot_and_ground(angle):
+    scene, objects = fixture_scene((2, 3, 4), ("chair", "table", "television"))
+    root = trimesh.transformations.rotation_matrix(angle, [1, 0, 0])
+    root[:3, :3] @= np.diag([2, 3, 4])
+    root[:3, 3] = [7, 9, -4]
+    scene.graph.update(frame_from="Scene", frame_to="object_0", matrix=root)
+    # Off-center child geometry must be grounded using actual vertices.
+    scene.graph.update(frame_from="object_0", frame_to="object_0__mesh",
+                       matrix=trimesh.transformations.translation_matrix([2, -3, 1]))
+    poses = copy.deepcopy([o["pose"] for o in objects])
+    vertices = {k: g.vertices.copy() for k, g in scene.geometry.items()}
+    report = correct_placement(scene, objects)
+    before = {o["id"]: scene.graph[o["id"]][0].copy() for o in objects}
+    align_floor_objects(scene, objects, report)
+    for o in objects[:2]:
+        mat = scene.graph[o["id"]][0]
+        np.testing.assert_allclose(mat[:3, 1] / np.linalg.norm(mat[:3, 1]), [0, 1, 0], atol=1e-12)
+        np.testing.assert_allclose(mat[[0, 2], 3], before[o["id"]][[0, 2], 3], atol=1e-12)
+        np.testing.assert_allclose(np.linalg.norm(mat[:3, :3], axis=0), np.linalg.norm(before[o["id"]][:3, :3], axis=0))
+        assert object_vertices(scene, o["id"])[:, 1].min() == pytest.approx(0., abs=1e-12)
+    np.testing.assert_allclose(scene.graph['object_2'][0], before['object_2'], atol=1e-12)
+    assert [o["pose"] for o in objects] == poses
+    for k, g in scene.geometry.items():np.testing.assert_array_equal(g.vertices, vertices[k])
+    assert report["individual_metrics"]["after"]["floating_count"] == 0
+    assert report["individual_metrics"]["after"]["penetrating_count"] == 0
+    add_floor(scene, objects, report)
+    floor = bounds_of(object_vertices(scene, FLOOR_NODE))
+    for o in objects:
+        b = bounds_of(object_vertices(scene, o["id"]))
+        assert np.all(floor[0, [0, 2]] < b[0, [0, 2]])
+        assert np.all(floor[1, [0, 2]] > b[1, [0, 2]])
+
+
+def test_props_unknown_and_integrated_scene_are_not_individually_moved():
+    scene, objects = fixture_scene((0, 1, 2, 3), ("pillow", "plant", "book", "living room"))
+    report = correct_placement(scene, objects)
+    before = {o["id"]: scene.graph[o["id"]][0].copy() for o in objects}
+    align_floor_objects(scene, objects, report)
+    assert report["individual_object_ids"] == []
+    for o in objects:np.testing.assert_array_equal(scene.graph[o["id"]][0], before[o["id"]])
+
+
+def test_individual_rotation_preserves_heading_when_already_upright():
+    scene, objects = fixture_scene((3,), ("chair",))
+    root = trimesh.transformations.rotation_matrix(.8, [0, 1, 0])
+    root[:3, 3] = [10, 9, -4]
+    scene.graph.update(frame_from="Scene", frame_to="object_0", matrix=root)
+    report = correct_placement(scene, objects)
+    before = scene.graph['object_0'][0].copy()
+    align_floor_objects(scene, objects, report)
+    np.testing.assert_allclose(scene.graph['object_0'][0][:3, :3], before[:3, :3], atol=1e-12)
