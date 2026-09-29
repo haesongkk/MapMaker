@@ -100,16 +100,27 @@ def run_all(path):
             continue
         source = ROOT/record['sample']
         assert digest(source) == record['sha256']
-        record['started_at'] = dt.datetime.now(dt.timezone.utc).isoformat()
+        record.setdefault('started_at', dt.datetime.now(dt.timezone.utc).isoformat())
         record['status'] = 'RUNNING'
         save(path,report)
         started = time.monotonic()
         print('START',record['sample'],flush=True)
         try:
             # Save submission intent first; never blindly retry an ambiguous POST.
-            result = request(report['base_url']+'/api/runs',source.read_bytes())
-            record['after'] = result['run_id']
-            save(path,report)
+            if not record.get('after'):
+                for retry in range(31):
+                    try:
+                        result = request(report['base_url']+'/api/runs',source.read_bytes())
+                        break
+                    except urllib.error.HTTPError as exc:
+                        if exc.code != 409 or retry == 30:
+                            raise
+                        # A definitive 409 creates no run; the preceding run may
+                        # still be releasing the server lock after publishing done.
+                        exc.close()
+                        time.sleep(2)
+                record['after'] = result['run_id']
+                save(path,report)
             last = None
             while True:
                 state = request(report['base_url']+'/api/runs/'+record['after'])
@@ -148,7 +159,11 @@ def run_all(path):
                 shutil.copy2(logdir/'viewer.png',ROOT/record['asset_dir']/'after_viewer.png')
             record['status']='PASS' if record['artifact_valid'] and record['viewer_valid'] and not record['errors'] and not record['failed_objects'] else 'PARTIAL'
         except urllib.error.HTTPError as exc:
-            record.update(status='FAIL',error=f'HTTP {exc.code}: '+exc.read().decode('utf-8'))
+            try:
+                detail = exc.read().decode('utf-8')
+            except OSError:
+                detail = 'Response body unavailable; HTTP status received'
+            record.update(status='FAIL',error=f'HTTP {exc.code}: '+detail)
         except Exception as exc:
             record.update(status='FAIL',error=str(exc))
             if record.get('stage') not in {'failed','done'}:
@@ -179,6 +194,8 @@ def verify_before(path):
 
 
 if __name__=='__main__':
+    sys.stdout.reconfigure(encoding='utf-8', errors='backslashreplace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='backslashreplace')
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--manifest',type=Path,required=True)
     parser.add_argument('--prepare-only',action='store_true')

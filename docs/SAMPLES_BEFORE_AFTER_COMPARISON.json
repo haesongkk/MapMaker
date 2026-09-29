@@ -23,6 +23,30 @@
     "mapmaker/web.py": "3ff2c80d62ff1ece5843c9480a381ca67ac72ba06545002a0dc164be3ee9857a",
     "mapmaker/__init__.py": "41362a5ea4931c546433d4c48290c5707bf02dbbea1c3aafa9f43d1225e47003"
   },
+  "execution_status": "finished",
+  "fresh_inference_requested": true,
+  "fresh_inference_completed": true,
+  "prior_blocked_reason": "External image transfer and GPU batch cost were deemed insufficiently specifically authorized by automatic approval review.",
+  "user_approval": "User explicitly approved transfer of the 22 eligible sample images to existing endpoint 8dzbkfrxys43hb and fresh GPU inference costs.",
+  "approved_at": "2026-09-29T05:38:50.017876+00:00",
+  "execution_head": "4c15f6e55632acde37b077351fb5ccdde2c0ea85",
+  "completed_at": "2026-09-29T07:23:25.230110+00:00",
+  "updated_at": "2026-09-29T07:23:25.679421+00:00",
+  "environment": {
+    "os": "Windows-10-10.0.26200-SP0",
+    "python": "3.11.9"
+  },
+  "summary": {
+    "PASS": 22,
+    "FAIL": 7
+  },
+  "tests": {
+    "pytest": "46 passed",
+    "node_syntax": [
+      "web/app.js",
+      "web/compare-sample.mjs"
+    ]
+  },
   "samples": [
     {
       "sample": "samples/5MrJb0VLPeu5pWNey2XE3AE5mqAXdSIeMg3rOIJIeWpA4TcxyLh5AK3y9gCTXQWQ-2yh5n4XCU6M5aV6gCdLq_Co1O9RGajYjnlSbrrM9lcI409QFCL7dP_5HYuWz04mSDhrlM9zGxCaNrGI4-m7cUKm4ol253hpD9BQ79lcHzgFbr1qnzmPoiVsWJj3JAoo.jpg",
@@ -37,12 +61,11 @@
         "09c38164b7784d95a2d8856875c497fd"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/f9ef89b95e32",
       "before_preview_source": "runs/09c38164b7784d95a2d8856875c497fd/previews/meshes/oblique.png",
       "before_scene_sha256": "869b825ca19b4a4f30e3d62e6235cb5572b4508386ad111cf40b69dcc3403e6a",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "09c38164b7784d95a2d8856875c497fd",
@@ -60,8 +83,192 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "started_at": "2026-09-29T05:38:56.066057+00:00",
+      "after": "a738b5f0653a430bbfa9650a6b98316a",
+      "stage": "done",
+      "duration_seconds": 54.03,
+      "recovery_note": "Fresh GPU result was completed by the existing server without local floor finalization. After replacing the local server with current source, the same fresh result was finalized via production finalize_scene; no repeated GPU inference. Audit console UTF-8 and server busy waiting were corrected.",
+      "audit_error_history": [
+        "'cp949' codec can't encode character '\\u2014' in position 5: illegal multibyte sequence"
+      ],
+      "objects": 12,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.25691575958252066,
+        "up_axis": "+Y",
+        "floor_source": "median_support_bottom",
+        "contact_tolerance": 0.0035391794827666257,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 9,
+            "floating_count": 4,
+            "penetrating_count": 4,
+            "mean_absolute_contact_error": 0.08022841497705281
+          },
+          "after": {
+            "floor_supported_count": 9,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": 0.0
+          }
+        },
+        "support_ids": [
+          "bureau_00",
+          "cabinet_00",
+          "chair_00",
+          "chair_01",
+          "chair_02",
+          "chair_03",
+          "chair_04",
+          "chair_05",
+          "dining_table_00"
+        ],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "f1c4b765751a67744dba28d223c4dfd098d90afa2cd14e0c20b8b6c8210ce3c9",
+        "scene_sha256": "a134476185d929ee73d1c981c1e0c224ded219904e490eef025d71b8f60a0ab0",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "ff9e0956-c6fe-4d99-a60d-dd1678dc033c-e2",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T05:38:59.330579+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
       "before_visual_note": "식탁·의자·수납장·식물이 기울어진 구도로 분리되어 있고 공통 바닥은 없다. 우측 상단에 작은 분리 조각도 보인다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "After에는 회색 바닥 면이 생겨 식탁·의자·수납장의 지지 기준이 보인다. 새 run의 지지 객체 9개는 접촉 보정 후 같은 바닥 높이에 맞춰졌다. 두 화면 모두 큰 수납장과 식탁/의자가 밀집하고, 위쪽의 작은 분리 조각과 기울어진 식물은 남아 있다. 바닥 추가로 화면 자동 배율이 작아져 객체 크기 자체를 직접 비교할 수는 없다.",
+      "timing": {
+        "id": "ff9e0956-c6fe-4d99-a60d-dd1678dc033c-e2",
+        "status": "COMPLETED",
+        "delayTime": 8388,
+        "executionTime": 969112,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "a738b5f0653a430bbfa9650a6b98316a",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\a738b5f0653a430bbfa9650a6b98316a",
+        "objects": [
+          {
+            "id": "cabinet_00",
+            "mask_pixels": 53542,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "bureau_00",
+            "mask_pixels": 24369,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "dining_table_00",
+            "mask_pixels": 21597,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "chair_00",
+            "mask_pixels": 18502,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "chair_01",
+            "mask_pixels": 18259,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "greenery_00",
+            "mask_pixels": 17547,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "chair_02",
+            "mask_pixels": 13378,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "chair_03",
+            "mask_pixels": 6355,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "chair_04",
+            "mask_pixels": 4999,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "centerpiece_00",
+            "mask_pixels": 4819,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "chair_05",
+            "mask_pixels": 4221,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "greenery_01",
+            "mask_pixels": 1868,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 12,
+        "gltf_node_count": 25,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/8xa39rx4u5sqcekrqskwxmnafwyz.png",
@@ -76,12 +283,11 @@
         "665e1cdbc01c454e81daa296ca3def4c"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/b5323a704afc",
       "before_preview_source": "runs/665e1cdbc01c454e81daa296ca3def4c/previews/meshes/oblique.png",
       "before_scene_sha256": "4f83f385c854262b20c44631448afc432fe2b82e1133969d7c2c8650ec345758",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "665e1cdbc01c454e81daa296ca3def4c",
@@ -99,8 +305,114 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "started_at": "2026-09-29T05:55:57.580211+00:00",
+      "submission_note": "First request received definitive HTTP 409 (busy), no run created. Retried only after server restart.",
+      "after": "ceb9b530a33847998e287357e0aadc86",
+      "stage": "done",
+      "generation_seconds": 495.16,
+      "objects": 1,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -1.1992218893288498,
+        "up_axis": "+Y",
+        "floor_source": "scene_bottom",
+        "contact_tolerance": 0.025992047260919856,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          },
+          "after": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          }
+        },
+        "support_ids": [],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "9f06c3fc52d76a23a67c2a174074ed165683effa71ec0918dff56c77d70853db",
+        "scene_sha256": "1cb4a1a0869fe5bd3e8ffaa6b03c52a11a1fecc8251556b4e1a149febcecc50c",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "1a633563-c426-4d98-a5aa-cfd1d85dc39f-e2",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:02:05.058415+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 4.53,
       "before_visual_note": "풀이 붙은 긴 띠 모양의 mesh 하나가 보인다. 객체별 실내 배치 비교에 적합한 결과가 아니다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "Before와 After 모두 숲/지형이 하나의 길고 기울어진 띠 형태로 복원됐다. After에 넓은 회색 바닥만 추가됐고, 기울어진 지형의 대부분이 그 위에 떠 보이는 형태는 남아 있다. floor-supported 객체가 0개라 접촉 보정은 적용되지 않았다. 원본의 물·텐트·작물 등을 개별 객체로 복원하는 문제도 해결되지 않았다.",
+      "timing": {
+        "id": "1a633563-c426-4d98-a5aa-cfd1d85dc39f-e2",
+        "status": "COMPLETED",
+        "delayTime": 12046,
+        "executionTime": 665683,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "ceb9b530a33847998e287357e0aadc86",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\ceb9b530a33847998e287357e0aadc86",
+        "objects": [
+          {
+            "id": "game_00",
+            "mask_pixels": 2496785,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 1,
+        "gltf_node_count": 3,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/a13d86d90a88538ce3427fe524a79857cbd9b0ae.png",
@@ -115,12 +427,11 @@
         "21674af9d4fe41d48d57b0697b55c696"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/ce503305aad4",
       "before_preview_source": "runs/21674af9d4fe41d48d57b0697b55c696/previews/meshes/oblique.png",
       "before_scene_sha256": "a19cbe53997ea064afbe97923462fdd69d0dcd1a40bb421f552e08b36a2e16bf",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "21674af9d4fe41d48d57b0697b55c696",
@@ -138,8 +449,138 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "f0cd8821cd764c54b6c83bc32e000503",
+      "started_at": "2026-09-29T06:05:23.423493+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 603.97,
+      "objects": 5,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.5026997458384825,
+        "up_axis": "+Y",
+        "floor_source": "scene_bottom",
+        "contact_tolerance": 0.005145445940844528,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          },
+          "after": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          }
+        },
+        "support_ids": [],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "1f48af749408224ff3b8a59fbc793822958d4b08472324ad4c4c5523b0f30f5b",
+        "scene_sha256": "ce124dd4c8d9553b40dd2ed882a02bf7464d107a9b69acac1bd5de2aa2c8cca6",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "6af2a97f-af55-42cb-9779-ada78a91f5a8-e1",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:05:25.672734+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 6.45,
       "before_visual_note": "넓은 회색 평판과 검은 파편이 보이며 집·울타리의 입체 배치를 명확히 읽기 어렵다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "After에는 회색 지지면이 추가됐지만 집은 여전히 얇은 회색 평판과 검은 골격/파편처럼 보인다. 떨어진 가느다란 조각과 평판의 기울기는 유지된다. 지지 대상으로 분류된 객체가 0개여서 위치 보정 효과는 없고, 원본 주택의 입체 형상 복원 실패가 주된 한계다.",
+      "timing": {
+        "id": "6af2a97f-af55-42cb-9779-ada78a91f5a8-e1",
+        "status": "COMPLETED",
+        "delayTime": 478169,
+        "executionTime": 101514,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "f0cd8821cd764c54b6c83bc32e000503",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\f0cd8821cd764c54b6c83bc32e000503",
+        "objects": [
+          {
+            "id": "farm_00",
+            "mask_pixels": 150003,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "house_00",
+            "mask_pixels": 46511,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "fence_00",
+            "mask_pixels": 2964,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "fence_01",
+            "mask_pixels": 2406,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "fence_02",
+            "mask_pixels": 1591,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 5,
+        "gltf_node_count": 11,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/alexandra-gorn-JIUjvqe2ZHg-unsplash.jpg",
@@ -159,7 +600,7 @@
       "http_status": 400,
       "error": "{\"error\": \"Please use an image with at most 16 megapixels\"}",
       "before_visual_note": "매칭되는 기존 완료 run/preview가 없어 Before를 평가할 수 없다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "새 결과 없음; 시각적 개선/회귀를 판정할 수 없다."
     },
     {
       "sample": "samples/B0yMng87-QPZy6YxEl1ssQEFb_12gluF-a3W_mDjVJXYAfZjJCTiz31ryltReAixhwtGZ3W2z-juGvI49scRNCrGm1OwbMpics6giwZNXhOeKeLiSxJStFGoy7_6ONvkieN2ukysror9ZTsCPxU5RdSBku9fHHRqEGuvK9SgR3Y9vZ8vI1-30bmfKLHI1-XC.jpg",
@@ -174,12 +615,11 @@
         "13904c85687049dfb0a592cfadf75ccf"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/16e5fb107e0e",
       "before_preview_source": "runs/13904c85687049dfb0a592cfadf75ccf/previews/meshes/oblique.png",
       "before_scene_sha256": "78c82c42cc56a1bb5ba4e6dea82b0980720ec95e8e47beec4418e557f6460fc6",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "13904c85687049dfb0a592cfadf75ccf",
@@ -197,8 +637,114 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "85a4480ddfdc4e7fad506194143fc175",
+      "started_at": "2026-09-29T06:05:23.495771+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 653.19,
+      "objects": 1,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.6292276060299544,
+        "up_axis": "+Y",
+        "floor_source": "scene_bottom",
+        "contact_tolerance": 0.015087992248255388,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          },
+          "after": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          }
+        },
+        "support_ids": [],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "34e8e3ea238199a85470be56f17765e0b8a275a9266f9050bce8698462aabd53",
+        "scene_sha256": "6fa4248cd98d383e3e41b97366f7119990d64291d6befe78e1f0642cc3b1ac4c",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "f6adf33f-1c7b-499f-af9c-6e97f8310dff-e2",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:05:26.141123+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 4.97,
       "before_visual_note": "파라솔과 야외 좌석이 하나의 큰 구조로 묶여 보인다. 별도 생성 background floor는 없다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "After에서 야외 가구 아래 회색 바닥이 생겼다. Before와 마찬가지로 소파와 파라솔이 하나의 통합 객체로 묶여 있고, 원본의 중앙 테이블과 개별 가구 구성이 명확히 분리되지 않는다. 지지 대상으로 분류된 객체가 0개여서 바닥 추가 외의 접촉 보정은 없으며 통합 형상과 기울기는 그대로다.",
+      "timing": {
+        "id": "f6adf33f-1c7b-499f-af9c-6e97f8310dff-e2",
+        "status": "COMPLETED",
+        "delayTime": 580288,
+        "executionTime": 54696,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "85a4480ddfdc4e7fad506194143fc175",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\85a4480ddfdc4e7fad506194143fc175",
+        "objects": [
+          {
+            "id": "backyard_00",
+            "mask_pixels": 1005683,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 1,
+        "gltf_node_count": 3,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/b56sFfaPgkefPFYeBio8ADIH5j84GCngk7CWJnJ3RzaYXvvDZ7NODDOhzCsj1XdHE4CJMqEm6yuVIDXQ52oH8UcRik85dvvqqg32XO_sDJs0zi9uSCUhmWR88pALGx8Vh3ZyLgJ_6_wL_NevQv--kwsN-sdr38bODDTADOoOg52lgTQgsTtfuyPvaMB26kx-.jpg",
@@ -213,12 +759,11 @@
         "199672dbca6e4d2da59822262fae88a1"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/61811e45ad53",
       "before_preview_source": "runs/199672dbca6e4d2da59822262fae88a1/previews/meshes/oblique.png",
       "before_scene_sha256": "2a3a067883001a25258cae887565655a65ab677bcac7f52fe9c47195a371347c",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "199672dbca6e4d2da59822262fae88a1",
@@ -236,8 +781,114 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "ae39389c95a24234b919073ba1fc9057",
+      "started_at": "2026-09-29T06:13:38.557521+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 207.84,
+      "objects": 1,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.637315873753683,
+        "up_axis": "+Y",
+        "floor_source": "scene_bottom",
+        "contact_tolerance": 0.012645028909697922,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          },
+          "after": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          }
+        },
+        "support_ids": [],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "697db8f9f2831165a7658ac5b5d890c04d08e4dd8bf280863f3bd6d62938bd83",
+        "scene_sha256": "9ab5121fd68ec56e3e0f94622713ee5a4dc045d9dee2654c35a24a8f913fedce",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "4802d177-1ce6-497a-b358-e3c487bb6838-e2",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:13:41.364965+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 4.56,
       "before_visual_note": "다색 칸이 있는 수납장 모양 구조 하나가 보인다. 원본 전체 공간의 객체별 복원 여부는 제한적이다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "책장 아래에 얇은 회색 바닥이 추가되어 바닥 기준이 생겼다. 책장과 책들은 Before와 유사한 하나의 긴 선반 형상이며, 원본의 바닥에 앉은 큰 인형들은 별도 객체로 복원되지 않았다. 지지 객체 분류가 0개이므로 위치 이동 효과는 없고, 이번 차이는 바닥 추가다.",
+      "timing": {
+        "id": "4802d177-1ce6-497a-b358-e3c487bb6838-e2",
+        "status": "COMPLETED",
+        "delayTime": 140833,
+        "executionTime": 48700,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "ae39389c95a24234b919073ba1fc9057",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\ae39389c95a24234b919073ba1fc9057",
+        "objects": [
+          {
+            "id": "nursery_00",
+            "mask_pixels": 354402,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 1,
+        "gltf_node_count": 3,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/ca4f0d0e-b693-4985-9abf-23a69a8b37a1.jpg",
@@ -252,12 +903,11 @@
         "7dc137b805ce41f985ba9b37587b6670"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/20095a1b8ef6",
       "before_preview_source": "runs/7dc137b805ce41f985ba9b37587b6670/previews/meshes/oblique.png",
       "before_scene_sha256": "b695ba36af41e8f041c947bcf25956c7b82b820f4bd5ac53fb0c4f54a8a5ea73",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "7dc137b805ce41f985ba9b37587b6670",
@@ -275,8 +925,147 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "bc18279a89b344edaeeeb0329fdd4d06",
+      "started_at": "2026-09-29T06:15:27.458965+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 355.0,
+      "objects": 6,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.05772193748070714,
+        "up_axis": "+Y",
+        "floor_source": "median_support_bottom",
+        "contact_tolerance": 0.0020449302725980053,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 2,
+            "floating_count": 1,
+            "penetrating_count": 1,
+            "mean_absolute_contact_error": 0.19065877226617906
+          },
+          "after": {
+            "floor_supported_count": 2,
+            "floating_count": 1,
+            "penetrating_count": 1,
+            "mean_absolute_contact_error": 0.19065877226617906
+          }
+        },
+        "support_ids": [
+          "table_00",
+          "table_01"
+        ],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "2577ba4db560206eb8704bc996c9fbbb139cdd7e548f8ed09a68f76452066a7d",
+        "scene_sha256": "7d2e9aa2ff7b3cec74f4c541347230cc301ec13fc0fb0e1cb96ded2f35de8176",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "0189861f-f564-47f7-b284-7c4d33231683-e1",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:15:30.518209+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 17.94,
       "before_visual_note": "통과 벤치들이 서로 떨어져 있으며 일부 벤치는 다른 높이에 보인다. 공통 지지 바닥은 없다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "회색 바닥은 추가됐지만, 위쪽의 분리된 나무 조각과 기울어진 탁자·통 배치는 Before와 유사하게 남아 있다. 두 table 객체는 필요한 이동량이 안전 한도를 넘어 excessive_shift_skipped로 기록되어 위치가 바뀌지 않았다. 지지 객체의 부유 1개·관통 1개가 보정 후에도 그대로이며, 원본 방의 벽과 작은 소품도 복원되지 않았다. 실제 WebGL 화면에서는 바닥이 탁자 중앙을 가로지르며 일부를 가리고, 통 그룹이 바닥 위로 떠 보인다. 바닥 추가로 미해결 관통에 의한 가림이 생긴 표시상 문제다.",
+      "timing": {
+        "id": "0189861f-f564-47f7-b284-7c4d33231683-e1",
+        "status": "COMPLETED",
+        "delayTime": 81466,
+        "executionTime": 204129,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "bc18279a89b344edaeeeb0329fdd4d06",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\bc18279a89b344edaeeeb0329fdd4d06",
+        "objects": [
+          {
+            "id": "table_00",
+            "mask_pixels": 40162,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "barrel_00",
+            "mask_pixels": 10716,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "barrel_01",
+            "mask_pixels": 10566,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "barrel_02",
+            "mask_pixels": 9807,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "table_01",
+            "mask_pixels": 8581,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "barrel_03",
+            "mask_pixels": 8085,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 6,
+        "gltf_node_count": 13,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/CbJCJsFdnzIdxwKJWBi44TSwXU7QZShGXq-wRSfSgF9XUi6g8AntJxejO0qTgSGHyy7XB1lQAhH7j_3jLb7X53yta1NPxNOc83NLO1W77OaD_NnosUASbc467Qch7tnVSw1w6BqynijZW9N3RS7VkA1mln-b5GbPwMhlqVjyMR3AqxqX7Bcpt17_me7qJdvs.jpg",
@@ -291,12 +1080,11 @@
         "076a099b71814786acd3979a31b57124"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/8f8263a7cc26",
       "before_preview_source": "runs/076a099b71814786acd3979a31b57124/previews/meshes/oblique.png",
       "before_scene_sha256": "4d4b0a891dd505eb7507bbd3c8b62d9a77de662de7a668819fff962edc0cd3b6",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "076a099b71814786acd3979a31b57124",
@@ -314,8 +1102,182 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "38b6e971702f4a549ef13e0833d5589b",
+      "started_at": "2026-09-29T06:16:16.823593+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 821.27,
+      "objects": 12,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -1.2315445245440362,
+        "up_axis": "+Y",
+        "floor_source": "median_support_bottom",
+        "contact_tolerance": 0.016386709419983436,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 1,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": 0.0
+          },
+          "after": {
+            "floor_supported_count": 1,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": 0.0
+          }
+        },
+        "support_ids": [
+          "computer_desk_00"
+        ],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "7d5a2dc53b1ea9ad9d38a1bdb2e1979ad58a3da85d23109adbc543f23e36ae8c",
+        "scene_sha256": "1f0b4cf30bbf18997d53ad99adda5ce785ca277acefb72b467a1fcd2076ab407",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "243d721a-9b56-41de-a2bb-1977b89b59e4-e2",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:16:25.270517+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 54.12,
       "before_visual_note": "책상과 위의 물체들이 어둡게 보인다. 책상 다리는 있으나 공통 floor geometry는 없다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "책상 아래 회색 바닥이 추가됐지만 책상 전체의 기울기와 어두운 형상은 Before와 유사하다. 지지 객체는 책상 1개이며 최저점이 이미 선택된 바닥 높이에 있어 Y 이동은 없었다. 따라서 한쪽 다리가 더 높아 보이는 orientation 문제와 책상 위 소품의 겹침·누락은 해결되지 않았다.",
+      "timing": {
+        "id": "243d721a-9b56-41de-a2bb-1977b89b59e4-e2",
+        "status": "COMPLETED",
+        "delayTime": 231910,
+        "executionTime": 430376,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "38b6e971702f4a549ef13e0833d5589b",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\38b6e971702f4a549ef13e0833d5589b",
+        "objects": [
+          {
+            "id": "computer_desk_00",
+            "mask_pixels": 521346,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "electronic_00",
+            "mask_pixels": 186837,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "stack_00",
+            "mask_pixels": 133982,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "stack_01",
+            "mask_pixels": 133569,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "stack_02",
+            "mask_pixels": 129325,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "stack_03",
+            "mask_pixels": 116859,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "stack_04",
+            "mask_pixels": 108914,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "office_supply_00",
+            "mask_pixels": 84749,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "office_supply_01",
+            "mask_pixels": 84541,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "electronic_01",
+            "mask_pixels": 65970,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "electronic_02",
+            "mask_pixels": 54642,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "cup_00",
+            "mask_pixels": 39105,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 12,
+        "gltf_node_count": 25,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/dan-begel-YE7nAeaWS4w-unsplash.jpg",
@@ -335,7 +1297,7 @@
       "http_status": 400,
       "error": "{\"error\": \"Please use an image with at most 16 megapixels\"}",
       "before_visual_note": "매칭되는 기존 완료 run/preview가 없어 Before를 평가할 수 없다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "새 결과 없음; 시각적 개선/회귀를 판정할 수 없다."
     },
     {
       "sample": "samples/fp_eRye2yOmskbXBBLbNnJqI7wZNaZNfkP80C5SW8R81feBrndm8grXAruMEt7n3jCOPKapBKO1-BYfzQrVI70F2jclyDEQg7j_peFK-voT2rH3UYSjTRlLkxtP9JYKAs1P-fOYkti8gQ727Bqi54A0GyR8gyEqBEisFbncIsm4Qar-gL68R6cW8EqsvsuWI.jpg",
@@ -350,12 +1312,11 @@
         "0831486bdcf741e18fca7953be03090f"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/0e5daf481f82",
       "before_preview_source": "runs/0831486bdcf741e18fca7953be03090f/previews/meshes/oblique.png",
       "before_scene_sha256": "b9fa3f4cd4e3c1a5bcff53ae2b209641021b3d6903d00e019c4d23f800e2b161",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "0831486bdcf741e18fca7953be03090f",
@@ -373,8 +1334,170 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "c20feb3c7ba14e11a394ff3dd3d5b558",
+      "started_at": "2026-09-29T06:17:06.451680+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 968.02,
+      "objects": 9,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.2481672400716181,
+        "up_axis": "+Y",
+        "floor_source": "median_support_bottom",
+        "contact_tolerance": 0.003710315034138988,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 7,
+            "floating_count": 3,
+            "penetrating_count": 3,
+            "mean_absolute_contact_error": 0.11820708687303456
+          },
+          "after": {
+            "floor_supported_count": 7,
+            "floating_count": 1,
+            "penetrating_count": 2,
+            "mean_absolute_contact_error": 0.09091202578650939
+          }
+        },
+        "support_ids": [
+          "chair_00",
+          "dining_table_00",
+          "loveseat_00",
+          "loveseat_01",
+          "loveseat_02",
+          "loveseat_03",
+          "table_00"
+        ],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "1abb866d02f0a80eaba51893a9c10b03aafc4ca7d29aedbfe61ea257cfa64b3c",
+        "scene_sha256": "45019fc3ae8c363198da9e4588587cced8b498ac5892848356da071e3078547f",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "33834932-aff1-4eed-9fd7-7efe0245c905-e1",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:17:09.351300+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 25.48,
       "before_visual_note": "소파·테이블·의자가 넓게 흩어져 있으며 높이와 방향이 제각각인 구도다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "넓은 거실의 흩어진 소파·탁자 아래 공통 회색 바닥이 생겼다. 새 run 내부 지지 객체 7개의 부유는 3→1개, 관통은 3→2개로 감소했다. 다만 화면에서 가구의 벌어진 배치와 일부 세워진/기울어진 형상은 남아 있고, 뒤쪽 소파와 앞쪽 의자의 높이 문제도 완전히 해소되지 않았다. 큰 바닥으로 자동 축소되어 세부 확인에는 Viewer 확대가 필요하다. 실제 WebGL에서도 앞쪽의 낮은 소파 일부가 바닥 아래로 가려진다. 새 바닥이 미해결 관통을 가리는 문제를 함께 확인했다.",
+      "timing": {
+        "id": "33834932-aff1-4eed-9fd7-7efe0245c905-e1",
+        "status": "COMPLETED",
+        "delayTime": 619285,
+        "executionTime": 250229,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "c20feb3c7ba14e11a394ff3dd3d5b558",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\c20feb3c7ba14e11a394ff3dd3d5b558",
+        "objects": [
+          {
+            "id": "loveseat_00",
+            "mask_pixels": 113266,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "table_00",
+            "mask_pixels": 35188,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "loveseat_01",
+            "mask_pixels": 29141,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "chair_00",
+            "mask_pixels": 17318,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "fixture_00",
+            "mask_pixels": 9449,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "loveseat_02",
+            "mask_pixels": 7612,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "dining_table_00",
+            "mask_pixels": 2716,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "loveseat_03",
+            "mask_pixels": 2592,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "chandelier_00",
+            "mask_pixels": 2435,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 9,
+        "gltf_node_count": 19,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/frank-huang-8E_RqlT7RUs-unsplash.jpg",
@@ -394,7 +1517,7 @@
       "http_status": 400,
       "error": "{\"error\": \"Please use an image with at most 16 megapixels\"}",
       "before_visual_note": "매칭되는 기존 완료 run/preview가 없어 Before를 평가할 수 없다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "새 결과 없음; 시각적 개선/회귀를 판정할 수 없다."
     },
     {
       "sample": "samples/g31sErZDtH2kz-tEqjrjWker3lTDkJs7oPZFehc61eEp-0DfHYh8wIcTuk6qlwY9pgckesRSSQLokHEF8hWooWk-aHyZJ9D8_FtRwMIPalu4mI938wXfCKYCFLWtn_baGGbPdKoe3d8t0w_IP6EGmrBZ268ZoGGhYXUonftksdBEuBqChMtPUXu_Y9CI0T6R.jpg",
@@ -409,12 +1532,11 @@
         "38abfa6472324289a0983cb386764aef"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/79cbff65a058",
       "before_preview_source": "runs/38abfa6472324289a0983cb386764aef/previews/meshes/oblique.png",
       "before_scene_sha256": "a3bd80530270c79e635cc593c8e0ad562179855150580688e3bc7fbddb880e24",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "38abfa6472324289a0983cb386764aef",
@@ -432,8 +1554,114 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "34534587988241088830cdb0a296cbbb",
+      "started_at": "2026-09-29T06:21:22.511731+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 693.24,
+      "objects": 1,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.6419596660543156,
+        "up_axis": "+Y",
+        "floor_source": "scene_bottom",
+        "contact_tolerance": 0.01833786290747341,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          },
+          "after": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          }
+        },
+        "support_ids": [],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "68767a5a714f9545118eb03121cc4ecea061354653a03f7a30a4643d59ae8e39",
+        "scene_sha256": "cddc77fb81e134ddb0143529f84495af61b0037faee6647d6fe14efe0fac60cb",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "3c8960f5-995f-47d2-86de-93614458479e-e1",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:21:25.958820+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 4.97,
       "before_visual_note": "큰 갈색 지붕/상자 같은 구조만 두드러진다. 원본 야경의 여러 물체를 구분하기 어렵다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "야경 골목은 Before와 After 모두 실제 골목 대신 하나의 지붕/상자 같은 통합 형상으로 보인다. After에는 아래 회색 바닥이 추가됐지만 골목 깊이, 벽, 화분 등의 복원 문제는 유지된다. 지지 객체가 0개여서 위치 보정은 적용되지 않았다.",
+      "timing": {
+        "id": "3c8960f5-995f-47d2-86de-93614458479e-e1",
+        "status": "COMPLETED",
+        "delayTime": 613959,
+        "executionTime": 55695,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "34534587988241088830cdb0a296cbbb",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\34534587988241088830cdb0a296cbbb",
+        "objects": [
+          {
+            "id": "night_view_00",
+            "mask_pixels": 2067811,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 1,
+        "gltf_node_count": 3,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/hichem-meghachou-7I-Rj_E9ihI-unsplash.jpg",
@@ -448,12 +1676,11 @@
         "2b0568809830463899c2705b4321fb8c"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/59c6e93b42ff",
       "before_preview_source": "runs/2b0568809830463899c2705b4321fb8c/previews/meshes/oblique.png",
       "before_scene_sha256": "79595b055f9680267a49d1f48174c17b43e675ef47569721a0e677268520717e",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "2b0568809830463899c2705b4321fb8c",
@@ -471,8 +1698,114 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "f818c1ee82294857a1146591d6e29b9c",
+      "started_at": "2026-09-29T06:29:59.671049+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 291.45,
+      "objects": 1,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.548002300827823,
+        "up_axis": "+Y",
+        "floor_source": "scene_bottom",
+        "contact_tolerance": 0.02368451551648155,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          },
+          "after": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          }
+        },
+        "support_ids": [],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "c192395ee3a333afaf63cd9b43ee252948b4c1f78bcd006636a6a33164acb2db",
+        "scene_sha256": "05f8d0edb11f682fadacf5d87d17cdc25add135b592077b94365bf9510c6a4d3",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "c598da53-aa55-4441-9b64-6c6aed4548fa-e2",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:30:06.539767+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 8.06,
       "before_visual_note": "검고 뒤엉킨 식생/지형 mesh가 보인다. 개별 물체의 바닥 접촉은 판별하기 어렵다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "캠핑장 형상 아래 회색 바닥이 추가됐다. 그러나 Before와 After 모두 텐트·나무가 어두운 덩어리 하나로 합쳐져 있고, 가운데의 큰 불규칙한 나무 형상이 장면을 가린다. 지지 객체가 0개라 배치 이동은 없으며 텐트의 개별 분리와 밝기/형상 문제는 남아 있다.",
+      "timing": {
+        "id": "c598da53-aa55-4441-9b64-6c6aed4548fa-e2",
+        "status": "COMPLETED",
+        "delayTime": 150164,
+        "executionTime": 101727,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "f818c1ee82294857a1146591d6e29b9c",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\f818c1ee82294857a1146591d6e29b9c",
+        "objects": [
+          {
+            "id": "campsite_00",
+            "mask_pixels": 15675139,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 1,
+        "gltf_node_count": 3,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/HJBLjCUWEAAMNIM.jpg",
@@ -487,12 +1820,11 @@
         "7f61267de9764daabb786f0a3fc94540"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/a5b1af66982a",
       "before_preview_source": "runs/7f61267de9764daabb786f0a3fc94540/previews/meshes/oblique.png",
       "before_scene_sha256": "8e253f73d38b9a0f3b94dada0ed660a2a392ed39ed13ec0c0a81a990f001fd85",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "7f61267de9764daabb786f0a3fc94540",
@@ -510,8 +1842,156 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "dcff34e672034156b9a72d453a5fdbe0",
+      "started_at": "2026-09-29T06:32:55.664731+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 484.2,
+      "objects": 8,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.8304127012465714,
+        "up_axis": "+Y",
+        "floor_source": "scene_bottom",
+        "contact_tolerance": 0.002944271381816243,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          },
+          "after": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          }
+        },
+        "support_ids": [],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "409acaf6a21c1ca8e395f18bf6538d9fa14d9eae24c34f1c8512b9f4f2d010e1",
+        "scene_sha256": "8f74fdb65a8eb7da834d574c7e186f06fb454bec705e711dd8eb6dfac52ea1ea",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "2d6a219a-cab8-4f76-b097-fa6795cea836-e2",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:32:57.499124+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 28.42,
       "before_visual_note": "얇고 넓은 검은 판 위주의 결과로, 측면에 일부 도시 텍스처가 보인다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "After에는 회색 바닥이 생겼지만 도시 장면은 여전히 큰 검은 평판 두 장이 겹쳐 있고, 건물 조각이 그 사이에 가려진 모습이다. 지지 객체가 0개라 배치 보정은 없었다. 원본의 도로·가로등·개별 건물 구성이 복원되지 않은 문제와 가림은 그대로다.",
+      "timing": {
+        "id": "2d6a219a-cab8-4f76-b097-fa6795cea836-e2",
+        "status": "COMPLETED",
+        "delayTime": 81997,
+        "executionTime": 286274,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "dcff34e672034156b9a72d453a5fdbe0",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\dcff34e672034156b9a72d453a5fdbe0",
+        "objects": [
+          {
+            "id": "night_00",
+            "mask_pixels": 732712,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "building_00",
+            "mask_pixels": 11782,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "building_01",
+            "mask_pixels": 9665,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "building_02",
+            "mask_pixels": 7386,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "store_00",
+            "mask_pixels": 5857,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "car_00",
+            "mask_pixels": 4110,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "store_01",
+            "mask_pixels": 2874,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "car_01",
+            "mask_pixels": 2549,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 8,
+        "gltf_node_count": 17,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/image_0001.jpg",
@@ -526,12 +2006,11 @@
         "574cb4de90e34bb684518fd4a459164a"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/7de905c84802",
       "before_preview_source": "runs/574cb4de90e34bb684518fd4a459164a/previews/meshes/oblique.png",
       "before_scene_sha256": "7632241d89dd598abc843d2a43556e3f06b4bc9885c2d57177550b505b35445c",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "574cb4de90e34bb684518fd4a459164a",
@@ -549,8 +2028,114 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "006bf0d5a4d3428ab1b8eb9e1d0061f5",
+      "started_at": "2026-09-29T06:33:14.497953+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 447.78,
+      "objects": 1,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.7954478453201377,
+        "up_axis": "+Y",
+        "floor_source": "scene_bottom",
+        "contact_tolerance": 0.025368295287623948,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          },
+          "after": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          }
+        },
+        "support_ids": [],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "286e27a1580d9912aca235c7c9c7116b843c6ed5c48353b0b1c175680e34f2ad",
+        "scene_sha256": "880e0ae594ba84284bac96ddbd598c7425bb2da54a1aafc8763b023ee2e1a6c4",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "19de7e21-92bd-4aae-8e4d-de0b2099f359-e1",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:33:17.514339+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 5.89,
       "before_visual_note": "건물 전면과 지면 일부가 사각형 조각으로 묶여 보인다. 별도 배경 바닥은 없다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "거리 전체가 하나의 통합 객체이며 After에는 그 아래 큰 회색 바닥이 추가됐다. 건물과 도로의 전체 기울기/방향은 Before와 같고 지지 객체 0개로 위치 이동도 없었다. 바닥 때문에 자동 화면 배율이 더 작아져 거리 세부 형상의 확인은 오히려 어려워졌다. 배경 재구성이나 orientation 개선의 증거는 없다.",
+      "timing": {
+        "id": "19de7e21-92bd-4aae-8e4d-de0b2099f359-e1",
+        "status": "COMPLETED",
+        "delayTime": 349288,
+        "executionTime": 65249,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "006bf0d5a4d3428ab1b8eb9e1d0061f5",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\006bf0d5a4d3428ab1b8eb9e1d0061f5",
+        "objects": [
+          {
+            "id": "street_scene_00",
+            "mask_pixels": 833236,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 1,
+        "gltf_node_count": 3,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/images.jpg",
@@ -566,12 +2151,11 @@
         "2e58128c189949f0a959803306afc83f"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/d5204e7dcee4",
       "before_preview_source": "runs/ac50e4379b3a4a278f470514e44d0516/previews/meshes/oblique.png",
       "before_scene_sha256": "88da089016efa25986ebd20caa4b14d63f5880df449a57fff15087b1e0cd52a6",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "ac50e4379b3a4a278f470514e44d0516",
@@ -589,8 +2173,126 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "ecbbf289880e45a5b8c1e8726944b982",
+      "started_at": "2026-09-29T06:34:49.289424+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 402.09,
+      "objects": 3,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.7352363743984824,
+        "up_axis": "+Y",
+        "floor_source": "scene_bottom",
+        "contact_tolerance": 0.0060276140425796435,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          },
+          "after": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          }
+        },
+        "support_ids": [],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "899d131ae9289138c6effd719c71036ace2618e32a70492c3200ca76206306f7",
+        "scene_sha256": "9b5a2ec1b9d931dc19b91c20d106f62f08f1850a3f168d27d6c86d1ee5451ea0",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "c158f5dc-a409-4569-b0d0-6d93321fe2d8-e1",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:34:50.722205+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 5.42,
       "before_visual_note": "도시 skyline과 식생이 긴 띠에 배열되어 있고 아래로 길게 뻗는 가는 조각이 있다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "기울어진 도시 띠와 아래로 길게 뻗은 가느다란 파편이 Before/After에 모두 보인다. After에는 넓은 회색 바닥이 생겼지만 도시의 상당 부분은 여전히 위로 떠 보인다. 지지 객체가 0개라 위치 보정은 없고, 긴 파편을 포함한 scene bounds가 바닥과 화면 범위를 크게 만드는 한계가 드러난다.",
+      "timing": {
+        "id": "c158f5dc-a409-4569-b0d0-6d93321fe2d8-e1",
+        "status": "COMPLETED",
+        "delayTime": 322397,
+        "executionTime": 61939,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "ecbbf289880e45a5b8c1e8726944b982",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\ecbbf289880e45a5b8c1e8726944b982",
+        "objects": [
+          {
+            "id": "city_00",
+            "mask_pixels": 37173,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "lush_00",
+            "mask_pixels": 685,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "coast_00",
+            "mask_pixels": 322,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 3,
+        "gltf_node_count": 7,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/input.jpg",
@@ -605,12 +2307,11 @@
         "85f5814232a74b77ab05e21e252027ae"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/dec7ebaa0033",
       "before_preview_source": "runs/85f5814232a74b77ab05e21e252027ae/previews/meshes/oblique.png",
       "before_scene_sha256": "c21c0187e9b3a7ef014357011f10ad80a91dd120c24bfedd622743cd7c2dd0d6",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "85f5814232a74b77ab05e21e252027ae",
@@ -628,8 +2329,138 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "e88df9777116431e9d6ce93b0adf8186",
+      "started_at": "2026-09-29T06:40:42.324459+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 238.67,
+      "objects": 5,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.8257782616547373,
+        "up_axis": "+Y",
+        "floor_source": "scene_bottom",
+        "contact_tolerance": 0.0027072495003849996,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          },
+          "after": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          }
+        },
+        "support_ids": [],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "ff622c20862178c6d9f15fbc1de1ba8a0943c0e872a68061fa92bf686397dfcc",
+        "scene_sha256": "133e15fc7de3215c937d3f53b2029d28055920784e88267083442cc2fa225143",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "a0660c9d-ea48-44e4-8153-8f8aaeca8681-e1",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:40:45.324327+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 14.86,
       "before_visual_note": "큰 회색 사각 프레임/평판 구조가 보인다. 어두운 원본의 세부 물체 구분은 제한적이다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "어두운 게임 장면은 Before/After 모두 큰 지붕과 철골 프레임 같은 구조로 복원됐다. After에는 그 구조 아래 회색 바닥이 추가됐지만 구조물의 크기·기울기와 내부의 가림은 유사하다. 지지 객체 0개로 위치 이동은 없으며 원본 인물과 주변 장치의 재현 문제는 남아 있다.",
+      "timing": {
+        "id": "a0660c9d-ea48-44e4-8153-8f8aaeca8681-e1",
+        "status": "COMPLETED",
+        "delayTime": 30843,
+        "executionTime": 147708,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "e88df9777116431e9d6ce93b0adf8186",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\e88df9777116431e9d6ce93b0adf8186",
+        "objects": [
+          {
+            "id": "darkness_00",
+            "mask_pixels": 1404369,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "huddle_00",
+            "mask_pixels": 37384,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "sign_00",
+            "mask_pixels": 26045,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "pole_00",
+            "mask_pixels": 16788,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "sign_01",
+            "mask_pixels": 7592,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 5,
+        "gltf_node_count": 11,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/julia-aX1TTOuq83M-unsplash.jpg",
@@ -649,7 +2480,7 @@
       "http_status": 400,
       "error": "{\"error\": \"Please use an image with at most 16 megapixels\"}",
       "before_visual_note": "매칭되는 기존 완료 run/preview가 없어 Before를 평가할 수 없다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "새 결과 없음; 시각적 개선/회귀를 판정할 수 없다."
     },
     {
       "sample": "samples/KakaoTalk_20260829_164738573.jpg",
@@ -664,12 +2495,11 @@
         "d57fea2928e6401683c9499f3f4a4a4f"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/f129f63fbff3",
       "before_preview_source": "runs/d57fea2928e6401683c9499f3f4a4a4f/previews/meshes/oblique.png",
       "before_scene_sha256": "1edd6e8fef026c9759734a9f6633ef8cf1dcdaf8a3725fdf3adae7c7ccc0b8aa",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "d57fea2928e6401683c9499f3f4a4a4f",
@@ -687,8 +2517,175 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "2a2d9c3e0eb64d80862fc6b697217d8a",
+      "started_at": "2026-09-29T06:41:01.093405+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 535.53,
+      "objects": 10,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.40861351324623885,
+        "up_axis": "+Y",
+        "floor_source": "median_support_bottom",
+        "contact_tolerance": 0.007753393960725064,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 6,
+            "floating_count": 3,
+            "penetrating_count": 3,
+            "mean_absolute_contact_error": 0.1436773488446759
+          },
+          "after": {
+            "floor_supported_count": 6,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": 0.0
+          }
+        },
+        "support_ids": [
+          "chair_00",
+          "chair_01",
+          "chair_02",
+          "chair_03",
+          "dining_table_00",
+          "hassock_00"
+        ],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "1f5eaa973d21070a15d42b73c51605ad1a8740782d038a577e9281550ffa9329",
+        "scene_sha256": "dd55769be08f52225fae0576a251b4b6d95664d1f856e0bbf7f014f15c3b968e",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "90fbe99f-a270-4e46-aec1-fd75d40c9565-e1",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:41:05.841983+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 29.17,
       "before_visual_note": "책상·의자와 책상 위 소품들이 기울어져 보인다. 공통 floor 없이 독립 물체들만 보인다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "After에는 식탁과 의자 아래 바닥이 생기고 각 지지 객체의 최저점이 같은 높이에 맞춰졌다. 새 run 내부 지지 객체 6개의 부유 3→0개, 관통 3→0개로 개선됐다. 다만 식탁과 의자가 크게 기울고 서로 겹치는 형상은 남아 있으며, 한 객체의 모든 다리가 수평으로 놓였다는 뜻은 아니다. 회전·형상 문제는 접촉 이동만으로 해결되지 않았다.",
+      "timing": {
+        "id": "90fbe99f-a270-4e46-aec1-fd75d40c9565-e1",
+        "status": "COMPLETED",
+        "delayTime": 159092,
+        "executionTime": 277970,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "2a2d9c3e0eb64d80862fc6b697217d8a",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\2a2d9c3e0eb64d80862fc6b697217d8a",
+        "objects": [
+          {
+            "id": "dining_table_00",
+            "mask_pixels": 1403969,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "hassock_00",
+            "mask_pixels": 873835,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "chair_00",
+            "mask_pixels": 611800,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "chair_01",
+            "mask_pixels": 272521,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "appliance_00",
+            "mask_pixels": 189495,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "chair_02",
+            "mask_pixels": 112784,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "chair_03",
+            "mask_pixels": 95901,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "kitchen_counter_00",
+            "mask_pixels": 58561,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "package_00",
+            "mask_pixels": 41684,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "bag_00",
+            "mask_pixels": 37767,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 10,
+        "gltf_node_count": 21,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/l4Oe0Mu-LKBiOcEUE3ShgfPgdMIGE0hoTei-xgsPPlhAaMJ5HoZ7mOjtNhmYq74wdZcE5bCSkJDzc-pQQmt8qZO_8Ww6-_CO8B6HnEjpfwv6M_cOx_nWKQNsaIAtzAKaYGIwbEoAwRKmXdySd6VZIdHev7ufXxGdI3_vUH0UxPRWF_u3ffY5GhFOfC4ibA6l.jpg",
@@ -703,12 +2700,11 @@
         "f26922c3015947b0b14ae08dac796932"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/0f398f6104a6",
       "before_preview_source": "runs/f26922c3015947b0b14ae08dac796932/previews/meshes/oblique.png",
       "before_scene_sha256": "2cd36ff6628a329057c15d8a3f20f461b45b6c34774ef72cce898a47924438ee",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "f26922c3015947b0b14ae08dac796932",
@@ -726,8 +2722,114 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "330daeb866454b17a0a95f62a58706c0",
+      "started_at": "2026-09-29T06:41:31.646855+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 459.75,
+      "objects": 1,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.6874601076622966,
+        "up_axis": "+Y",
+        "floor_source": "scene_bottom",
+        "contact_tolerance": 0.014451113207227131,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          },
+          "after": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          }
+        },
+        "support_ids": [],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "2bd568ecfed63265c77555fde8333b5c83c51ccc96edb2e3165123530aaea6c4",
+        "scene_sha256": "9f437f7c88f6b71cbbc48d98bc7a336cfde7cbfb268f525e5d84eb4d5e307728",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "94b36415-dfb8-4b4f-acce-b6e110644a4c-e1",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:41:33.910667+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 4.14,
       "before_visual_note": "문과 벽을 포함한 작은 room-shell 같은 mesh 하나가 보인다. 이는 기존 SAM3D 객체이며 새 background floor가 아니다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "After에는 창문이 있는 벽 조각 아래 회색 바닥이 추가됐다. Before와 동일하게 방 전체가 아니라 벽·창문 중심의 단일 객체로 보이며, 원본의 침대·책상·의자·선반 소품이 대부분 재현되지 않았다. 벽의 기울기는 유지되고 지지 객체 0개로 위치 이동도 없다.",
+      "timing": {
+        "id": "94b36415-dfb8-4b4f-acce-b6e110644a4c-e1",
+        "status": "COMPLETED",
+        "delayTime": 410046,
+        "executionTime": 39280,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "330daeb866454b17a0a95f62a58706c0",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\330daeb866454b17a0a95f62a58706c0",
+        "objects": [
+          {
+            "id": "nursery_00",
+            "mask_pixels": 2896756,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 1,
+        "gltf_node_count": 3,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/living_room.jpg",
@@ -747,12 +2849,11 @@
         "83b8a7a8fde840bf81abcff40ef25c82"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/98eb1fbb5704",
       "before_preview_source": "runs/7bcd165489c84f6e9436e983f474c017/previews/meshes/oblique.png",
       "before_scene_sha256": "7aebddfb823114b7f07762a1200cf12f9eb3a157fa0cced3b0ed93b1f3538577",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "7bcd165489c84f6e9436e983f474c017",
@@ -770,8 +2871,148 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "88e01c90565644c79b5e31312ebebca7",
+      "started_at": "2026-09-29T06:44:40.995236+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 433.09,
+      "objects": 6,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.5795875513359173,
+        "up_axis": "+Y",
+        "floor_source": "median_support_bottom",
+        "contact_tolerance": 0.003171306992492729,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 3,
+            "floating_count": 1,
+            "penetrating_count": 1,
+            "mean_absolute_contact_error": 0.02901016386865211
+          },
+          "after": {
+            "floor_supported_count": 3,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": 3.700743415417188e-17
+          }
+        },
+        "support_ids": [
+          "cabinet_00",
+          "coffee_table_00",
+          "loveseat_00"
+        ],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "53968d2f242bfeff0b03c01ddcf03d0b8523b3fa562458d6fae61a0b6d665753",
+        "scene_sha256": "9b592ce75acc8fc20a8508b3f870c5ca23e81923064363e161c7dc9dadbc0e16",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "067b2d1d-b8a3-4d3a-a02c-2dc4578ab1a6-e1",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:44:44.176044+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 12.44,
       "before_visual_note": "소파·테이블·수납장·TV·식물이 분리되어 있다. 소파와 수납장의 최저 높이가 다르고 별도 바닥은 없다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "After에서 소파·커피테이블·긴 수납장 아래 공통 바닥이 생겨 장면의 지지 기준이 명확해졌다. 새 run의 지지 객체 3개에서 부유 1→0개, 관통 1→0개로 개선됐다. TV는 계속 위쪽에 분리되어 있으며 벽은 생성되지 않는다. 소파의 방향과 전체 가구 간격은 Before와 유사하게 남아 있어 바닥 접촉 외의 배치 정합성이 해결됐다고 볼 수 없다.",
+      "timing": {
+        "id": "067b2d1d-b8a3-4d3a-a02c-2dc4578ab1a6-e1",
+        "status": "COMPLETED",
+        "delayTime": 260124,
+        "executionTime": 125458,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "88e01c90565644c79b5e31312ebebca7",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\88e01c90565644c79b5e31312ebebca7",
+        "objects": [
+          {
+            "id": "loveseat_00",
+            "mask_pixels": 165184,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "cabinet_00",
+            "mask_pixels": 72223,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "coffee_table_00",
+            "mask_pixels": 68874,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "television_00",
+            "mask_pixels": 45543,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "plant_00",
+            "mask_pixels": 5514,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "book_00",
+            "mask_pixels": 4892,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 6,
+        "gltf_node_count": 13,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/p4oC_SMMAWoxQP0Xb92NkrPRCk-o_WPNRIKgnRpyd58T8Xxihjpkh8_TvVFr8XKHqUAkQIeFmq4idGkwmNBPUn-Uy55tm1l30lca6QdZ0x2S1pwVRthYaLVkOG0bGYj3d_GMohI6hlRjn0Ic3INlwTjtuwnisYxzsJoPUeQ2o2X6JCASeT-hL1Jyn4sxoCgP.jpg",
@@ -786,12 +3027,11 @@
         "d66a457c4e6a4aba8d619d646a50fc68"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/871e9dc0c025",
       "before_preview_source": "runs/d66a457c4e6a4aba8d619d646a50fc68/previews/meshes/oblique.png",
       "before_scene_sha256": "5228cc5c18f0f30d40b370eb4be295f10df43eb09533ba4a1775174a9dfd5276",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "d66a457c4e6a4aba8d619d646a50fc68",
@@ -809,8 +3049,114 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "8c3edc6d589d4b988ba21938a36e52d4",
+      "started_at": "2026-09-29T06:49:11.846929+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 191.11,
+      "objects": 1,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.2563946662484078,
+        "up_axis": "+Y",
+        "floor_source": "scene_bottom",
+        "contact_tolerance": 0.01909804372939389,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          },
+          "after": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          }
+        },
+        "support_ids": [],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "4394e042bb32d1a707914d41b25417e484b260c4711a482f3ec38df3f4fdae18",
+        "scene_sha256": "f3efdefa2864664dc20507a0eade5f87597f5fa1a5e7adda409dcfcf870c8430",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "7b0a96cb-a125-4241-95d0-74d9a3eddf8d-e2",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:49:16.550796+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 5.27,
       "before_visual_note": "게임 지형과 식생이 긴 디오라마 형태로 한 덩어리로 보인다. 개별 furniture correction 평가 대상은 제한적이다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "Before의 마을 지형은 얇고 세워진 통합 패널처럼 보이며 After에서도 같은 방향과 형상이 유지된다. 회색 바닥은 추가됐지만 넓은 바닥 기준으로 자동 축소되어 원래 mesh가 화면 중앙에 작게 보인다. 지지 객체 0개로 위치 이동은 없고, 원본의 주택과 지형 구성이 정확히 분리되지 않은 문제가 남아 있다.",
+      "timing": {
+        "id": "7b0a96cb-a125-4241-95d0-74d9a3eddf8d-e2",
+        "status": "COMPLETED",
+        "delayTime": 114265,
+        "executionTime": 55497,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "8c3edc6d589d4b988ba21938a36e52d4",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\8c3edc6d589d4b988ba21938a36e52d4",
+        "objects": [
+          {
+            "id": "game_00",
+            "mask_pixels": 8267096,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 1,
+        "gltf_node_count": 3,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/pexels-baran-kilic-640071598-18151871.jpg",
@@ -830,7 +3176,7 @@
       "http_status": 400,
       "error": "{\"error\": \"Please use an image with at most 16 megapixels\"}",
       "before_visual_note": "매칭되는 기존 완료 run/preview가 없어 Before를 평가할 수 없다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "새 결과 없음; 시각적 개선/회귀를 판정할 수 없다."
     },
     {
       "sample": "samples/pexels-padrechaks-20422959.jpg",
@@ -850,7 +3196,7 @@
       "http_status": 400,
       "error": "{\"error\": \"Please use an image with at most 16 megapixels\"}",
       "before_visual_note": "매칭되는 기존 완료 run/preview가 없어 Before를 평가할 수 없다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "새 결과 없음; 시각적 개선/회귀를 판정할 수 없다."
     },
     {
       "sample": "samples/PGnAvG-MUEDZ146fq1MHxdqV-UyNuwFLaiTdCZ_8S2N1eS-bTv24RN6OuyPQvUMbDiZwrSqbpCKcrCEEIx8HAEkcgJpE1eW155RNycHBcqyZXgI7KjZgsHU1CG1F-7sP2GiANdefEyFxmOdMtwp6Q5Ilp-K1JXFsSKlBxEz_EyrvGh1UDPl9AY7X4y5KhN-4.jpg",
@@ -865,12 +3211,11 @@
         "b3d5939515de4d5ba97e4777c195c634"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/ee42ca360cda",
       "before_preview_source": "runs/b3d5939515de4d5ba97e4777c195c634/previews/meshes/oblique.png",
       "before_scene_sha256": "bb025acfa94d3f547792d789203f39c670144436ab79321fb72270588b0b89b3",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "b3d5939515de4d5ba97e4777c195c634",
@@ -888,8 +3233,114 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "827ffb7b8d474c84aa972e5032233a8f",
+      "started_at": "2026-09-29T06:49:55.538021+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 245.34,
+      "objects": 1,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.4527571720535035,
+        "up_axis": "+Y",
+        "floor_source": "scene_bottom",
+        "contact_tolerance": 0.01562136097398255,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          },
+          "after": {
+            "floor_supported_count": 0,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": null
+          }
+        },
+        "support_ids": [],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "f786892a514d081fb68ffd2bef6f0e8e14fb0ca531827c091cb79b498a80e84e",
+        "scene_sha256": "77abdaebdea3a137b156f806d2b811cd8e21801c134b2814bbb7cb5e4cc2926f",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "e6776bcf-4123-4594-bebd-3dde286be361-e2",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:49:58.831431+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 7.45,
       "before_visual_note": "갈색 지붕의 상자형 건물 mesh가 두드러진다. 원본의 세부 야경 구조는 제한적으로 복원되었다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "After에서는 단일 건물 블록 아래 회색 바닥이 추가됐다. Before와 비슷한 상자형 건물 형태로, 원본 좁은 골목의 깊이와 여러 간판·실외기·건물 분리는 재현되지 않았다. 지지 객체가 0개여서 접촉 이동은 없고 바닥 외의 구조적 개선은 확인되지 않는다.",
+      "timing": {
+        "id": "e6776bcf-4123-4594-bebd-3dde286be361-e2",
+        "status": "COMPLETED",
+        "delayTime": 128580,
+        "executionTime": 81400,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "827ffb7b8d474c84aa972e5032233a8f",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\827ffb7b8d474c84aa972e5032233a8f",
+        "objects": [
+          {
+            "id": "night_view_00",
+            "mask_pixels": 2074318,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 1,
+        "gltf_node_count": 3,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/qLNgF9x-U_xG3reZP3Px6-uHxTOgcdVjej0ta7o3o_JALtaLvp6OpWVZW9B9H2JNz9C9d-UingHLFHmtWpzZFx7thrDhHRtpVlPk7GJrju3MurHGxOhEwW-Lwu8O8AEc8es3C5mRb6wJ97zAqOxj0RpXy_5KvOW7sIpU5LFlwZcZmuIIoZamEllBZ8MRaY3p.jpg",
@@ -904,12 +3355,11 @@
         "67281f01271b4c86975c9cdbd5767ff8"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/34eb6c2a71ac",
       "before_preview_source": "runs/67281f01271b4c86975c9cdbd5767ff8/previews/meshes/oblique.png",
       "before_scene_sha256": "d4d30cfce889a3a87eb1b5d695619ef1d643a0adc94da2c3f191b4b196adc786",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "67281f01271b4c86975c9cdbd5767ff8",
@@ -927,8 +3377,187 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "345b637123704f62984036f96631fe47",
+      "started_at": "2026-09-29T06:51:54.275993+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 700.61,
+      "objects": 12,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.3860199843975213,
+        "up_axis": "+Y",
+        "floor_source": "median_support_bottom",
+        "contact_tolerance": 0.0024058659246858215,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 6,
+            "floating_count": 3,
+            "penetrating_count": 3,
+            "mean_absolute_contact_error": 0.07720084368020798
+          },
+          "after": {
+            "floor_supported_count": 6,
+            "floating_count": 1,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": 0.013661170431684614
+          }
+        },
+        "support_ids": [
+          "bar_stool_00",
+          "chair_00",
+          "chair_01",
+          "dining_table_00",
+          "dining_table_01",
+          "dining_table_02"
+        ],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "a5bcc6362b76c2e71de941031b0f8fbd9c011c48143fca5e21d29b03fdce2879",
+        "scene_sha256": "d27c50665dc7e1fe40def0b46ae343d645d797cb7bab4d1d2c591d744b4816b9",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "b131d0be-2044-43ed-bba3-d955cb5f4a4a-e1",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:51:56.841082+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 52.49,
       "before_visual_note": "테이블·스툴·통과 긴 막대가 서로 분리되어 있다. 막대들이 X자로 교차하고 높이가 제각각이다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "식탁과 의자들의 높이가 긴 회색 바닥에 맞춰져 새 run 지지 객체의 부유가 3→1개, 관통이 3→0개로 줄었다. bar_stool_00은 이동 한도를 넘어 보정을 건너뛰었다. 위쪽 교차 목재와 둥근 조각은 여전히 떨어져 있고, 통 일부는 바닥 범위 밖/아래에 보인다. 바닥이 모든 소품을 수용하거나 원본 술집 공간을 복원하지는 못했다.",
+      "timing": {
+        "id": "b131d0be-2044-43ed-bba3-d955cb5f4a4a-e1",
+        "status": "COMPLETED",
+        "delayTime": 93039,
+        "executionTime": 448324,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "345b637123704f62984036f96631fe47",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\345b637123704f62984036f96631fe47",
+        "objects": [
+          {
+            "id": "dining_table_00",
+            "mask_pixels": 339115,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "chair_00",
+            "mask_pixels": 101370,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "chair_01",
+            "mask_pixels": 99877,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "bar_stool_00",
+            "mask_pixels": 92962,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "log_00",
+            "mask_pixels": 56366,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "log_01",
+            "mask_pixels": 46175,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "artifact_00",
+            "mask_pixels": 37044,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "dining_table_01",
+            "mask_pixels": 35201,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "dining_table_02",
+            "mask_pixels": 34082,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "barrel_00",
+            "mask_pixels": 33080,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "artifact_01",
+            "mask_pixels": 30623,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "artifact_02",
+            "mask_pixels": 29830,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 12,
+        "gltf_node_count": 25,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/slR2ZfS3jpf_xRfH8yirgKg2ZFNhT9KPhM97Yn59E5L7aWfgzmblOYRWqQJV6ucxlqTF0YjQk1W0g6vfEjr2Dz7CSoArUiKBKlGmbCKz-aCSL3qITYgZH7m04K30cfSDm1NnpmoyN7-wDu4FptSSs8XjA9TgVSIZMw0jAAesfkGaEwET35zT6NXHrrL4EBAd.jpg",
@@ -943,12 +3572,11 @@
         "8c4ac2b9b70d4ca7a0336ff065db5176"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/2170d5a1d3df",
       "before_preview_source": "runs/8c4ac2b9b70d4ca7a0336ff065db5176/previews/meshes/oblique.png",
       "before_scene_sha256": "853977c4ce04e30195bf2cc84709f74105f2841073f682e70855d044cd998212",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "8c4ac2b9b70d4ca7a0336ff065db5176",
@@ -966,8 +3594,185 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "4e11dbfa61c549dcb96216005d8fea87",
+      "started_at": "2026-09-29T06:52:22.345003+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 1122.67,
+      "objects": 12,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.3162705651978589,
+        "up_axis": "+Y",
+        "floor_source": "median_support_bottom",
+        "contact_tolerance": 0.002695564867396617,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 4,
+            "floating_count": 2,
+            "penetrating_count": 2,
+            "mean_absolute_contact_error": 0.060275903020580876
+          },
+          "after": {
+            "floor_supported_count": 4,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": 0.0
+          }
+        },
+        "support_ids": [
+          "bed_00",
+          "chair_00",
+          "computer_desk_00",
+          "nightstand_00"
+        ],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "fdd6ea629beb6f93a5eb1f6ae309a3a9b091c3608dc52f841c33c7c420e6f73f",
+        "scene_sha256": "3965331f9caec01173e70edb0d5a776852b9e94d86a82055ef9a232ae8705b30",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "6cb080ee-d2f4-43a7-a0e3-828b07c28f62-e2",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:52:25.242833+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 38.25,
       "before_visual_note": "침대·책상·협탁·식물·벽 장식이 분리되어 있고 공통 floor가 없다. 전체가 기울어진 구도다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "After에는 침실 가구와 화분 아래 회색 바닥이 생겨 공통 높이 기준이 보인다. 새 run 지지 객체 4개의 부유 2→0개, 관통 2→0개로 개선됐다. 하지만 가구·액자·식물의 기울기와 서로 겹치는 배치는 Before와 비슷하게 남아 있고, 큰 덩굴과 분리된 원형 조각이 여전히 위쪽에 떠 있다. 원본 벽과 침대의 정확한 구조는 복원되지 않았다.",
+      "timing": {
+        "id": "6cb080ee-d2f4-43a7-a0e3-828b07c28f62-e2",
+        "status": "COMPLETED",
+        "delayTime": 514025,
+        "executionTime": 490940,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "4e11dbfa61c549dcb96216005d8fea87",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\4e11dbfa61c549dcb96216005d8fea87",
+        "objects": [
+          {
+            "id": "bed_00",
+            "mask_pixels": 91744,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "computer_desk_00",
+            "mask_pixels": 47393,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "picture_frame_00",
+            "mask_pixels": 38200,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "houseplant_00",
+            "mask_pixels": 36945,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "desktop_00",
+            "mask_pixels": 14427,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "picture_frame_01",
+            "mask_pixels": 10403,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "nightstand_00",
+            "mask_pixels": 9664,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "bedding_00",
+            "mask_pixels": 8377,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "bedding_01",
+            "mask_pixels": 8116,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "houseplant_01",
+            "mask_pixels": 6308,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "clock_00",
+            "mask_pixels": 5933,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "chair_00",
+            "mask_pixels": 5930,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 12,
+        "gltf_node_count": 25,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     },
     {
       "sample": "samples/spacejoy-9M66C_w_ToM-unsplash.jpg",
@@ -987,7 +3792,7 @@
       "http_status": 400,
       "error": "{\"error\": \"Please use an image with at most 16 megapixels\"}",
       "before_visual_note": "매칭되는 기존 완료 run/preview가 없어 Before를 평가할 수 없다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "새 결과 없음; 시각적 개선/회귀를 판정할 수 없다."
     },
     {
       "sample": "samples/vKDU8NwlREulF-1NM8tvH43BmkrpfmuojXHL74imAbahig4hhJfFFG6DwpMty-HMRb35uM-NNEKZC5nArYwPefMkld_eUOxo0_mFg_Z3fm3XwC3-BD0YwbVdGehOMuUu5QyzHqafsuC7wRAlUHRPOLBkTMRfZhEqpgds5LQzOoDcuVdYJVdnq6RnW2COLaBN.jpg",
@@ -1002,12 +3807,11 @@
         "9d0fe038d6c34b5cb9d5e61af49fc035"
       ],
       "mapping": "exact EXIF-normalized RGB pixel hash; latest original completed run",
-      "status": "BLOCKED",
+      "status": "PASS",
       "asset_dir": "docs/assets/sample_comparison/1f7cac62154d",
       "before_preview_source": "runs/9d0fe038d6c34b5cb9d5e61af49fc035/previews/meshes/oblique.png",
       "before_scene_sha256": "87cb946d0016a358b6f42315708f7f75ce229b1176fda05a677a721f578834e1",
-      "attempted": false,
-      "error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "attempted": true,
       "before_viewer_valid": true,
       "before_browser": {
         "run": "9d0fe038d6c34b5cb9d5e61af49fc035",
@@ -1025,25 +3829,183 @@
         "floor_present": false,
         "passed": true
       },
+      "prior_blocked_error": "Fresh RunPod upload/inference batch rejected by automatic approval review twice, including after proof of same files and same previously used endpoint. No GPU job submitted.",
+      "after": "a69ab48af7454c58a574baed787f4a6e",
+      "started_at": "2026-09-29T06:54:00.733260+00:00",
+      "execution_path": "production create_run + configured_pipeline().run",
+      "stage": "done",
+      "generation_seconds": 1364.25,
+      "objects": 11,
+      "failed_objects": 0,
+      "floor": true,
+      "placement": {
+        "floor_y": -0.597830258891498,
+        "up_axis": "+Y",
+        "floor_source": "median_support_bottom",
+        "contact_tolerance": 0.0028634091292094955,
+        "metrics": {
+          "before": {
+            "floor_supported_count": 8,
+            "floating_count": 4,
+            "penetrating_count": 4,
+            "mean_absolute_contact_error": 0.04285097332206286
+          },
+          "after": {
+            "floor_supported_count": 8,
+            "floating_count": 0,
+            "penetrating_count": 0,
+            "mean_absolute_contact_error": 2.7755575615628914e-17
+          }
+        },
+        "support_ids": [
+          "chair_00",
+          "chair_01",
+          "coffee_table_00",
+          "couch_00",
+          "couch_01",
+          "couch_02",
+          "dining_table_00",
+          "loveseat_00"
+        ],
+        "max_shift_height_ratio": 0.5,
+        "version": 1,
+        "original_scene_sha256": "15a29936393d97a32dc7f25d33f75093a67f0ee350073d8a4ed178aae1727b01",
+        "scene_sha256": "31be069965a8e016076a608953b7d245a24692e7f8a1be538d1eb1c08dbdb4b1",
+        "implementation_sha256": "dd5adbc9c35e7684e2350cc5ef45e4b98d3ea5c2d27290dd0280f90f38167e63"
+      },
+      "errors": [],
+      "worker_implementation": {
+        "models.py": "d5ae25078fa2115e97d559689555e71afe5284338e7dea457f03a45551413dfe",
+        "object_candidates.py": "46ac436dfd3e8f5933aebd2b77778dc07421e0c6d4aadf56d00380a96ec22d5a",
+        "scene_vision.py": "4b1949f08e79b4a31c12f516294063b0f1ac37bc527c906ef45481d849ea58a3",
+        "scene_reconstruct.py": "1ee8e37ede4621074a049c81e816d9b2b54dfeadfe0903e2143ff9a667545564",
+        "scene_assembly.py": "4ec76512463a29f55ef4eb54f52a3ca001e1985eca2eaf193cf9aa0d9cf005a1",
+        "scene_pipeline.py": "8cf9bb228e6dcd5f36be64265ecb8a6482530280f8361068f5dce419b83b7440"
+      },
+      "remote_job": {
+        "job_id": "3c4e1974-81c9-4fc9-8b8b-0afdffc0edbd-e1",
+        "endpoint_id": "8dzbkfrxys43hb",
+        "submitted_at": "2026-09-29T06:54:02.481282+00:00"
+      },
+      "artifact_valid": true,
+      "viewer_valid": true,
+      "duration_seconds": 27.99,
       "before_visual_note": "큰 사각형 trim/벽 조각과 소파·테이블이 흩어져 있다. 일부 소파가 큰 프레임 밖으로 떨어져 보인다.",
-      "comparison": "새 After가 생성되지 않아 배치·바닥 개선 또는 회귀를 비교 평가할 수 없다."
+      "comparison": "After에는 큰 사각 프레임과 분리된 소파·의자 아래 바닥이 생겼다. 새 run의 지지 객체 8개에서 부유 4→0개, 관통 4→0개로 개선됐다. 그러나 큰 프레임의 기울기, 프레임 밖으로 떨어진 소파, 분리된 벽/문 조각은 그대로 남아 있다. 접촉 높이는 개선됐지만 원본 거실 구성과 객체 간 배치는 복원되지 않았다.",
+      "timing": {
+        "id": "3c4e1974-81c9-4fc9-8b8b-0afdffc0edbd-e1",
+        "status": "COMPLETED",
+        "delayTime": 908796,
+        "executionTime": 365131,
+        "workerId": "zy5lo0xkt85uzh"
+      },
+      "browser": {
+        "run": "a69ab48af7454c58a574baed787f4a6e",
+        "mode": "after",
+        "checks": {
+          "floor": true,
+          "webgl": true,
+          "toggle": true,
+          "orbit": true,
+          "zoom": true,
+          "pan": true,
+          "download": true
+        },
+        "errors": [],
+        "floor_present": true,
+        "passed": true
+      },
+      "artifact_audit": {
+        "passed": true,
+        "run": "D:\\MapMaker\\runs\\a69ab48af7454c58a574baed787f4a6e",
+        "objects": [
+          {
+            "id": "loveseat_00",
+            "mask_pixels": 40718,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "greenery_00",
+            "mask_pixels": 27144,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "trim_00",
+            "mask_pixels": 18674,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "coffee_table_00",
+            "mask_pixels": 15624,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "chair_00",
+            "mask_pixels": 10531,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "trim_01",
+            "mask_pixels": 7472,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "couch_00",
+            "mask_pixels": 7141,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "couch_01",
+            "mask_pixels": 5962,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "couch_02",
+            "mask_pixels": 3383,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "chair_01",
+            "mask_pixels": 2928,
+            "geometry_count": 1,
+            "valid": true
+          },
+          {
+            "id": "dining_table_00",
+            "mask_pixels": 2302,
+            "geometry_count": 1,
+            "valid": true
+          }
+        ],
+        "node_count": 11,
+        "gltf_node_count": 23,
+        "errors": [],
+        "placement": {
+          "floor": true,
+          "transforms_preserved": true,
+          "world_bounds": true
+        },
+        "previews": [
+          "previews\\combined_preview.png",
+          "previews\\combined_view_00.png",
+          "previews\\combined_view_03.png",
+          "previews\\combined_view_06.png",
+          "previews\\combined_view_09.png",
+          "previews\\masks.png",
+          "previews\\meshes\\front_Z.png",
+          "previews\\meshes\\oblique.png",
+          "previews\\meshes\\top_Y.png"
+        ]
+      }
     }
-  ],
-  "execution_status": "blocked_by_automatic_approval_review",
-  "blocked_reason": "External image transfer and GPU batch cost were deemed insufficiently specifically authorized by automatic approval review.",
-  "fresh_inference_requested": true,
-  "fresh_inference_completed": false,
-  "environment": {
-    "os": "Windows-10-10.0.26200-SP0",
-    "python": "3.11.9",
-    "runtime": "existing RunPod/S3 settings; no endpoint changes"
-  },
-  "tests": {
-    "pytest": "46 passed",
-    "node_syntax": [
-      "web/app.js",
-      "web/compare-sample.mjs"
-    ]
-  },
-  "git_commit_scope": "new documentation, compact input/before images and new validation scripts only; pre-existing implementation changes remain unstaged"
+  ]
 }
