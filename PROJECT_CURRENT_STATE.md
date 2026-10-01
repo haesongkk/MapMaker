@@ -219,4 +219,4 @@ root XZ/크기/원본 mesh/pose는 유지한다. 비대상 객체는 공통 정�
 바닥으로 이동하는 대상은 기존 FLOOR_CATEGORIES 가구만이다. 나머지는 root XYZ를 보존한다.
 메타데이터 individual.applied와 individual.grounded를 분리하고 grounded_object_ids를 기록한다.
 비가구는 회전 후 메시가 바닥을 관통할 수도 있으며 추가 접지나 소품 추종은 하지 않는다.
-검증: [ALL_OBJECT_UPRIGHT_VALIDATION](docs/ALL_OBJECT_UPRIGHT_VALIDATION.md).
+최종 v4 결과의 프리뷰와 로컬 뷰어 링크: [현재 샘플 5개 결과](docs/SAMPLES_BEFORE_AFTER_COMPARISON.md).

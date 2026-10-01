@@ -143,9 +143,8 @@ GPU 추론 없이 저장 결과를 사용합니다. 새 ID는 `http://127.0.0.1:
 동일 버전과 해시에는 재적용하지 않습니다. version 1/2/3 결과는 직접 재처리하지 않고 원본 조립 결과를 사용해야 합니다.
 GLB/mesh preview가 최종 정렬 결과입니다. Gaussian preview가 있다면 원래 pose이며 바닥이 없습니다.
 
-이전 개별 보정의 역사적 결과는 [배치 검증](placement_validation.md)과
-[전체 샘플 비교](SAMPLES_BEFORE_AFTER_COMPARISON.md)에 보존되어 있습니다.
+이전 개별 보정의 역사적 결과는 [배치 검증](placement_validation.md)에 보존되어 있습니다.
 공통 정렬만의 검증은 [전체 좌표계 정렬 검증](GLOBAL_ALIGNMENT_VALIDATION.md),
 이전 가구 한정 개별 정렬 검증은 [개별 객체 정렬 검증](INDIVIDUAL_ALIGNMENT_VALIDATION.md)을 참고하세요.
 
-전체 객체 Y-up 적용 검증: [ALL_OBJECT_UPRIGHT_VALIDATION](ALL_OBJECT_UPRIGHT_VALIDATION.md).
+최종 v4 결과의 프리뷰와 로컬 뷰어 링크는 [현재 샘플 5개 결과](SAMPLES_BEFORE_AFTER_COMPARISON.md)에서 확인할 수 있습니다.
