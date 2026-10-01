@@ -1,6 +1,6 @@
 # MapMaker
 
-**단일 이미지에서 객체별 3D 모델을 생성하고 하나의 장면으로 조립하는 졸업 프로젝트**
+**단일 이미지에서 객체별 3D 모델을 생성하고 하나의 장면으로 조립하는 프로젝트**
 
 MapMaker는 이미지 한 장을 입력받아 주요 객체를 찾아 분리하고, 각 객체의 3D 형상과 배치를 추정하여 웹에서 확인할 수 있는 3D 장면을 생성합니다. RAM++, SAM3, SAM3D Objects를 하나의 처리 과정으로 연결하며, 생성된 객체는 개별 노드로 유지한 채 GLB 파일로 내보냅니다.
 
@@ -8,7 +8,7 @@ MapMaker는 이미지 한 장을 입력받아 주요 객체를 찾아 분리하�
 
 장기적으로는 방과 주변을 포함한 온전한 장면 복원과 편집을 목표로 합니다. 이번 1차 구현은 객체별 3D 생성과 장면 구성까지이며, 주변 공간 전체 복원과 객체 편집 UI는 후속 범위로 남아 있습니다.
 
-초기 실험과 개선 전후 비교는 [개발 과정과 개선 기록](docs/DEVELOPMENT_HISTORY.md), 모델 연결·좌표 변환·배치 보정·원격 실행의 구체적인 방식은 [상세 구현 문서](docs/IMPLEMENTATION.md)에 정리했습니다.
+모델 연결·좌표 변환·배치 보정·원격 실행의 구체적인 방식은 [상세 구현 문서](docs/IMPLEMENTATION.md)에 정리했습니다.
 
 ## 주요 기능
 
@@ -76,7 +76,9 @@ Three.js 기반으로 이미지 업로드, 생성 상태 표시, 3D 장면 탐�
 
 아래는 현재 배치 보정을 적용한 거실 장면의 WebGL 렌더링 예시입니다. 가구의 형태와 배치를 확인할 수 있으며, TV·책 등 일부 객체의 부유와 접촉 문제도 남아 있습니다.
 
-![거실 이미지에서 생성한 객체별 3D 장면](docs/assets/all_object_upright/88e01c90_after_front.png)
+| 원본 이미지 | 결과물 |
+|:---:|:---:|
+| <img src="docs/assets/sample_comparison/98eb1fbb5704/input.jpg" alt="원본 1" width="420"> | <img src="docs/assets/sample_comparison/98eb1fbb5704/viewer.png" alt="결과물 1" width="420"> |
 
 저장소에 보존된 검증 기록은 다음과 같습니다. 각 기록은 수행 당시의 구현과 입력을 기준으로 합니다.
 
@@ -127,8 +129,6 @@ powershell -ExecutionPolicy Bypass -File scripts/start_scene_web.ps1
 
 [로컬 앱](http://127.0.0.1:8082)에서 이미지를 선택하고 **Generate 3D Scene**을 누릅니다. 생성이 끝날 때까지 서버를 유지해야 합니다. `doctor`는 설정·파일 존재 검사이며 실제 원격 인증이나 추론 성공을 확인하는 명령은 아닙니다.
 
-CLI 실행, 테스트, 기존 결과 재처리와 샘플 일괄 검증은 [실행 및 검증 가이드](docs/usage.md), GPU worker 배포는 [런타임 가이드](docs/runtime.md)를 참고하세요.
-
 ## 저장소와 결과 구성
 
 ```text
@@ -144,5 +144,3 @@ runs/           실행별 산출물 (Git 제외)
 ```
 
 각 `runs/<run_id>/`에는 정규화한 입력 이미지, 객체 후보, 마스크, 객체별 GLB·pose, 최종 `scene.glb`, 메타데이터, 미리보기와 로그가 저장됩니다. 저장된 결과를 다시 보려면 해당 실행 폴더와 로컬 서버가 필요합니다.
-
-세부 구현 및 변경 이력은 [프로젝트 상태 기록](PROJECT_CURRENT_STATE.md)에, `living_room.jpg`의 출처는 [샘플 출처 문서](samples/ATTRIBUTION.md)에 정리되어 있습니다.
