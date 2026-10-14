@@ -305,3 +305,14 @@ progress {
     border-left: 0;
   }
 }
+#viewport .axis-indicator {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  left: auto;
+  bottom: auto;
+  width: 112px !important;
+  height: 112px !important;
+  pointer-events: none;
+  z-index: 2;
+}

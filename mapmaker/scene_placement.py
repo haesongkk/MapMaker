@@ -16,7 +16,6 @@ CONTACT_TOLERANCE_RATIO = 0.01
 PLACEMENT_VERSION = 4
 MEAN_UP_EPSILON = 1e-6
 FLOOR_NODE = "background_floor"
-FLOOR_MARGIN_RATIO = 0.15
 
 # Grounding categories only; every generated object receives individual upright rotation.
 FLOOR_CATEGORIES = frozenset({
@@ -217,24 +216,6 @@ def align_objects(scene, objects, placement):
     return placement
 
 
-def add_floor(scene, objects, placement):
-    """A thin neutral slab, top exactly at the contact plane; no room reconstruction."""
-    boxes = np.array([o["placement"]["world_bounds_after"] for o in objects])
-    low, high = boxes[:, 0].min(axis=0), boxes[:, 1].max(axis=0)
-    span = high[[0, 2]] - low[[0, 2]]
-    unit = max(float(span.max()), 1e-3)
-    size = np.maximum(span, unit * 0.05) * (1 + 2 * FLOOR_MARGIN_RATIO)
-    thickness = unit * 0.005
-    floor = trimesh.creation.box(extents=[size[0], thickness, size[1]])
-    floor.visual.vertex_colors = [185, 182, 175, 255]
-    matrix = np.eye(4)
-    matrix[:3, 3] = [(low[0] + high[0]) / 2, placement["floor_y"] - thickness / 2, (low[2] + high[2]) / 2]
-    scene.add_geometry(floor, node_name=FLOOR_NODE, geom_name=FLOOR_NODE, transform=matrix)
-    return {"node": FLOOR_NODE, "kind": "floor", "top_y": placement["floor_y"],
-            "size_xz": size.tolist(), "thickness": thickness,
-            "margin_each_side_ratio": FLOOR_MARGIN_RATIO, "source": "all aligned object bounds"}
-
-
 def finalize_scene(run, *, render=True):
     """Finalize an assembled run, also usable on verified legacy worker results.
 
@@ -249,6 +230,25 @@ def finalize_scene(run, *, render=True):
     if existing.get("version") == PLACEMENT_VERSION:
         if existing.get("scene_sha256") != sha(run / "scene.glb"):
             raise ValueError("Finalized scene hash mismatch")
+        if not meta.get("background"):
+            return existing
+        # Legacy v4 results already have aligned objects: remove only their slab.
+        scene = trimesh.load(run / "scene.glb", force="scene", process=False)
+        if FLOOR_NODE in scene.graph.nodes_geometry:
+            _, geometry = scene.graph[FLOOR_NODE]
+            scene.delete_geometry(geometry)
+            scene.graph.transforms.remove_node(FLOOR_NODE)
+        scene.export(run / "scene.glb")
+        meta["background"] = []
+        meta["pipeline"]["structural_geometry"] = False
+        meta["assembly"].update(bounds=scene.bounds.tolist(), geometry_nodes=len(scene.graph.nodes_geometry))
+        meta["assembly"]["method"] = "official SAM3D assembly + up alignment and grounding; no background geometry"
+        existing["scene_sha256"] = sha(run / "scene.glb")
+        write(run / "scene_metadata.json", meta)
+        write(run / "logs/placement.json", existing)
+        if render:
+            subprocess.run([sys.executable, "-m", "mapmaker.scene_preview", str(run / "scene.glb"),
+                            "--out", str(run / "previews/meshes"), "--material"], check=True)
         return existing
     if existing:
         raise ValueError("Unsupported placement version; replay from an uncorrected run")
@@ -259,7 +259,7 @@ def finalize_scene(run, *, render=True):
     original_hash = sha(run / "scene.glb")
     placement = correct_placement(scene, objects)
     align_objects(scene, objects, placement)
-    meta["background"] = [add_floor(scene, objects, placement)]
+    meta["background"] = []
     scene.export(run / "scene.glb")
     reloaded = trimesh.load(run / "scene.glb", force="scene", process=False)
     for obj in objects:
@@ -268,11 +268,11 @@ def finalize_scene(run, *, render=True):
         if not np.allclose(bounds_of(object_vertices(reloaded, obj["id"])), obj["placement"]["world_bounds_after"], atol=1e-6):
             raise ValueError(f"Placement bounds changed in GLB: {obj['id']}")
     meta.setdefault("assembly", {}).update(bounds=reloaded.bounds.tolist(), geometry_nodes=len(reloaded.graph.nodes_geometry))
-    meta["assembly"]["method"] = "official SAM3D assembly followed by shared mean-up alignment, then all-object upright and floor-furniture grounding; separate background floor"
+    meta["assembly"]["method"] = "official SAM3D assembly followed by shared mean-up alignment, then all-object upright and floor-furniture grounding; no background geometry"
     placement.update(version=PLACEMENT_VERSION, original_scene_sha256=original_hash,
                      scene_sha256=sha(run / "scene.glb"), implementation_sha256=sha(Path(__file__)))
     meta["placement"] = placement
-    meta["pipeline"].update(placement_method="official SAM3D + global mean-up + all-object upright and floor-furniture grounding", structural_geometry=True)
+    meta["pipeline"].update(placement_method="official SAM3D + global mean-up + all-object upright and floor-furniture grounding", structural_geometry=False)
     meta["preview_method"] = "CPU mesh preview of final scene.glb; Gaussian previews retain original SAM3D pose and contain no floor"
     write(run / "scene_metadata.json", meta)
     if render:

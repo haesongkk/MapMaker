@@ -5,7 +5,7 @@ import pytest
 import trimesh
 
 from mapmaker.scene_placement import (
-    FLOOR_NODE, align_objects, add_floor, bounds_of, correct_placement, finalize_scene, object_vertices,
+    FLOOR_NODE, align_objects, bounds_of, correct_placement, finalize_scene, object_vertices,
 )
 from mapmaker.scene_run import read, write, sha
 
@@ -119,21 +119,6 @@ def test_invalid_transform_and_empty_scene_fail():
         correct_placement(scene, [])
 
 
-def test_floor_top_footprint_and_glb_roundtrip(tmp_path):
-    scene, objects = fixture_scene()
-    report = correct_placement(scene, objects)
-    floor = add_floor(scene, objects, report)
-    scene.export(tmp_path / "floor.glb")
-    loaded = trimesh.load(tmp_path / "floor.glb", force="scene", process=False)
-    bounds = bounds_of(object_vertices(loaded, FLOOR_NODE))
-    assert bounds[1, 1] == pytest.approx(report["floor_y"], abs=1e-7)
-    for obj in objects:
-        b = bounds_of(object_vertices(loaded, obj["id"]))
-        assert np.all(bounds[0, [0, 2]] < b[0, [0, 2]])
-        assert np.all(bounds[1, [0, 2]] > b[1, [0, 2]])
-    assert floor["margin_each_side_ratio"] == .15
-
-
 def test_finalize_idempotent_and_hash_checked(tmp_path):
     scene, objects = fixture_scene()
     scene.export(tmp_path / "scene.glb")
@@ -141,6 +126,10 @@ def test_finalize_idempotent_and_hash_checked(tmp_path):
     finalize_scene(tmp_path, render=False)
     first_hash = sha(tmp_path / "scene.glb")
     first_meta = read(tmp_path / "scene_metadata.json")
+    assert first_meta['background'] == []
+    assert first_meta['pipeline']['structural_geometry'] is False
+    assert FLOOR_NODE not in trimesh.load(tmp_path / 'scene.glb', force='scene').graph.nodes
+
     finalize_scene(tmp_path, render=False)
     assert sha(tmp_path / "scene.glb") == first_hash
     assert read(tmp_path / "scene_metadata.json") == first_meta
@@ -184,12 +173,6 @@ def test_individual_upright_around_own_pivot_and_ground(angle):
     for k, g in scene.geometry.items():np.testing.assert_array_equal(g.vertices, vertices[k])
     assert report["individual_metrics"]["after"]["floating_count"] == 0
     assert report["individual_metrics"]["after"]["penetrating_count"] == 0
-    add_floor(scene, objects, report)
-    floor = bounds_of(object_vertices(scene, FLOOR_NODE))
-    for o in objects:
-        b = bounds_of(object_vertices(scene, o["id"]))
-        assert np.all(floor[0, [0, 2]] < b[0, [0, 2]])
-        assert np.all(floor[1, [0, 2]] > b[1, [0, 2]])
 
 
 def test_all_non_floor_categories_rotate_without_grounding():
@@ -220,3 +203,23 @@ def test_individual_rotation_preserves_heading_when_already_upright():
     before = scene.graph['object_0'][0].copy()
     align_objects(scene, objects, report)
     np.testing.assert_allclose(scene.graph['object_0'][0][:3, :3], before[:3, :3], atol=1e-12)
+
+
+def test_legacy_floor_removed_without_realigning(tmp_path):
+    scene, objects = fixture_scene()
+    scene.export(tmp_path / 'scene.glb')
+    write(tmp_path / 'scene_metadata.json', {'objects': objects, 'pipeline': {}})
+    finalize_scene(tmp_path, render=False)
+    meta=read(tmp_path / 'scene_metadata.json')
+    scene=trimesh.load(tmp_path / 'scene.glb', force='scene')
+    before={o['id']:scene.graph[o['id']][0].copy() for o in objects}
+    scene.add_geometry(trimesh.creation.box(), node_name=FLOOR_NODE, geom_name=FLOOR_NODE)
+    scene.export(tmp_path / 'scene.glb')
+    meta['background']=[{'node':FLOOR_NODE,'kind':'floor'}]
+    meta['placement']['scene_sha256']=sha(tmp_path / 'scene.glb')
+    write(tmp_path / 'scene_metadata.json', meta)
+    finalize_scene(tmp_path, render=False)
+    scene=trimesh.load(tmp_path / 'scene.glb', force='scene')
+    assert FLOOR_NODE not in scene.graph.nodes
+    for oid,matrix in before.items():
+        np.testing.assert_allclose(scene.graph[oid][0], matrix)

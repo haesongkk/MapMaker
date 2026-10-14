@@ -93,11 +93,13 @@ if meta.get("placement"):
             assert abs(min(bounds_of(object_vertices(scene, o["id"]))[0, 1] for o in objects)) < 1e-6
         assert np.allclose(common[:3, :3].T @ common[:3, :3], np.eye(3), atol=1e-6)
         assert np.isclose(np.linalg.det(common[:3, :3]), 1.)
-    floor = meta["background"][0]
-    assert floor["node"] in names
-    bounds = bounds_of(object_vertices(scene, floor["node"]))
-    assert abs(bounds[1, 1] - floor["top_y"]) < 1e-6
-    placement_checks = {"floor": True, "transform_composition": True, "world_bounds": True}
+    for floor in meta.get("background", []):
+        assert floor["node"] in names
+        bounds = bounds_of(object_vertices(scene, floor["node"]))
+        assert abs(bounds[1, 1] - floor["top_y"]) < 1e-6
+    if not meta.get("background"):
+        assert "background_floor" not in names
+    placement_checks = {"background": True, "transform_composition": True, "world_bounds": True}
 report = {
     "passed": True,
     "run": str(run),

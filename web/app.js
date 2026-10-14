@@ -4,11 +4,38 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 const $ = (s) => document.querySelector(s),
   viewport = $("#viewport");
 let renderer, camera, controls, scene, model, runId, sourceUrl;
+let grid, axisCanvas;
+function drawAxes() {
+  if (!axisCanvas) return;
+  const ctx = axisCanvas.getContext('2d');
+  ctx.clearRect(0, 0, 112, 112);
+  ctx.fillStyle = '#101b2bd9';
+  ctx.beginPath(); ctx.arc(56, 56, 51, 0, Math.PI * 2); ctx.fill();
+  const inverse = camera.quaternion.clone().invert();
+  const axes = [
+    ['X', '#ff7777', new THREE.Vector3(1, 0, 0)],
+    ['Y', '#85e6a0', new THREE.Vector3(0, 1, 0)],
+    ['Z', '#7bb8ff', new THREE.Vector3(0, 0, 1)],
+  ].map(([label, color, vector]) => ({ label, color, v: vector.applyQuaternion(inverse) }));
+  ctx.font = 'bold 13px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (const {label, color, v} of axes.sort((a, b) => a.v.z - b.v.z)) {
+    ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 2;
+    ctx.setLineDash([3, 4]); ctx.globalAlpha = .4;
+    ctx.beginPath(); ctx.moveTo(56, 56); ctx.lineTo(56-v.x*27, 56+v.y*27); ctx.stroke();
+    ctx.globalAlpha = 1; ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(56, 56); ctx.lineTo(56+v.x*30, 56-v.y*30); ctx.stroke();
+    ctx.fillText(label, 56+v.x*41, 56-v.y*41);
+  }
+}
 window.scenePreview = { ready: false };
 function render() {
   if (renderer) renderer.render(scene, camera);
+  if (camera) drawAxes();
 }
 function clearModel() {
+  if (grid) {
+    scene.remove(grid); grid.geometry.dispose(); grid.material.dispose(); grid = null;
+  }
   if (!model) return;
   scene.remove(model);
   model.traverse((o) => {
@@ -28,6 +55,12 @@ function initViewer() {
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   viewport.append(renderer.domElement);
+  axisCanvas = document.createElement('canvas');
+  axisCanvas.width = axisCanvas.height = 112;
+  axisCanvas.className = 'axis-indicator';
+  axisCanvas.setAttribute('role', 'img');
+  axisCanvas.setAttribute('aria-label', 'World axes: X red, Y green, Z blue. Solid lines indicate positive directions.');
+  viewport.append(axisCanvas);
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(45, 1, 0.01, 1000);
   scene.add(new THREE.HemisphereLight(0xe5f3ff, 0x647083, 3));
@@ -53,6 +86,9 @@ async function showScene(meta) {
     `/runs/${runId}/${meta.scene_asset}`,
   );
   model = gltf.scene;
+  // Older saved scenes may contain the former generated slab.
+  const oldFloor = model.getObjectByName('background_floor');
+  if (oldFloor) oldFloor.removeFromParent();
   scene.add(model);
   model.traverse((o) => {
     if (o.isMesh && o.material) {
@@ -66,6 +102,16 @@ async function showScene(meta) {
     center = box.getCenter(new THREE.Vector3()),
     size = box.getSize(new THREE.Vector3());
   const distance = Math.max(size.length() * 1.35, 0.5);
+  const span = Math.max(size.x, size.z, 0.1) * 1.8;
+  const step = 10 ** Math.floor(Math.log10(span / 20));
+  const divisions = Math.ceil(span / step);
+  grid = new THREE.GridHelper(divisions * step, divisions, 0x536e87, 0x314458);
+  grid.name = 'viewer_ground_grid';
+  grid.position.set(Math.round(center.x / step) * step, 0, Math.round(center.z / step) * step);
+  grid.material.transparent = true;
+  grid.material.opacity = .55;
+  grid.material.depthWrite = false;
+  scene.add(grid);
   camera.near = distance / 1000;
   camera.far = distance * 100;
   camera.updateProjectionMatrix();
@@ -98,8 +144,7 @@ async function showScene(meta) {
     $("#objects").append(row);
   }
   $("#object-count").textContent = objects.length;
-  const hasFloor = (meta.background || []).some((o) => o.kind === "floor");
-  $("#scene-summary").textContent = `${objects.length} independent objects${hasFloor ? " + floor" : ""}`;
+  $("#scene-summary").textContent = `${objects.length} independent objects · Grid Y=0`;
   const link = $("#export");
   link.href = `/runs/${runId}/scene.glb?download`;
   link.download = "scene.glb";
@@ -112,6 +157,7 @@ async function showScene(meta) {
     controls,
     renderer,
     scene,
+    grid,
     runId,
   };
 }
