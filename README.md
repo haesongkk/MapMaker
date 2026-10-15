@@ -109,6 +109,20 @@ Three.js 기반으로 이미지 업로드, 생성 상태 표시, 3D 장면 탐�
 
 ## 실행 방법
 
+### 전체 Runpod Serverless 실행
+
+웹 UI·API는 Runpod Load Balancer endpoint에서, RAM++·SAM3·SAM3D 추론과 장면
+조립·보정·미리보기는 GPU Queue endpoint에서 실행할 수 있습니다. 작업 상태와
+최종 산출물은 S3에 저장하므로 로컬 Python 서버 없이 실행하고 결과를 다시 열 수 있습니다.
+GPU worker의 최종 결과를 사용하며 로컬 장면 보정은 수행하지 않습니다.
+
+이미지 빌드, endpoint 설정, 브라우저 인증 및 S3 CORS 조건은
+[전체 서버리스 배포 안내](deploy/runpod/README.md)를 참고하세요.
+Runpod의 원시 HTTP endpoint는 인증 헤더가 필요하므로 일반 웹사이트 접속에는
+인증 게이트웨이 구성이 추가로 필요합니다.
+
+### 기존 로컬 웹 서버 실행
+
 기본 사용 환경은 **Windows 로컬 서버 + RunPod 원격 GPU**입니다. Python 3.11, Node.js, uv와 별도로 배포된 RunPod endpoint 및 S3 접근 설정이 필요합니다. 모델과 인증 정보는 저장소에 포함하지 않습니다.
 
 처음 준비할 때는 저장소 루트에서 실행합니다.

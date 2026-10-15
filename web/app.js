@@ -83,7 +83,7 @@ async function showScene(meta) {
   $("#empty").hidden = true;
   $("#scene-summary").textContent = "Loading scene...";
   const gltf = await new GLTFLoader().loadAsync(
-    `/runs/${runId}/${meta.scene_asset}`,
+    meta.scene_url || `/runs/${runId}/${meta.scene_asset}`,
   );
   model = gltf.scene;
   // Older saved scenes may contain the former generated slab.
@@ -183,10 +183,17 @@ const stages = {
   exporting: 5,
   done: 6,
 };
+let statusFailures = 0;
 async function poll() {
   try {
     const response = await fetch(`/api/runs/${runId}`);
+    if ([429, 502, 503, 504].includes(response.status) && statusFailures++ < 12) {
+      $("#status").textContent = "Reconnecting to server...";
+      setTimeout(poll, 5000);
+      return;
+    }
     if (!response.ok) throw new Error("Could not read generation status");
+    statusFailures = 0;
     const state = await response.json();
     $("#status").textContent = state.message;
     $("#progress").value = stages[state.stage] ?? 0;

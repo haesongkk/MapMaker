@@ -1,0 +1,9 @@
+# Reuse the deployed, audited CUDA/model runtime for application-only releases.
+# For dependency/runtime changes, rebuild deploy/runpod/Dockerfile instead.
+FROM registry.runpod.net/haesongkk-mapmaker-codex-runpod-serverless-migration-deploy-runpod-dockerfile:8a0bcaa35
+WORKDIR /opt/mapmaker
+COPY mapmaker mapmaker
+COPY scripts scripts
+COPY configs configs
+ENV MAPMAKER_BACKEND=local
+ENTRYPOINT ["/opt/mapmaker/.venv/bin/python", "-m", "mapmaker.serverless_worker"]

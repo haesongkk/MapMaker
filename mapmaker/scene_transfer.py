@@ -122,6 +122,45 @@ class ArtifactStore:
     def key(self, run_id, name):
         return f"mapmaker-jobs/{run_id}/{name}"
 
+    def put_json(self, run_id, name, value):
+        import json
+        self.client.put_object(Bucket=self.bucket, Key=self.key(run_id, name),
+                               Body=json.dumps(value, allow_nan=False).encode(),
+                               ContentType="application/json")
+
+    def get_json(self, run_id, name):
+        import json
+        from botocore.exceptions import ClientError
+        try:
+            obj = self.client.get_object(Bucket=self.bucket, Key=self.key(run_id, name))
+        except ClientError as exc:
+            if exc.response["Error"]["Code"] in ("NoSuchKey", "404"):
+                return None
+            raise
+        with obj["Body"] as body:
+            return json.load(body)
+
+    def publish_files(self, run):
+        """Publish immutable files first; the completion record is the commit marker."""
+        files = {}
+        for path in sorted(Path(run).rglob("*")):
+            if path.is_symlink():
+                raise ValueError("Artifact symlinks are not supported")
+            if path.is_file():
+                name = path.relative_to(run).as_posix()
+                safe_name(name)
+                self.client.upload_file(str(path), self.bucket,
+                                        self.key(run.name, "files/" + name))
+                files[name] = {"bytes": path.stat().st_size, "sha256": sha(path)}
+        return files
+
+    def asset_url(self, run_id, name, *, download=False):
+        safe_name(name)
+        params = {"Bucket": self.bucket, "Key": self.key(run_id, "files/" + name)}
+        if download:
+            params["ResponseContentDisposition"] = 'attachment; filename="scene.glb"'
+        return self.client.generate_presigned_url("get_object", Params=params, ExpiresIn=3600)
+
     def upload(self, run_id, path):
         self.client.upload_file(str(path), self.bucket, self.key(run_id, "input.zip"))
 

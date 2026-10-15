@@ -77,6 +77,12 @@ def handler(job):
         archive = root / "result.zip"
         pack_run(run, archive)
         store.upload_result(run.name, archive)
+        if payload.get("publish_web"):
+            files = store.publish_files(run)
+            store.put_json(run.name, "completion.json", {
+                "run_id": run.name, **read(run / "status.json"),
+                "metadata": read(run / "scene_metadata.json"), "files": files,
+            })
         return {"protocol": 1, "run_id": run.name, "archive_sha256": sha(archive),
                 "success": success,
                 "scene_sha256": sha(run / "scene.glb") if success else None,
