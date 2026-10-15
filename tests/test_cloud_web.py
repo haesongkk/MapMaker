@@ -39,6 +39,14 @@ def image_bytes():
     return data.getvalue()
 
 
+def test_cloud_targets_gpu_instead_of_platform_injected_web_id(monkeypatch):
+    from mapmaker import cloud_web
+    monkeypatch.setenv("RUNPOD_ENDPOINT_ID", "web-endpoint")
+    monkeypatch.setenv("MAPMAKER_GPU_ENDPOINT_ID", "gpu-endpoint")
+    monkeypatch.setattr(cloud_web, "RunPodClient", lambda endpoint: SimpleNamespace(endpoint=endpoint))
+    assert CloudRuns(store=Store()).client.endpoint == "gpu-endpoint"
+
+
 def client(**overrides):
     return SimpleNamespace(**{"endpoint": "gpu", "submit": lambda *_: {"id": "job-1"},
                              "poll": lambda _: {"status": "IN_PROGRESS"},
@@ -95,6 +103,20 @@ def test_old_worker_completion_is_explicit_failure():
     service = CloudRuns(store, client(poll=lambda _: {"status": "COMPLETED"}))
     run_id = service.submit(image_bytes())
     assert "updated GPU image" in service.state(run_id)["message"]
+
+
+def test_artifact_range_is_bounded_and_validated():
+    store = Store()
+    service = CloudRuns(store, client())
+    run_id = "a" * 32
+    size = 32 * 1024**2
+    store.put_json(run_id, "completion.json", {"files": {"scene.glb": {"bytes": size}}})
+    assert service.asset_part(run_id, "scene.glb", "bytes=10-12") == (b"glb", 10, 12, size)
+    for invalid in [None, "bytes=0-", "bytes=-3", "bytes=5-4", f"bytes={size}-", "bytes=1-3,8-10"]:
+        with pytest.raises(ValueError):
+            service.asset_part(run_id, "scene.glb", invalid)
+    with pytest.raises(RuntimeError, match="Incomplete"):
+        service.asset_part(run_id, "scene.glb", "bytes=0-9")
 
 
 def test_worker_publishes_completion_only_after_artifacts(tmp_path, monkeypatch):

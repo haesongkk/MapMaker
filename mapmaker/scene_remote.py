@@ -27,11 +27,11 @@ def remote_failure_detail(result):
 
 
 class RunPodClient:
-    def __init__(self):
+    def __init__(self, endpoint=None):
         import requests
         from .remote_settings import load_settings
         load_settings()
-        endpoint = os.environ["RUNPOD_ENDPOINT_ID"]
+        endpoint = endpoint or os.environ["RUNPOD_ENDPOINT_ID"]
         if not re.fullmatch(r"[a-zA-Z0-9_-]+", endpoint):
             raise ValueError("Invalid RUNPOD_ENDPOINT_ID")
         self.endpoint = endpoint

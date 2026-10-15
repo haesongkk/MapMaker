@@ -1,0 +1,7 @@
+{
+  "gpu_endpoint_id": "8dzbkfrxys43hb",
+  "web_endpoint_id": "9cicue4wyc0yzh",
+  "web_url": "https://9cicue4wyc0yzh.api.runpod.ai",
+  "gpu_branch": "codex/full-serverless-deploy",
+  "web_branch": "codex/full-serverless-web"
+}

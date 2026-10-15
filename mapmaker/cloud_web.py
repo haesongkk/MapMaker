@@ -21,7 +21,10 @@ from .web import Handler
 class CloudRuns:
     def __init__(self, store=None, client=None, timeout=None):
         self.store = store if store is not None else ArtifactStore()
-        self.client = client if client is not None else RunPodClient()
+        # RUNPOD_ENDPOINT_ID is injected by the platform and refers to this web
+        # worker, not the GPU queue endpoint to which requests must be submitted.
+        self.client = client if client is not None else RunPodClient(
+            endpoint=os.environ["MAPMAKER_GPU_ENDPOINT_ID"])
         self.timeout = int(timeout or os.environ.get("MAPMAKER_JOB_TIMEOUT", "7200"))
         if not 60 <= self.timeout <= 21600:
             raise ValueError("MAPMAKER_JOB_TIMEOUT must be 60..21600 seconds")
@@ -45,10 +48,12 @@ class CloudRuns:
                     raise ValueError("Invalid job ID")
                 record["job_id"] = result["id"]
                 self.store.put_json(run.name, "request.json", record)
-            except Exception:
+            except Exception as exc:
                 # Return the durable ID even if the submit response was lost. A worker
                 # that accepted the job can still publish completion under this ID.
-                pass
+                if isinstance(exc, RuntimeError) and "HTTP 4" in str(exc):
+                    self.store.put_json(run.name, "terminal.json", {
+                        "stage": "failed", "message": "GPU endpoint rejected submission; check server configuration"})
             return run.name
 
     def state(self, run_id):

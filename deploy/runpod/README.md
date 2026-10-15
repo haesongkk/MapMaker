@@ -14,7 +14,7 @@ Browser -> authenticated HTTP entry -> Runpod web/API endpoint
                                          | inference + finalization
                                          v
                                      private S3 bucket
-Browser <--------- signed artifact URLs --+
+Browser <--- bounded HTTP artifact reads <- web/API <- S3
 ```
 
 ## Build and deploy
@@ -36,8 +36,9 @@ docker push REGISTRY/mapmaker-web:cloud-v1
    Expose `8080/http` and `8081/http`; set `PORT=8080`, `PORT_HEALTH=8081`.
    `/ping` is the health route. The web process itself does not load GPU models.
    Select compute supported by Runpod for Load Balancer endpoints in your account.
-3. Set the web endpoint's `RUNPOD_ENDPOINT_ID` to the **GPU queue endpoint** ID,
-   not its own ID. Set `RUNPOD_API_KEY` using a secret environment variable.
+3. Set the web endpoint's `MAPMAKER_GPU_ENDPOINT_ID` to the **GPU queue endpoint** ID.
+   Runpod injects `RUNPOD_ENDPOINT_ID` with the web endpoint's own ID; it cannot
+   be used for the target GPU endpoint. Set `RUNPOD_API_KEY` using a secret environment variable.
 4. Configure both endpoints with `MAPMAKER_S3_BUCKET`, `MAPMAKER_S3_ENDPOINT`,
    `AWS_DEFAULT_REGION`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY`.
    The GPU endpoint also needs read access to the existing model storage.
@@ -47,6 +48,18 @@ docker push REGISTRY/mapmaker-web:cloud-v1
    lifetime of GPU jobs, and any web worker can read any job's status.
 
 ## Browser authentication and artifact access
+
+For this private deployment, launch the authenticated browser client:
+
+```powershell
+npm.cmd ci --prefix web
+node scripts/open_cloud_web.mjs
+```
+
+It uses installed Chrome and the existing `.runtime/runpod-api.key` (or
+`RUNPOD_API_KEY`). It starts no local web server. The key is added only to requests
+to the configured Runpod endpoint; it is not embedded in the app or URL. Close
+the opened browser to stop the launcher. Keep keys out of source control.
 
 Runpod's Load Balancer gateway requires `Authorization: Bearer <Runpod API key>`.
 An ordinary browser navigation does not supply this header. The raw endpoint URL
@@ -59,14 +72,12 @@ gateway is additional hosting and is not provisioned by this repository.
 
 Runpod contract: [Build a load balancing worker](https://docs.runpod.io/serverless/load-balancing/build-a-worker).
 
-Final GLB files are loaded directly from private S3 through one-hour signed URLs,
-avoiding HTTP endpoint response-size limits. The S3 endpoint must be reachable
-from the browser and permit CORS `GET`/`HEAD` for your exact frontend origin
-(including `Range` request headers if applicable). Configure CORS on the storage
-service; verify that your S3-compatible provider supports it before deployment.
-If the existing Runpod volume S3 service does not support the required browser
-CORS behavior, use a compatible artifact bucket and retain model storage access
-on the GPU worker, or provide an artifact gateway. Do not make the bucket public.
+The web worker reads private S3 with server-side credentials. The browser fetches
+GLB files in 8 MiB HTTP ranges from the same origin (server maximum 16 MiB per
+request), then uses the assembled Blob for viewing and download. This avoids
+gateway response-size limits and requires neither presigned S3 URLs nor S3 CORS.
+The existing Runpod volume rejected a presigned GET during deployment testing.
+Do not make the bucket public.
 
 ## Durability and failure behavior
 

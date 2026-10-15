@@ -116,10 +116,17 @@ Three.js 기반으로 이미지 업로드, 생성 상태 표시, 3D 장면 탐�
 최종 산출물은 S3에 저장하므로 로컬 Python 서버 없이 실행하고 결과를 다시 열 수 있습니다.
 GPU worker의 최종 결과를 사용하며 로컬 장면 보정은 수행하지 않습니다.
 
-이미지 빌드, endpoint 설정, 브라우저 인증 및 S3 CORS 조건은
+이미지 빌드, endpoint 설정 및 브라우저 인증 방법은
 [전체 서버리스 배포 안내](deploy/runpod/README.md)를 참고하세요.
-Runpod의 원시 HTTP endpoint는 인증 헤더가 필요하므로 일반 웹사이트 접속에는
-인증 게이트웨이 구성이 추가로 필요합니다.
+Runpod의 HTTP endpoint는 인증 헤더가 필요합니다. 기존 프로젝트 키가 설정되어
+있으면 아래 명령으로 인증된 Chrome을 열 수 있으며, 로컬 웹 서버는 시작하지 않습니다.
+
+```powershell
+npm.cmd ci --prefix web
+node scripts/open_cloud_web.mjs
+```
+
+큰 GLB는 웹 endpoint에서 나눠 내려받으므로 S3 CORS 설정이 필요하지 않습니다.
 
 ### 기존 로컬 웹 서버 실행
 
