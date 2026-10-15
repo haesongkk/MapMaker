@@ -65,6 +65,26 @@ docker push REGISTRY/mapmaker-web:cloud-v1
 
 ## Browser authentication and artifact access
 
+The deployed browser gateway is `zlkpn4g5odgrqq` at
+`https://zlkpn4g5odgrqq-8080.proxy.runpod.net`. Open the private access link saved in
+`.runtime/cloud-browser-access.json` (not tracked in Git). It logs in through a
+URL fragment, removes the fragment immediately, and sets a Secure/HttpOnly cookie.
+The root URL alone works after that browser has authenticated. The link grants
+application access, including paid generation; keep it private.
+
+`scripts/cloud_browser_gateway.py` handles authentication and HTTP forwarding only.
+The UI/API and inference remain on the existing serverless endpoints. The gateway
+is an always-on Runpod CPU Pod (cpu3c, 2 vCPU, EU-RO-1): $0.06/hour compute at
+deployment, plus disk billing. Stopping it disables browser access. It uses the
+web runtime image pinned to `1768aaebe`, with this script supplied through
+`MAPMAKER_GATEWAY_SOURCE`; entrypoint `/bin/sh`, command `-c` followed by
+`exec /opt/mapmaker/.venv/bin/python -c "$MAPMAKER_GATEWAY_SOURCE"`.
+`MAPMAKER_WEB_ORIGIN`, `MAPMAKER_GATEWAY_API_KEY`, and `MAPMAKER_ACCESS_TOKEN`
+are private environment settings. No storage credentials are given to the gateway.
+GET cold-start failures show a retry page; POST submissions are never retried.
+
+The browser launcher below remains an alternative without the gateway.
+
 For this private deployment, launch the authenticated browser client:
 
 ```powershell

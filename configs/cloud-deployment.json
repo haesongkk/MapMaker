@@ -2,6 +2,8 @@
   "gpu_endpoint_id": "8dzbkfrxys43hb",
   "web_endpoint_id": "9cicue4wyc0yzh",
   "web_url": "https://9cicue4wyc0yzh.api.runpod.ai",
+  "browser_gateway_pod_id": "zlkpn4g5odgrqq",
+  "browser_gateway_origin": "https://zlkpn4g5odgrqq-8080.proxy.runpod.net",
   "gpu_branch": "codex/full-serverless-deploy",
   "web_branch": "codex/full-serverless-web",
   "gpu_application_sha256": "47fb1a517a24e0d1b32e13fa1ad1f5cf3502696dcf947c591006cb77f4069fbb",
