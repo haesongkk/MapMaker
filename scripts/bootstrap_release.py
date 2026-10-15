@@ -40,4 +40,5 @@ with zipfile.ZipFile(io.BytesIO(bundle)) as archive:
             destination.write_bytes(archive.read(item))
 print('MapMaker application release:', os.environ['MAPMAKER_RELEASE_SHA256'], flush=True)
 os.chdir(root)
-os.execv('/opt/mapmaker/.venv/bin/python', ['python', '-m', 'mapmaker.serverless_worker'])
+python = '/opt/mapmaker/.venv/bin/python'
+os.execv(python, [python, '-m', 'mapmaker.serverless_worker'])

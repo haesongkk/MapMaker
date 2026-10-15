@@ -22,8 +22,10 @@ Browser <--- bounded HTTP artifact reads <- web/API <- S3
 The live deployment uses `configs/cloud-deployment.json`. The web image is built
 from `codex/full-serverless-web`. The GPU endpoint reuses the existing CUDA/model
 runtime image and applies a private, SHA-256-pinned application ZIP at startup
-using `scripts/bootstrap_release.py`. Its Python entrypoint is
-`/opt/mapmaker/.venv/bin/python -c <contents of bootstrap_release.py>`.
+using `scripts/bootstrap_release.py`. Its entrypoint is `/bin/bash` with arguments
+`-c` and `exec /opt/mapmaker/.venv/bin/python -c "$MAPMAKER_BOOTSTRAP"`.
+Set `MAPMAKER_BOOTSTRAP` to the script contents. The final exec must retain the
+absolute virtual-environment Python path in argv[0] so Python finds its packages.
 `MAPMAKER_RELEASE_KEY` selects the S3 object and `MAPMAKER_RELEASE_SHA256` pins its
 contents. The bundle contains only application files under `mapmaker`, `scripts`,
 and `configs`; dependencies and weights are unchanged. Worker results record the
