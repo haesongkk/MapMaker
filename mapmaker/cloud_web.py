@@ -1,6 +1,7 @@
 """Stateless Runpod HTTP frontend; durable GPU jobs run on the queue endpoint."""
 
 import os
+import mimetypes
 import re
 import tempfile
 import threading
@@ -56,7 +57,7 @@ class CloudRuns:
             public = {key: value for key, value in complete.items() if key != "files"}
             if public["stage"] == "done":
                 public["metadata"] = {**public["metadata"],
-                    "scene_url": self.store.asset_url(run_id, "scene.glb")}
+                    "scene_bytes": complete["files"]["scene.glb"]["bytes"]}
             return public
         record = self.store.get_json(run_id, "request.json")
         if record is None:
@@ -99,6 +100,29 @@ class CloudRuns:
             return None
         return self.store.asset_url(run_id, name, download=download)
 
+    def asset_part(self, run_id, name, range_header=None):
+        safe_name(name)
+        complete = self.store.get_json(run_id, "completion.json")
+        if complete is None or name not in complete["files"]:
+            return None
+        size = complete["files"][name]["bytes"]
+        start, end = 0, size - 1
+        if range_header:
+            match = re.fullmatch(r"bytes=(\d+)-(\d*)", range_header)
+            if not match:
+                raise ValueError("Invalid range")
+            start = int(match[1])
+            end = min(int(match[2]) if match[2] else size - 1, size - 1)
+        if start > end or start >= size or end - start + 1 > 16 * 1024**2:
+            raise ValueError("Request an artifact range of at most 16 MiB")
+        obj = self.store.client.get_object(Bucket=self.store.bucket,
+            Key=self.store.key(run_id, "files/" + name), Range=f"bytes={start}-{end}")
+        with obj["Body"] as body:
+            data = body.read(16 * 1024**2 + 1)
+        if len(data) != end - start + 1:
+            raise RuntimeError("Incomplete artifact transfer")
+        return data, start, end, size
+
 
 class CloudHandler(Handler):
     # Each HTTP request has its own clients, avoiding shared requests.Session state.
@@ -134,14 +158,20 @@ class CloudHandler(Handler):
                 state = self.service().state(match[1])
                 return self.json(state or {"error": "Run not found"}, 200 if state else 404)
             if asset:
-                url = self.service().asset(asset[1], asset[2], urlsplit(self.path).query == "download")
-                if not url:
+                part = self.service().asset_part(asset[1], asset[2], self.headers.get("Range"))
+                if part is None:
                     return self.json({"error": "Artifact not found"}, 404)
-                self.send_response(302)
-                self.send_header("Location", url)
+                data, start, end, size = part
+                self.send_response(206 if self.headers.get("Range") else 200)
+                self.send_header("Content-Type", mimetypes.guess_type(asset[2])[0] or "application/octet-stream")
+                self.send_header("Accept-Ranges", "bytes")
+                self.send_header("Content-Range", f"bytes {start}-{end}/{size}")
+                if urlsplit(self.path).query == "download":
+                    self.send_header("Content-Disposition", 'attachment; filename="scene.glb"')
                 self.send_header("Cache-Control", "no-store")
-                self.send_header("Content-Length", "0")
+                self.send_header("Content-Length", str(len(data)))
                 self.end_headers()
+                self.wfile.write(data)
                 return
             if path.startswith(("/api/", "/runs/")):
                 return self.json({"error": "Not found"}, 404)

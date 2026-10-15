@@ -5,6 +5,27 @@ const $ = (s) => document.querySelector(s),
   viewport = $("#viewport");
 let renderer, camera, controls, scene, model, runId, sourceUrl;
 let grid, axisCanvas;
+let sceneDownloadUrl;
+async function loadSceneBytes(url, size) {
+  const parts = [];
+  const chunk = 8 * 1024 * 1024;
+  for (let start = 0; start < size; start += chunk) {
+    const end = Math.min(start + chunk, size) - 1;
+    let response;
+    for (let attempt = 0; attempt < 4; attempt++) {
+      try {
+        response = await fetch(url, { headers: { Range: `bytes=${start}-${end}` } });
+        if (response.ok) break;
+      } catch (error) { if (attempt === 3) throw error; }
+      await new Promise(resolve => setTimeout(resolve, 1500));
+    }
+    if (!response?.ok) throw new Error('Could not download scene');
+    const data = await response.arrayBuffer();
+    if (data.byteLength !== end - start + 1) throw new Error('Incomplete scene download');
+    parts.push(data);
+  }
+  return new Blob(parts, { type: 'model/gltf-binary' });
+}
 function drawAxes() {
   if (!axisCanvas) return;
   const ctx = axisCanvas.getContext('2d');
@@ -82,9 +103,17 @@ async function showScene(meta) {
   clearModel();
   $("#empty").hidden = true;
   $("#scene-summary").textContent = "Loading scene...";
-  const gltf = await new GLTFLoader().loadAsync(
-    meta.scene_url || `/runs/${runId}/${meta.scene_asset}`,
-  );
+  const assetPath = `/runs/${runId}/${meta.scene_asset}`;
+  if (sceneDownloadUrl) URL.revokeObjectURL(sceneDownloadUrl);
+  sceneDownloadUrl = null;
+  let gltf;
+  if (meta.scene_bytes) {
+    const blob = await loadSceneBytes(assetPath, meta.scene_bytes);
+    sceneDownloadUrl = URL.createObjectURL(blob);
+    gltf = await new GLTFLoader().parseAsync(await blob.arrayBuffer(), '');
+  } else {
+    gltf = await new GLTFLoader().loadAsync(meta.scene_url || assetPath);
+  }
   model = gltf.scene;
   // Older saved scenes may contain the former generated slab.
   const oldFloor = model.getObjectByName('background_floor');
@@ -146,7 +175,7 @@ async function showScene(meta) {
   $("#object-count").textContent = objects.length;
   $("#scene-summary").textContent = `${objects.length} independent objects · Grid Y=0`;
   const link = $("#export");
-  link.href = `/runs/${runId}/scene.glb?download`;
+  link.href = sceneDownloadUrl || `/runs/${runId}/scene.glb?download`;
   link.download = "scene.glb";
   link.classList.remove("disabled");
   link.setAttribute("aria-disabled", "false");

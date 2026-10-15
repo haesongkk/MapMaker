@@ -11,6 +11,11 @@ from mapmaker.cloud_web import CloudRuns
 class Store:
     def __init__(self):
         self.records = {}
+        self.bucket = "test"
+        self.client = SimpleNamespace(get_object=lambda **kw: {"Body": io.BytesIO(b"glb")})
+
+    def key(self, run_id, name):
+        return run_id + "/" + name
 
     def put_json(self, run_id, name, value):
         self.records[run_id, name] = dict(value)
@@ -47,11 +52,11 @@ def test_new_web_worker_can_reopen_pending_and_completed_run():
     assert fresh.state(run_id)["stage"] == "queued"  # Never publish progress 'done'.
     store.put_json(run_id, "completion.json", {
         "run_id": run_id, "stage": "done", "metadata": {"scene_asset": "scene.glb"},
-        "files": {"scene.glb": {"sha256": "abc"}},
+        "files": {"scene.glb": {"sha256": "abc", "bytes": 3}},
     })
     state = CloudRuns(store, client()).state(run_id)
     assert state["stage"] == "done"
-    assert state["metadata"]["scene_url"].endswith("/scene.glb")
+    assert state["metadata"]["scene_bytes"] == 3
     assert "files" not in state
     assert fresh.asset(run_id, "scene.glb")
     assert fresh.asset(run_id, "logs/missing.log") is None
@@ -135,7 +140,7 @@ def test_worker_publishes_completion_only_after_artifacts(tmp_path, monkeypatch)
     assert events == ["archive", "files", "completion"]
 
 
-def test_http_frontend_static_upload_status_and_safe_redirect():
+def test_http_frontend_static_upload_status_and_artifact_proxy():
     from http.client import HTTPConnection
     from http.server import ThreadingHTTPServer
     import json
@@ -175,9 +180,10 @@ def test_http_frontend_static_upload_status_and_safe_redirect():
         assert json.loads(request("GET", f"/api/runs/{run_id}")[2])["stage"] == "queued"
         assert request("GET", f"/runs/{run_id}/scene.glb")[0] == 404
         store.put_json(run_id, "completion.json", {
-            "run_id": run_id, "stage": "done", "metadata": {}, "files": {"scene.glb": {}}})
-        code, headers, _ = request("GET", f"/runs/{run_id}/scene.glb?download")
-        assert code == 302 and headers["Location"].startswith("https://storage.example/")
+            "run_id": run_id, "stage": "done", "metadata": {}, "files": {"scene.glb": {"bytes": 3}}})
+        code, headers, data = request("GET", f"/runs/{run_id}/scene.glb?download")
+        assert code == 200 and data == b"glb"
+        assert headers["Content-Disposition"].startswith("attachment")
         assert request("GET", f"/runs/{run_id}/../secret")[0] == 400
         assert request("GET", "/api/runs/bad-id")[0] == 404
     finally:
