@@ -1,6 +1,7 @@
 // A browser client only: the UI, API, models and artifacts all run remotely.
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -28,6 +29,13 @@ await context.route('**/*', async route => {
   }
 });
 const page = await context.newPage();
+page.on('download', async download => {
+  const directory = path.join(os.homedir(), 'Downloads');
+  fs.mkdirSync(directory, { recursive: true });
+  const target = path.join(directory, `mapmaker-scene-${Date.now()}.glb`);
+  await download.saveAs(target);
+  console.log(`Downloaded scene: ${target}`);
+});
 console.log('Opening remote MapMaker. No local web server is started.');
 await page.goto(origin, { timeout: 180000 });
 await new Promise(resolve => browser.on('disconnected', resolve));

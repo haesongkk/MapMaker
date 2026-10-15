@@ -8,7 +8,7 @@ import traceback
 from pathlib import Path
 
 from .scene_pipeline import Pipeline
-from .scene_run import read, sha, status
+from .scene_run import read, sha, status, write
 from .scene_transfer import ArtifactStore, pack_run, unpack_run
 from .gpu_measurement import GpuMeasurement
 from .model_cache import prepare_models
@@ -52,6 +52,9 @@ def handler(job):
             raise ValueError("Input metadata mismatch")
         if sha(run / "input/source_image.png") != meta["input_sha256"]:
             raise ValueError("Input image SHA-256 mismatch")
+        if os.environ.get("MAPMAKER_RELEASE_SHA256"):
+            meta["deployment"] = {"application_sha256": os.environ["MAPMAKER_RELEASE_SHA256"]}
+            write(run / "scene_metadata.json", meta)
         for name in ("masks", "objects", "previews", "logs"):
             (run / name).mkdir(exist_ok=True)
         status(run, "queued", "Starting RunPod scene pipeline...")

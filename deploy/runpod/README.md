@@ -19,6 +19,20 @@ Browser <--- bounded HTTP artifact reads <- web/API <- S3
 
 ## Build and deploy
 
+The live deployment uses `configs/cloud-deployment.json`. The web image is built
+from `codex/full-serverless-web`. The GPU endpoint reuses the existing CUDA/model
+runtime image and applies a private, SHA-256-pinned application ZIP at startup
+using `scripts/bootstrap_release.py`. Its Python entrypoint is
+`/opt/mapmaker/.venv/bin/python -c <contents of bootstrap_release.py>`.
+`MAPMAKER_RELEASE_KEY` selects the S3 object and `MAPMAKER_RELEASE_SHA256` pins its
+contents. The bundle contains only application files under `mapmaker`, `scripts`,
+and `configs`; dependencies and weights are unchanged. Worker results record the
+application hash in `metadata.deployment.application_sha256`.
+
+The full-image commands below remain the deployment path for dependency/runtime
+changes. The experimental GPU GitHub build was cancelled; pushing that branch
+starts a costly full rebuild and is not needed for this application release.
+
 Build from the repository root, replacing `REGISTRY` with your registry:
 
 ```sh

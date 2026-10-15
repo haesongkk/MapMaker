@@ -3,5 +3,7 @@
   "web_endpoint_id": "9cicue4wyc0yzh",
   "web_url": "https://9cicue4wyc0yzh.api.runpod.ai",
   "gpu_branch": "codex/full-serverless-deploy",
-  "web_branch": "codex/full-serverless-web"
+  "web_branch": "codex/full-serverless-web",
+  "gpu_application_sha256": "47fb1a517a24e0d1b32e13fa1ad1f5cf3502696dcf947c591006cb77f4069fbb",
+  "gpu_application_key": "mapmaker-releases/47fb1a517a24e0d1b32e13fa1ad1f5cf3502696dcf947c591006cb77f4069fbb/application.zip"
 }
