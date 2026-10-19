@@ -9,17 +9,41 @@ app = typer.Typer(
 
 
 @app.command()
-def run(image: Path, output: Path | None = None):
+def run(image: Path, output: Path | None = None, mode: int = typer.Option(4, min=1, max=4)):
     """Analyze one image, reconstruct its objects and export scene.glb."""
     from .scene_pipeline import configured_pipeline, create_run
 
-    target = create_run(image.read_bytes(), output)
+    target = create_run(image.read_bytes(), output, mode=mode)
     pipeline = configured_pipeline()
     try:
         pipeline.run(target)
         typer.echo(str(target / "scene.glb"))
     finally:
         pipeline.close()
+
+
+@app.command()
+def compare(images: Path, output: Path = typer.Option(...)):
+    """Compare modes 1-4; modes 3/4 reuse mode 2 without GPU regeneration."""
+    from .comparison import compare as execute
+    paths = sorted(p for p in images.iterdir() if p.suffix.lower() in ('.jpg', '.jpeg', '.png', '.webp')) if images.is_dir() else [images]
+    if not paths:
+        raise typer.BadParameter('No input images')
+    typer.echo(str(execute(paths, output)))
+
+
+@app.command()
+def derive(source: Path, output: Path = typer.Option(...)):
+    """Create modes 3/4 from a saved mode-2 run, without GPU inference."""
+    from .comparison import derive as execute
+    typer.echo(str(execute(source, output / '4', output / '3')))
+
+
+@app.command()
+def review(port: int = 8118, batch: Path | None = None):
+    """Serve the saved comparison document and its GLB viewers locally."""
+    from .review_server import serve
+    serve(port, batch=batch)
 
 
 @app.command()

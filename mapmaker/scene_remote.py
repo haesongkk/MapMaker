@@ -82,6 +82,8 @@ class RemotePipeline:
                 pass
 
     def run(self, run):
+        from .execution_modes import requested
+        selected = requested(read(Path(run) / 'scene_metadata.json'))
         run = Path(run)
         started = time.monotonic()
         job = None
@@ -133,7 +135,10 @@ class RemotePipeline:
                         status(run, "exporting", "Downloading and verifying scene...")
                         archive = Path(tmp) / "result.zip"
                         self.store.download(run.name, archive)
-                        materialize(archive, run, output)
+                        def verify_mode(staged):
+                            if selected is not None and read(staged / 'scene_metadata.json').get('execution', {}).get('completed_mode') != selected.number:
+                                raise RuntimeError('Worker does not confirm the requested mode; deploy a mode-aware worker')
+                        materialize(archive, run, output, finalize=verify_mode)
                         if not output.get("success", True):
                             raise RuntimeError("Worker pipeline failed; diagnostics downloaded to this run's logs")
                         write(run / "logs/remote_integrity.json", {

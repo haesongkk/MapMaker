@@ -2,7 +2,7 @@
 import {chromium} from '../web/node_modules/@playwright/test/index.mjs';
 import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
-const mapping=JSON.parse(await fs.readFile('.runtime/four-way-comparison/viewers.json','utf8'));
+const mapping=JSON.parse(await fs.readFile('docs/assets/four-way-comparison/viewers.json','utf8'));
 const out='docs/assets/four-way-comparison';
 const ledger=[];
 const browser=await chromium.launch({channel:'chrome',headless:true,args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
@@ -18,7 +18,7 @@ try {
   const asset=`${out}/${alias}.png`;
   await page.locator('#viewport').screenshot({path:asset});
   ledger.push({alias,folder,asset,...state,errors,scene_sha256:crypto.createHash('sha256').update(await fs.readFile(`${folder}/scene.glb`)).digest('hex')});
-  await fs.writeFile('.runtime/four-way-comparison/viewer-captures.json',JSON.stringify(ledger,null,2));
+  await fs.writeFile('docs/assets/four-way-comparison/captures.json',JSON.stringify(ledger,null,2));
   console.log(`Captured ${ledger.length}/40 ${alias}`);await page.close();
  }
 }finally{await browser.close();}

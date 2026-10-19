@@ -5,11 +5,13 @@ from pathlib import Path
 import shutil
 
 ROOT=Path(__file__).resolve().parents[1]
-inventory=json.loads((ROOT/'.runtime/four-way-comparison/inventory.json').read_text(encoding='utf-8'))
+inventory=json.loads((ROOT/'docs/assets/four-way-comparison/inventory.json').read_text(encoding='utf-8'))
 assets=ROOT/'docs/assets/four-way-comparison';assets.mkdir(exist_ok=True)
 spec='''# 사진별 4단계 비교 — 실행 명세와 준비 상태
 
 현재 상태: 입력 사진 10장에 대한 4가지 방식의 GLB 40개 생성 완료. 각 결과의 실제 웹뷰어 화면을 해당 번호에 첨부한다. 운영 endpoint는 v4로 복원되었으며 환경·워커 설정 재확인을 완료했다.
+
+아래 결과는 리팩토링 이전에 동결한 코드로 생성한 기록이다. 새 공통 실행 구조로 재생성한 결과가 아니며, 아래 구현 설명의 '현재'는 해당 생성 당시를 뜻한다. 최신 실행법은 README와 IMPLEMENTATION.md를 참고한다.
 
 ## 1. 전체 사진만 사용하는 초기 방식
 
@@ -44,7 +46,7 @@ spec='''# 사진별 4단계 비교 — 실행 명세와 준비 상태
 ## 사진별 결과
 '''
 comparison_root=ROOT/'.runtime/four-way-comparison'
-captures_path=comparison_root/'viewer-captures.json'
+captures_path=assets/'captures.json'
 captures={r['alias']:r for r in json.loads(captures_path.read_text(encoding='utf-8'))} if captures_path.exists() else {}
 parts=[spec]
 viewers={}
@@ -55,7 +57,7 @@ body+='<details><summary>구현 상세와 비교 규칙</summary><pre>'+html.esc
 labels={1:'초기 방식 · 보정 없음',2:'확장 탐색 · 보정 없음',3:'현재 보정 적용',4:'현재 보정 + 공간 배경'}
 for item in inventory['inputs']:
     ident=item['id'];source=ROOT/item['input'];copied=assets/(ident+source.suffix.lower())
-    shutil.copy2(source,copied)
+    if source.resolve()!=copied.resolve():shutil.copy2(source,copied)
     rel=copied.relative_to(ROOT/'docs').as_posix()
     title=f"{ident} — {item['label']}"
     parts.append(f"\n## {title}\n\n![입력 사진]({rel})\n")
@@ -83,7 +85,7 @@ for item in inventory['inputs']:
 (ROOT/'docs/FOUR_WAY_COMPARISON.md').write_text('\n'.join(parts),encoding='utf-8')
 style='body{font-family:system-ui;max-width:1600px;margin:32px auto;padding:20px;background:#111827;color:#e5e7eb}a{color:#7dd3fc}img{max-width:100%;max-height:480px}section{border-top:1px solid #475569;margin-top:36px;padding-top:20px}pre{white-space:pre-wrap;line-height:1.6}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}article{background:#1e293b;padding:12px}article img{width:100%;height:auto}h2{overflow-wrap:anywhere}h3{font-size:16px}@media(max-width:1100px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.grid{grid-template-columns:1fr}}'
 (ROOT/'docs/FOUR_WAY_COMPARISON.html').write_text('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>사진별 4단계 비교</title><style>'+style+'</style>'+body,encoding='utf-8')
-temporary=comparison_root/'viewers.tmp.json'
+temporary=assets/'viewers.tmp.json'
 temporary.write_text(json.dumps(viewers,indent=2),encoding='utf-8')
-temporary.replace(comparison_root/'viewers.json')
+temporary.replace(assets/'viewers.json')
 print(f'Wrote {len(viewers)} viewers and {len(captures)} result images; no historical references.')

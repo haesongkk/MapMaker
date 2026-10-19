@@ -188,6 +188,19 @@ def test_remote_one_job_and_integrity(tmp_path):
     assert read(run / "logs/remote_integrity.json")["verified"]
 
 
+def test_remote_rejects_legacy_worker_before_publishing_mode_result(tmp_path):
+    run = make_run(tmp_path)
+    meta = read(run / 'scene_metadata.json')
+    meta['execution'] = dict(mode=2)
+    write(run / 'scene_metadata.json', meta)
+    archive, output = remote_result(run, tmp_path)
+    client = Client({'status': 'COMPLETED', 'output': output})
+    with pytest.raises(RuntimeError, match='mode-aware worker'):
+        RemotePipeline(client, Store(archive)).run(run)
+    assert not (run / 'scene.glb').exists()
+    assert read(run / 'status.json')['stage'] == 'failed'
+
+
 @pytest.mark.parametrize("terminal", ["FAILED", "CANCELLED", "TIMED_OUT"])
 def test_remote_failure_is_terminal_locally(tmp_path, terminal):
     run = make_run(tmp_path)

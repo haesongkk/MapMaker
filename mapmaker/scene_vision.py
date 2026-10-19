@@ -57,6 +57,11 @@ def ram_tags(
 
 
 def run_scene(run):
+    from .execution_modes import requested
+    selected = requested(read(Path(run) / 'scene_metadata.json'))
+    if selected is not None and selected.initial:
+        from .initial_vision import run_scene as initial
+        return initial(run)
     import torch
 
     run = Path(run)

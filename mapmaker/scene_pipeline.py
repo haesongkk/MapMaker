@@ -7,7 +7,10 @@ from .scene_run import ROOT, now, read, write, sha, status
 from .runtime_paths import VISION_PYTHON
 
 
-def create_run(data, output=None):
+def create_run(data, output=None, *, mode=None):
+    if mode is not None:
+        from .execution_modes import mode as validate_mode
+        validate_mode(mode)
     with Image.open(io.BytesIO(data)) as im:
         if im.width * im.height > 16_000_000:
             raise ValueError("Please use an image with at most 16 megapixels")
@@ -39,6 +42,10 @@ def create_run(data, output=None):
         },
     )
     status(run, "queued", "Waiting to generate...")
+    if mode is not None:
+        meta = read(run / 'scene_metadata.json')
+        meta['execution'] = dict(mode=mode)
+        write(run / 'scene_metadata.json', meta)
     return run
 
 
@@ -115,9 +122,6 @@ class Pipeline:
                     check=True,
                 )
             self.reconstruct(run)
-            from .scene_placement import finalize_scene
-
-            finalize_scene(run, render=False)
             with (run / "logs/preview.log").open("w") as log:
                 subprocess.run(
                     [
@@ -174,8 +178,9 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("image", type=Path)
     p.add_argument("--output", type=Path)
+    p.add_argument('--mode', type=int, choices=(1, 2, 3, 4), default=4)
     args = p.parse_args()
-    run = create_run(args.image.read_bytes(), args.output)
+    run = create_run(args.image.read_bytes(), args.output, mode=args.mode)
     pipeline = configured_pipeline()
     try:
         pipeline.run(run)

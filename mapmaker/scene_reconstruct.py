@@ -5,9 +5,6 @@ import contextlib, gc, json, os, shutil, sys, time, traceback
 from .scene_run import ROOT, SAM3D_REPO, write, read, sha, status
 from .runtime_paths import SAM3D_CHECKPOINT, DINO_PROVENANCE
 
-MODEL = None
-
-
 def finish_scene(run, *, inference_checkpoint=False, store=None):
     """Persist inference in the reconstruction process BEFORE its heavy checks."""
     if inference_checkpoint:
@@ -19,13 +16,18 @@ def finish_scene(run, *, inference_checkpoint=False, store=None):
             archive = Path(tmp) / 'inference.zip'
             pack_run(run, archive)
             store.upload_inference_checkpoint(run.name, archive, read(run / 'scene_metadata.json'))
-    from .scene_placement import finalize_scene
-    status(run, 'exporting', 'Checking geometry and observed room surfaces...')
-    finalize_scene(run, render=False)
+    from .scene_export import finish_mode
+    finish_mode(run)
 
 
 def run_scene(run, *, inference_checkpoint=False):
-    global MODEL
+    from .execution_modes import requested
+    selected = requested(read(Path(run) / 'scene_metadata.json'))
+    if selected is not None and selected.initial:
+        from .initial_reconstruct import run_scene as initial
+        initial(run)
+        finish_scene(Path(run), inference_checkpoint=inference_checkpoint)
+        return
     import numpy as np
     from PIL import Image
 
@@ -33,25 +35,9 @@ def run_scene(run, *, inference_checkpoint=False):
     meta = read(run / "scene_metadata.json")
     start = time.monotonic()
     status(run, "loading", "Preparing SAM3D model...")
-    sys.path.insert(0, str(SAM3D_REPO / "notebook"))
-    from inference import (
-        Inference,
-        load_image,
-        make_scene,
-        ready_gaussian_for_video_rendering,
-        render_video,
-    )
     import torch
-    from loguru import logger
-
-    torch.cuda.reset_peak_memory_stats()
-
-    logger.remove()
-    logger.add(sys.stderr)
-    if MODEL is None:
-        MODEL = Inference(
-            str(SAM3D_CHECKPOINT), compile=False
-        )
+    from .reconstruction_runtime import prepare
+    MODEL, load_image = prepare()
     meta["timing"]["reconstruction_model_ready_seconds"] = time.monotonic() - start
     image = load_image(str(run / meta["input_image"]))
     # Compute one full-image pointmap for both object layout and room geometry.
@@ -167,66 +153,12 @@ def run_scene(run, *, inference_checkpoint=False):
         gc.collect()
         torch.cuda.empty_cache()
     meta["timing"]["object_reconstruction_seconds"] = time.monotonic() - start
-    if not successful:
-        raise RuntimeError("No objects reconstructed; inspect logs/reconstruction.log")
-    start = time.monotonic()
-    status(run, "assembling", "Assembling scene with original SAM3D poses...")
-    from .scene_assembly import assemble
-
-    meta["assembly"] = assemble(run, successful)
-    combined = make_scene(*outputs)
-    combined.save_ply(str(run / "previews/scene_posed.ply"))
-    meta["timing"]["assembly_seconds"] = time.monotonic() - start
-    status(run, "exporting", "Exporting GLB and rendering preview...")
-    try:
-        import imageio.v2 as imageio
-
-        display = ready_gaussian_for_video_rendering(combined)
-        frames = render_video(display, r=2, fov=60, resolution=512, num_frames=12)[
-            "color"
-        ]
-        for i in (0, 3, 6, 9):
-            imageio.imwrite(run / "previews" / f"combined_view_{i:02d}.png", frames[i])
-        imageio.imwrite(run / "previews/combined_preview.png", frames[0])
-        meta["preview_method"] = (
-            "official make_scene + ready_gaussian_for_video_rendering + render_video; display normalization only"
-        )
-        del display, frames
-    except Exception as exc:
-        meta["errors"].append({"stage": "gaussian_preview", "error": str(exc)})
-        traceback.print_exc()
-    meta["scene_asset"] = "scene.glb"
-    meta["pipeline"].update(
-        reconstruction_torch=torch.__version__,
-        seed=42,
-        reconstruction_candidate_seeds=[42,43],
-        reconstruction_seed_policy=f'base 42; at most {maximum_retries} scene-wide alternatives 43; selected seed recorded per object',
-        compile=False,
-        sam3d_source_revision="f91db411c50efee93d8db7aeb323885650f6f722",
-        pipeline_sha256=sha(SAM3D_CHECKPOINT),
-        dino=read(DINO_PROVENANCE),
-    )
-    write(run / "scene_metadata.json", meta)
-    write(run / "logs/sam3d_gpu.json", {
-        "gpu": torch.cuda.get_device_name(),
-        "torch": torch.__version__, "cuda": torch.version.cuda,
-        "python": sys.version,
-        "peak_allocated_bytes": torch.cuda.max_memory_allocated(),
-        "peak_reserved_bytes": torch.cuda.max_memory_reserved(),
-        "model_ready_seconds": meta["timing"]["reconstruction_model_ready_seconds"],
-        "attention_environment": {k: __import__("os").environ.get(k)
-                                  for k in ("ATTN_BACKEND", "SPCONV_ALGO")},
-        "sdpa_enabled": {"flash": torch.backends.cuda.flash_sdp_enabled(),
-                         "memory_efficient": torch.backends.cuda.mem_efficient_sdp_enabled(),
-                         "math": torch.backends.cuda.math_sdp_enabled()},
-        "note": "Enabled backends are recorded; actual dispatch must be checked against worker logs.",
-    })
-    del outputs, combined, image, shared_pointmap, pointmap_data
+    from .reconstruction_output import export_inference
+    export_inference(run, meta, successful, outputs, maximum_retries=maximum_retries)
+    del outputs, image, shared_pointmap, pointmap_data
     gc.collect()
     torch.cuda.empty_cache()
-    # The pinned SAM3D environment includes scipy/rtree. Finalize here so an
-    # application-only release does not depend on upgrading the controller venv.
-    # The controller's later finalize call verifies the hash and is idempotent.
+    # Finalization belongs here, in the geometry-capable worker environment.
     finish_scene(run, inference_checkpoint=inference_checkpoint)
 
 
