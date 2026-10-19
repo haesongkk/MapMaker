@@ -146,7 +146,7 @@ def test_old_placement_version_is_not_reapplied(tmp_path, version):
 
 
 @pytest.mark.parametrize("angle", [.65, np.pi])
-def test_individual_upright_around_own_pivot_and_ground(angle):
+def test_individual_pose_preserved_without_surface_evidence(angle):
     scene, objects = fixture_scene((2, 3, 4), ("chair", "table", "television"))
     root = trimesh.transformations.rotation_matrix(angle, [1, 0, 0])
     root[:3, :3] @= np.diag([2, 3, 4])
@@ -160,22 +160,16 @@ def test_individual_upright_around_own_pivot_and_ground(angle):
     report = correct_placement(scene, objects)
     before = {o["id"]: scene.graph[o["id"]][0].copy() for o in objects}
     align_objects(scene, objects, report)
-    for o in objects[:2]:
-        mat = scene.graph[o["id"]][0]
-        np.testing.assert_allclose(mat[:3, 1] / np.linalg.norm(mat[:3, 1]), [0, 1, 0], atol=1e-12)
-        np.testing.assert_allclose(mat[[0, 2], 3], before[o["id"]][[0, 2], 3], atol=1e-12)
-        np.testing.assert_allclose(np.linalg.norm(mat[:3, :3], axis=0), np.linalg.norm(before[o["id"]][:3, :3], axis=0))
-        assert object_vertices(scene, o["id"])[:, 1].min() == pytest.approx(0., abs=1e-12)
-    np.testing.assert_allclose(scene.graph['object_2'][0][:3, 3], before['object_2'][:3, 3], atol=1e-12)
-    up = scene.graph['object_2'][0][:3, 1]
-    np.testing.assert_allclose(up / np.linalg.norm(up), [0, 1, 0], atol=1e-12)
-    assert [o["pose"] for o in objects] == poses
-    for k, g in scene.geometry.items():np.testing.assert_array_equal(g.vertices, vertices[k])
-    assert report["individual_metrics"]["after"]["floating_count"] == 0
-    assert report["individual_metrics"]["after"]["penetrating_count"] == 0
+    # v6 preserves each original relative tilt; no label-based grounding.
+    for o in objects:
+        np.testing.assert_allclose(scene.graph[o['id']][0], before[o['id']], atol=1e-12)
+    assert [o['pose'] for o in objects] == poses
+    for k, g in scene.geometry.items():
+        np.testing.assert_array_equal(g.vertices, vertices[k])
+    assert report['grounded_object_ids'] == []
 
 
-def test_all_non_floor_categories_rotate_without_grounding():
+def test_all_names_preserve_pose_without_surface_evidence():
     scene, objects = fixture_scene((0, 1, 2, 3), ("pillow", "plant", "book", "living room"))
     for i, o in enumerate(objects):
         matrix = trimesh.transformations.rotation_matrix(.3 * (i + 1), [1, 0, 0])
@@ -185,11 +179,11 @@ def test_all_non_floor_categories_rotate_without_grounding():
     before = {o["id"]: scene.graph[o["id"]][0].copy() for o in objects}
     align_objects(scene, objects, report)
     assert report["grounded_object_ids"] == []
-    assert len(report["individual_object_ids"]) == 4
+    assert report["individual_object_ids"] == []
     for o in objects:
         mat = scene.graph[o["id"]][0]
         np.testing.assert_allclose(mat[:3, 3], before[o["id"]][:3, 3], atol=1e-12)
-        np.testing.assert_allclose(mat[:3, 1]/np.linalg.norm(mat[:3, 1]), [0, 1, 0], atol=1e-12)
+        np.testing.assert_allclose(mat, before[o["id"]], atol=1e-12)
         assert o["placement"]["individual"]["ground_shift_y"] == 0
         assert not o["placement"]["individual"]["grounded"]
 
@@ -223,3 +217,23 @@ def test_legacy_floor_removed_without_realigning(tmp_path):
     assert FLOOR_NODE not in scene.graph.nodes
     for oid,matrix in before.items():
         np.testing.assert_allclose(scene.graph[oid][0], matrix)
+
+
+def test_v4_upgrade_replays_original_roots_and_is_idempotent(tmp_path):
+    scene, objects = fixture_scene()
+    placement = correct_placement(scene, objects)
+    align_objects(scene, objects, placement)
+    scene.export(tmp_path / 'scene.glb')
+    placement.update(version=4, scene_sha256=sha(tmp_path / 'scene.glb'))
+    write(tmp_path / 'scene_metadata.json', {'objects': objects, 'placement': placement, 'pipeline': {}})
+    expected = {o['id']: scene.graph[o['id']][0].copy() for o in objects}
+    finalize_scene(tmp_path, render=False)
+    meta = read(tmp_path / 'scene_metadata.json')
+    from mapmaker.scene_placement import PLACEMENT_VERSION
+    assert meta['placement']['version'] == PLACEMENT_VERSION
+    assert meta['placement']['upgraded_from_version'] == 4
+    for o in meta['objects']:
+        np.testing.assert_allclose(o['transform']['matrix'], expected[o['id']], atol=1e-6)
+    digest = sha(tmp_path / 'scene.glb')
+    finalize_scene(tmp_path, render=False)
+    assert sha(tmp_path / 'scene.glb') == digest

@@ -264,6 +264,28 @@ progress {
 #warnings {
   color: #e4b879;
 }
+@media (min-width: 1051px) {
+  main {
+    height: max(620px, calc(100dvh - 92px));
+  }
+  .input-panel {
+    overflow-y: auto;
+  }
+  .objects-panel,
+  .viewport-panel,
+  #objects,
+  #viewport {
+    min-height: 0;
+  }
+  #objects {
+    overflow-y: auto;
+  }
+  .viewport-bar,
+  .controls-help,
+  .export {
+    flex-shrink: 0;
+  }
+}
 @media (max-width: 1050px) {
   main {
     grid-template-columns: 240px minmax(300px, 1fr);

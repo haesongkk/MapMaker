@@ -1,0 +1,883 @@
+{
+  "schema": 3,
+  "status": "inputs_and_annotations_frozen_before_v8_inference",
+  "previous_manifest": "QUALITY_EVALUATION_V2.json",
+  "previous_manifest_sha256": "5cc42d7cf0355b9178a5bad8c35ba92711e34690014c640d0a8480e38c9ce2be",
+  "development": [
+    {
+      "file": ".runtime/v6-validation/holdout/01_HouseIndoor.jpg",
+      "source": "https://raw.githubusercontent.com/microsoft/MoGe/74fbce054ebed49800de42d0ad0e83495065719a/example_images/01_HouseIndoor.jpg",
+      "sha256": "3eb519bc68d4262af0c68166ca69e786cac5f6656a1083f4c585c4a94005c859",
+      "annotations_status": "pending",
+      "split": "development_consumed",
+      "inference_status": "completed_previous_versions",
+      "regression_checks": [
+        "TV is wall-mounted in source; lowering onto cabinet is harmful",
+        "Plant candidates must be detected before support correction can be evaluated"
+      ]
+    },
+    {
+      "file": ".runtime/v6-validation/holdout/02_Office.jpg",
+      "source": "https://raw.githubusercontent.com/microsoft/MoGe/74fbce054ebed49800de42d0ad0e83495065719a/example_images/02_Office.jpg",
+      "sha256": "28767640002f93b703b24a34a6d75ca24b1ef093a19f52ef0f9d3b074ef68c61",
+      "annotations_status": "pending",
+      "split": "development_consumed",
+      "inference_status": "completed_previous_versions"
+    },
+    {
+      "file": ".runtime/v6-validation/holdout/09_Restaurant.jpg",
+      "source": "https://raw.githubusercontent.com/microsoft/MoGe/74fbce054ebed49800de42d0ad0e83495065719a/example_images/09_Restaurant.jpg",
+      "sha256": "b2bb7b5a1e91a174101109b0976b8ae2a4d6bb7d6eadad6569106ed102d0d5a6",
+      "annotations_status": "pending",
+      "split": "development_consumed",
+      "inference_status": "completed_previous_versions"
+    },
+    {
+      "id": "demo10",
+      "file": ".runtime/evaluation-v2/source/demo10.jpg",
+      "source": "https://raw.githubusercontent.com/DepthAnything/Depth-Anything-V2/a561b849ebae10a6f5ef49e26c83cbbcd36c71bf/assets/examples/demo10.jpg",
+      "sha256": "bc77f215081f58de8d079e821e2808f6ee2727dfa729c10a5921c186a32c7638",
+      "split": "development_consumed",
+      "annotation_scope": "selected visible objects only; not exhaustive recall; approximate 2D boxes",
+      "annotation_author": "assistant visual review before model outputs",
+      "objects": [
+        {
+          "id": "o00",
+          "display_description": "cabinet",
+          "box_xyxy_normalized": [
+            0.41,
+            0.54,
+            0.58,
+            0.74
+          ],
+          "small": false
+        },
+        {
+          "id": "o01",
+          "display_description": "small_bottle",
+          "box_xyxy_normalized": [
+            0.515,
+            0.485,
+            0.545,
+            0.55
+          ],
+          "small": true
+        },
+        {
+          "id": "o02",
+          "display_description": "open_book",
+          "box_xyxy_normalized": [
+            0.435,
+            0.535,
+            0.54,
+            0.565
+          ],
+          "small": true
+        },
+        {
+          "id": "o03",
+          "display_description": "black_chair",
+          "box_xyxy_normalized": [
+            0.5,
+            0.63,
+            0.7,
+            0.79
+          ],
+          "small": false
+        },
+        {
+          "id": "o04",
+          "display_description": "rear_white_chair",
+          "box_xyxy_normalized": [
+            0.65,
+            0.54,
+            0.81,
+            0.71
+          ],
+          "small": false
+        },
+        {
+          "id": "o05",
+          "display_description": "front_white_chair",
+          "box_xyxy_normalized": [
+            0.69,
+            0.56,
+            0.91,
+            0.86
+          ],
+          "small": false
+        },
+        {
+          "id": "o06",
+          "display_description": "glass_table",
+          "box_xyxy_normalized": [
+            0,
+            0.71,
+            0.87,
+            1
+          ],
+          "small": false
+        }
+      ],
+      "structure_expectations": [
+        "visible ceiling and wall bands",
+        "preserve window openings",
+        "glass reflections are not extra furniture"
+      ],
+      "inference_status": "completed_previous_versions"
+    },
+    {
+      "id": "demo13",
+      "file": ".runtime/evaluation-v2/source/demo13.jpg",
+      "source": "https://raw.githubusercontent.com/DepthAnything/Depth-Anything-V2/a561b849ebae10a6f5ef49e26c83cbbcd36c71bf/assets/examples/demo13.jpg",
+      "sha256": "9168fc752a002d50138a56621e8de5fab7fed125a978dd293319d28d30993564",
+      "split": "development_consumed",
+      "annotation_scope": "selected visible objects only; not exhaustive recall; approximate 2D boxes",
+      "annotation_author": "assistant visual review before model outputs",
+      "objects": [
+        {
+          "id": "o00",
+          "display_description": "upper_jar",
+          "box_xyxy_normalized": [
+            0.18,
+            0.075,
+            0.28,
+            0.24
+          ],
+          "small": false
+        },
+        {
+          "id": "o01",
+          "display_description": "upper_plate",
+          "box_xyxy_normalized": [
+            0.44,
+            0.115,
+            0.6,
+            0.245
+          ],
+          "small": false
+        },
+        {
+          "id": "o02",
+          "display_description": "upper_jug",
+          "box_xyxy_normalized": [
+            0.695,
+            0.045,
+            0.82,
+            0.245
+          ],
+          "small": false
+        },
+        {
+          "id": "o03",
+          "display_description": "middle_left_dish",
+          "box_xyxy_normalized": [
+            0.08,
+            0.47,
+            0.23,
+            0.62
+          ],
+          "small": false
+        },
+        {
+          "id": "o04",
+          "display_description": "middle_center_dish",
+          "box_xyxy_normalized": [
+            0.31,
+            0.36,
+            0.46,
+            0.55
+          ],
+          "small": false
+        },
+        {
+          "id": "o05",
+          "display_description": "middle_right_dish",
+          "box_xyxy_normalized": [
+            0.52,
+            0.36,
+            0.67,
+            0.55
+          ],
+          "small": false
+        },
+        {
+          "id": "o06",
+          "display_description": "middle_far_right_dish",
+          "box_xyxy_normalized": [
+            0.84,
+            0.52,
+            1,
+            0.665
+          ],
+          "small": false
+        },
+        {
+          "id": "o07",
+          "display_description": "lower_left_bowl",
+          "box_xyxy_normalized": [
+            0.22,
+            0.7,
+            0.365,
+            0.855
+          ],
+          "small": false
+        },
+        {
+          "id": "o08",
+          "display_description": "lower_center_bowl",
+          "box_xyxy_normalized": [
+            0.425,
+            0.62,
+            0.585,
+            0.79
+          ],
+          "small": false
+        },
+        {
+          "id": "o09",
+          "display_description": "lower_right_bowl",
+          "box_xyxy_normalized": [
+            0.63,
+            0.71,
+            0.775,
+            0.86
+          ],
+          "small": false
+        }
+      ],
+      "structure_expectations": [
+        "curved shelves are not room floors",
+        "no visible ceiling: do not fabricate ceiling",
+        "reflections are not duplicate vessels"
+      ],
+      "inference_status": "completed_previous_versions"
+    },
+    {
+      "id": "demo15",
+      "file": ".runtime/evaluation-v2/source/demo15.jpg",
+      "source": "https://raw.githubusercontent.com/DepthAnything/Depth-Anything-V2/a561b849ebae10a6f5ef49e26c83cbbcd36c71bf/assets/examples/demo15.jpg",
+      "sha256": "bf60ce3879f627e8886280cc61442174c91908894a5b059681341fed600f7db3",
+      "split": "development_consumed",
+      "annotation_scope": "selected visible objects only; not exhaustive recall; approximate 2D boxes",
+      "annotation_author": "assistant visual review before model outputs",
+      "objects": [
+        {
+          "id": "o00",
+          "display_description": "left_chandelier",
+          "box_xyxy_normalized": [
+            0.2,
+            0.03,
+            0.295,
+            0.205
+          ],
+          "small": false
+        },
+        {
+          "id": "o01",
+          "display_description": "right_chandelier",
+          "box_xyxy_normalized": [
+            0.77,
+            0.02,
+            0.87,
+            0.205
+          ],
+          "small": false
+        },
+        {
+          "id": "o02",
+          "display_description": "left_bust",
+          "box_xyxy_normalized": [
+            0.355,
+            0.385,
+            0.385,
+            0.45
+          ],
+          "small": true
+        },
+        {
+          "id": "o03",
+          "display_description": "right_bust",
+          "box_xyxy_normalized": [
+            0.685,
+            0.385,
+            0.725,
+            0.46
+          ],
+          "small": true
+        },
+        {
+          "id": "o04",
+          "display_description": "left_inner_column",
+          "box_xyxy_normalized": [
+            0.17,
+            0,
+            0.22,
+            0.53
+          ],
+          "small": false
+        },
+        {
+          "id": "o05",
+          "display_description": "middle_column",
+          "box_xyxy_normalized": [
+            0.395,
+            0,
+            0.45,
+            0.57
+          ],
+          "small": false
+        },
+        {
+          "id": "o06",
+          "display_description": "right_middle_column",
+          "box_xyxy_normalized": [
+            0.615,
+            0,
+            0.68,
+            0.57
+          ],
+          "small": false
+        },
+        {
+          "id": "o07",
+          "display_description": "right_column",
+          "box_xyxy_normalized": [
+            0.845,
+            0,
+            0.9,
+            0.58
+          ],
+          "small": false
+        }
+      ],
+      "structure_expectations": [
+        "multiple levels and stairs must not become one slab",
+        "keep atrium opening",
+        "chandeliers remain overhead"
+      ],
+      "inference_status": "completed_previous_versions",
+      "regression_checks": [
+        "No full-scene generated slab closing stair/atrium",
+        "Do not translate columns onto full-image hallucinated parent",
+        "Preserve all independent small-instance masks"
+      ]
+    }
+  ],
+  "held_out": [
+    {
+      "id": "living_room",
+      "file": ".runtime/evaluation-v3/source/living_room.png",
+      "source": "https://raw.githubusercontent.com/lpiccinelli-eth/UniDepth/8d8cfe4c7ee15297099983607febf0d4f32eb3d6/assets/demo/rgb.png",
+      "source_revision": "8d8cfe4c7ee15297099983607febf0d4f32eb3d6",
+      "sha256": "377def0b77a5d11be17fdf3f48466a7dfcde7fff9fd10e1e2f68c57efb18736e",
+      "image_size": [
+        640,
+        480
+      ],
+      "split": "held_out",
+      "inferred": false,
+      "objects": [
+        {
+          "id": "o00",
+          "display_description": "sofa",
+          "box_xyxy_normalized": [
+            0.446875,
+            0.45,
+            0.9875,
+            0.7645833333333333
+          ],
+          "small": false
+        },
+        {
+          "id": "o01",
+          "display_description": "left_armchair",
+          "box_xyxy_normalized": [
+            0.009375,
+            0.4791666666666667,
+            0.3765625,
+            0.875
+          ],
+          "small": false
+        },
+        {
+          "id": "o02",
+          "display_description": "center_ottoman",
+          "box_xyxy_normalized": [
+            0.2859375,
+            0.6833333333333333,
+            0.55625,
+            0.975
+          ],
+          "small": false
+        },
+        {
+          "id": "o03",
+          "display_description": "coffee_table",
+          "box_xyxy_normalized": [
+            0.5734375,
+            0.6729166666666667,
+            0.9984375,
+            0.9979166666666667
+          ],
+          "small": false
+        },
+        {
+          "id": "o04",
+          "display_description": "sofa_left_pillow",
+          "box_xyxy_normalized": [
+            0.4828125,
+            0.4895833333333333,
+            0.6046875,
+            0.6354166666666666
+          ],
+          "small": false
+        },
+        {
+          "id": "o05",
+          "display_description": "sofa_middle_pillow",
+          "box_xyxy_normalized": [
+            0.621875,
+            0.4875,
+            0.7453125,
+            0.6291666666666667
+          ],
+          "small": false
+        },
+        {
+          "id": "o06",
+          "display_description": "sofa_right_pillow",
+          "box_xyxy_normalized": [
+            0.7875,
+            0.48125,
+            0.9109375,
+            0.625
+          ],
+          "small": false
+        },
+        {
+          "id": "o07",
+          "display_description": "candle_on_table",
+          "box_xyxy_normalized": [
+            0.7890625,
+            0.7458333333333333,
+            0.8328125,
+            0.8291666666666667
+          ],
+          "small": true
+        },
+        {
+          "id": "o08",
+          "display_description": "small_dish_on_table",
+          "box_xyxy_normalized": [
+            0.68125,
+            0.80625,
+            0.7375,
+            0.8645833333333334
+          ],
+          "small": true
+        },
+        {
+          "id": "o09",
+          "display_description": "books_on_table",
+          "box_xyxy_normalized": [
+            0.8203125,
+            0.6875,
+            0.9328125,
+            0.78125
+          ],
+          "small": false
+        },
+        {
+          "id": "o10",
+          "display_description": "wall_picture",
+          "box_xyxy_normalized": [
+            0.6671875,
+            0.09375,
+            0.890625,
+            0.41041666666666665
+          ],
+          "small": false
+        }
+      ],
+      "annotation_scope": "preselected visible objects; approximate 2D boxes, not exhaustive recall or metric 3D ground truth",
+      "annotation_author": "assistant source-image review before any v8/v5/v4 outputs for these inputs",
+      "support_relations": [
+        {
+          "object_id": "o04",
+          "support_id": "o00",
+          "relation": "rests_on"
+        },
+        {
+          "object_id": "o05",
+          "support_id": "o00",
+          "relation": "rests_on"
+        },
+        {
+          "object_id": "o06",
+          "support_id": "o00",
+          "relation": "rests_on"
+        },
+        {
+          "object_id": "o07",
+          "support_id": "o03",
+          "relation": "rests_on"
+        },
+        {
+          "object_id": "o08",
+          "support_id": "o03",
+          "relation": "rests_on"
+        },
+        {
+          "object_id": "o09",
+          "support_id": "o03",
+          "relation": "rests_on"
+        },
+        {
+          "object_id": "o10",
+          "support_id": "wall",
+          "relation": "attached_to"
+        }
+      ],
+      "structure_expectations": [
+        "visible back wall is supported; ceiling largely outside view must not be invented",
+        "preserve arches and door openings",
+        "do not duplicate sofa body and pillows as overlapping solids"
+      ],
+      "model_training_membership": "unknown; held out from this development workflow, not claimed absent from model training"
+    },
+    {
+      "id": "utility_room",
+      "file": ".runtime/evaluation-v3/source/utility_room.jpg",
+      "source": "https://raw.githubusercontent.com/YvanYin/Metric3D/eb5b6fac0dc155e4e52f576e304fbf11655ff339/data/nyu_demo/rgb/rgb_00050.jpg",
+      "source_revision": "eb5b6fac0dc155e4e52f576e304fbf11655ff339",
+      "sha256": "b931aa5de8008a47c9764edd82ccb1226a53674bed4a8a69ce6e17a9c6974121",
+      "image_size": [
+        640,
+        480
+      ],
+      "split": "held_out",
+      "inferred": false,
+      "objects": [
+        {
+          "id": "o00",
+          "display_description": "dehumidifier",
+          "box_xyxy_normalized": [
+            0.621875,
+            0.33125,
+            0.775,
+            0.55625
+          ],
+          "small": false
+        },
+        {
+          "id": "o01",
+          "display_description": "stool",
+          "box_xyxy_normalized": [
+            0.628125,
+            0.5104166666666666,
+            0.784375,
+            0.7041666666666667
+          ],
+          "small": false
+        },
+        {
+          "id": "o02",
+          "display_description": "water_heater",
+          "box_xyxy_normalized": [
+            0.5953125,
+            0.18541666666666667,
+            0.715625,
+            0.5833333333333334
+          ],
+          "small": false
+        },
+        {
+          "id": "o03",
+          "display_description": "upper_laundry_basket",
+          "box_xyxy_normalized": [
+            0.2828125,
+            0.45,
+            0.40625,
+            0.5666666666666667
+          ],
+          "small": false
+        },
+        {
+          "id": "o04",
+          "display_description": "floor_cleaning_wand",
+          "box_xyxy_normalized": [
+            0.5578125,
+            0.6291666666666667,
+            0.9625,
+            0.84375
+          ],
+          "small": false
+        },
+        {
+          "id": "o05",
+          "display_description": "right_equipment_cabinet",
+          "box_xyxy_normalized": [
+            0.865625,
+            0.3,
+            0.9890625,
+            0.6770833333333334
+          ],
+          "small": false
+        },
+        {
+          "id": "o06",
+          "display_description": "upper_cardboard_box",
+          "box_xyxy_normalized": [
+            0.2359375,
+            0.125,
+            0.3171875,
+            0.30833333333333335
+          ],
+          "small": false
+        },
+        {
+          "id": "o07",
+          "display_description": "small_box_on_left_workbench",
+          "box_xyxy_normalized": [
+            0.1703125,
+            0.3854166666666667,
+            0.2640625,
+            0.47708333333333336
+          ],
+          "small": false
+        }
+      ],
+      "annotation_scope": "preselected visible objects; approximate 2D boxes, not exhaustive recall or metric 3D ground truth",
+      "annotation_author": "assistant source-image review before any v8/v5/v4 outputs for these inputs",
+      "support_relations": [
+        {
+          "object_id": "o00",
+          "support_id": "o01",
+          "relation": "rests_on"
+        },
+        {
+          "object_id": "o01",
+          "support_id": "floor",
+          "relation": "rests_on"
+        },
+        {
+          "object_id": "o02",
+          "support_id": "floor",
+          "relation": "rests_on"
+        },
+        {
+          "object_id": "o04",
+          "support_id": "floor",
+          "relation": "rests_on"
+        }
+      ],
+      "structure_expectations": [
+        "retain measured floor and brick-wall patches",
+        "ceiling pipes are not one smooth ceiling slab",
+        "dehumidifier remains above the stool; keep floor passage open"
+      ],
+      "model_training_membership": "unknown; held out from this development workflow, not claimed absent from model training"
+    },
+    {
+      "id": "library",
+      "file": ".runtime/evaluation-v3/source/library.jpg",
+      "source": "https://raw.githubusercontent.com/YvanYin/Metric3D/eb5b6fac0dc155e4e52f576e304fbf11655ff339/data/wild_demo/jonathan-borba-CnthDZXCdoY-unsplash.jpg",
+      "source_revision": "eb5b6fac0dc155e4e52f576e304fbf11655ff339",
+      "sha256": "bdb629d9a64804955adeab654b0b9a28298b73603d9eb2ae75c88dc3d106a412",
+      "image_size": [
+        800,
+        1200
+      ],
+      "split": "held_out",
+      "inferred": false,
+      "objects": [
+        {
+          "id": "o00",
+          "display_description": "bookcase",
+          "box_xyxy_normalized": [
+            0.49,
+            0.2425,
+            0.94375,
+            0.8691666666666666
+          ],
+          "small": false
+        },
+        {
+          "id": "o01",
+          "display_description": "left_armchair",
+          "box_xyxy_normalized": [
+            0.01875,
+            0.6491666666666667,
+            0.2725,
+            0.8025
+          ],
+          "small": false
+        },
+        {
+          "id": "o02",
+          "display_description": "right_armchair",
+          "box_xyxy_normalized": [
+            0.56625,
+            0.7066666666666667,
+            0.85,
+            0.94
+          ],
+          "small": false
+        },
+        {
+          "id": "o03",
+          "display_description": "typewriter",
+          "box_xyxy_normalized": [
+            0.53875,
+            0.6808333333333333,
+            0.6825,
+            0.7533333333333333
+          ],
+          "small": false
+        },
+        {
+          "id": "o04",
+          "display_description": "trunk",
+          "box_xyxy_normalized": [
+            0.47875,
+            0.705,
+            0.6625,
+            0.8166666666666667
+          ],
+          "small": false
+        },
+        {
+          "id": "o05",
+          "display_description": "wall_mirror",
+          "box_xyxy_normalized": [
+            0.06875,
+            0.45166666666666666,
+            0.2275,
+            0.6041666666666666
+          ],
+          "small": false
+        },
+        {
+          "id": "o06",
+          "display_description": "pendant_lamp",
+          "box_xyxy_normalized": [
+            0.4625,
+            0.029166666666666667,
+            0.60125,
+            0.28583333333333333
+          ],
+          "small": false
+        },
+        {
+          "id": "o07",
+          "display_description": "small_flowerpot_on_shelf",
+          "box_xyxy_normalized": [
+            0.62625,
+            0.5433333333333333,
+            0.68625,
+            0.5875
+          ],
+          "small": true
+        },
+        {
+          "id": "o08",
+          "display_description": "small_vase_on_shelf",
+          "box_xyxy_normalized": [
+            0.51125,
+            0.58,
+            0.53875,
+            0.6091666666666666
+          ],
+          "small": true
+        },
+        {
+          "id": "o09",
+          "display_description": "small_pig_on_shelf",
+          "box_xyxy_normalized": [
+            0.6925,
+            0.6883333333333334,
+            0.7475,
+            0.7208333333333333
+          ],
+          "small": true
+        }
+      ],
+      "annotation_scope": "preselected visible objects; approximate 2D boxes, not exhaustive recall or metric 3D ground truth",
+      "annotation_author": "assistant source-image review before any v8/v5/v4 outputs for these inputs",
+      "support_relations": [
+        {
+          "object_id": "o03",
+          "support_id": "o04",
+          "relation": "rests_on"
+        },
+        {
+          "object_id": "o07",
+          "support_id": "o00",
+          "relation": "rests_on"
+        },
+        {
+          "object_id": "o08",
+          "support_id": "o00",
+          "relation": "rests_on"
+        },
+        {
+          "object_id": "o09",
+          "support_id": "o00",
+          "relation": "rests_on"
+        },
+        {
+          "object_id": "o05",
+          "support_id": "wall",
+          "relation": "attached_to"
+        },
+        {
+          "object_id": "o06",
+          "support_id": "ceiling",
+          "relation": "suspended_from"
+        },
+        {
+          "object_id": "o01",
+          "support_id": "floor",
+          "relation": "rests_on"
+        },
+        {
+          "object_id": "o02",
+          "support_id": "floor",
+          "relation": "rests_on"
+        }
+      ],
+      "structure_expectations": [
+        "visible floor, walls and ceiling have distinct evidence",
+        "retain doorway opening",
+        "bookcase and shelf parts must not produce coincident or intersecting duplicate bodies",
+        "pendant remains overhead; shelf props are not moved to the floor"
+      ],
+      "model_training_membership": "unknown; held out from this development workflow, not claimed absent from model training"
+    }
+  ],
+  "held_out_status": "Registered and annotated before inference; no model outputs have been generated.",
+  "policy": {
+    "goal": "All seven agreed completion criteria; failed runs trigger further diagnosis and correction, not completion.",
+    "no_object_names_in_geometric_corrections": true,
+    "keep_original_input_masks_meshes_and_poses": true,
+    "old_reports_immutable": true,
+    "baseline_versions_required": [
+      4,
+      5
+    ],
+    "required_ablations": [
+      "detection_views",
+      "orientation_vanishing",
+      "full_frame_context",
+      "contact_polygon",
+      "finite_collision",
+      "combined"
+    ],
+    "fresh_gpu_required_for_detection_changes": true,
+    "offline_replay_is_not_new_gpu_inference": true,
+    "deployment_gate": "No known harmful move or small-object regression; observed duplicate/support improvements; supported room surfaces or explicit abstention; actual authenticated upload-generation-render-download path passes.",
+    "selected_held_out_objects": 29,
+    "selected_held_out_small_objects": 5
+  }
+}

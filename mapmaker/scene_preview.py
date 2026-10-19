@@ -1,4 +1,4 @@
-"""Read-only orthographic geometry previews, all triangles; no source-camera claim."""
+"""Read-only mesh previews; optional source projection, approximate painter visibility."""
 
 import argparse, json
 from pathlib import Path
@@ -12,7 +12,8 @@ p.add_argument("--out", required=True)
 p.add_argument("--material", action="store_true")
 p.add_argument("--node")
 p.add_argument("--opencv-frame", action="store_true")
-p.add_argument("--view", choices=["front_Z", "top_Y", "oblique"])
+p.add_argument("--view", choices=["front_Z", "top_Y", "oblique", "source_camera"])
+p.add_argument("--source-metadata", type=Path, help="Scene metadata for a measured source-camera preview")
 a = p.parse_args()
 out = Path(a.out)
 out.mkdir(parents=True, exist_ok=True)
@@ -68,9 +69,26 @@ t = np.concatenate(tris)
 t = t * np.array([1, -1, -1]) if a.opencv_frame else t
 c = np.concatenate(colors)
 is_background = np.concatenate(background)
+camera_info = None
+if a.view == 'source_camera':
+    if not a.source_metadata or a.opencv_frame:
+        p.error('source_camera requires --source-metadata and no --opencv-frame')
+    from .scene_vanishing import fit_camera
+    meta=json.loads(a.source_metadata.read_text())
+    with np.load(a.source_metadata.parent/meta['pointmap']['asset']) as archive:
+        points=archive['points']
+    camera_info=fit_camera(points)
+    if not camera_info['accepted']:
+        raise ValueError('Source camera fit was rejected')
+    t=trimesh.transform_points(t.reshape(-1,3),np.linalg.inv(meta['placement']['common_transform'])).reshape(-1,3,3)
+    valid=points[...,2][np.isfinite(points).all(-1)&(abs(points[...,2])>1e-6)]
+    depth_sign=float(np.sign(np.median(valid)))
+    visible=np.isfinite(t).all((1,2))&(t[...,2]*depth_sign>1e-6).all(1)
+    t,c,is_background=t[visible],c[visible],is_background[visible]
 lo = t.min((0, 1))
 hi = t.max((0, 1))
-t = t - (lo + hi) / 2
+if camera_info is None:
+    t = t - (lo + hi) / 2
 views = {
     "front_Z": np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
     "top_Y": np.array([[1, 0, 0], [0, 0, -1], [0, 1, 0]]),
@@ -78,6 +96,8 @@ views = {
         [[0.707, 0, -0.707], [-0.408, 0.816, -0.408], [0.577, 0.577, 0.577]]
     ),
 }
+if camera_info is not None:
+    views={'source_camera':np.eye(3)}
 for name, rot in views.items():
     if a.view and name != a.view:
         continue
@@ -94,6 +114,13 @@ for name, rot in views.items():
     xy[:, :, 1] *= -1
     xy += 256
     idx = np.argsort(tr[:, :, 2].mean(1))
+    if camera_info is not None:
+        projection=tr@np.asarray(camera_info['matrix']).T
+        xy=projection[...,:2]/projection[...,2,None]
+        height,width=points.shape[:2]
+        camera_scale=500/max(width,height)
+        xy=xy*camera_scale+np.array([(512-width*camera_scale)/2,(512-height*camera_scale)/2])
+        idx=np.argsort(-tr[:,:,2].mean(1)*depth_sign)
     # Large floor triangles break centroid painter sorting. Draw the support
     # backdrop first; WebGL remains the authoritative depth-tested preview.
     idx = np.concatenate([idx[is_background[idx]], idx[~is_background[idx]]])
@@ -115,7 +142,9 @@ for name, rot in views.items():
 (out / "render_note.json").write_text(
     json.dumps(
         {
-            "method": "orthographic painter rendering of every original triangle, graph transforms respected; floor backdrop first; per-view bounds fitted to frame",
+            "method": ("measured source-camera perspective projection; approximate triangle-centroid painter visibility; not depth-buffered"
+                if camera_info is not None else
+                "orthographic painter rendering of every original triangle, graph transforms respected; floor backdrop first; per-view bounds fitted to frame"),
             "source_asset": str(Path(a.asset).resolve()),
             "texture_rendered": a.material,
             "texture_limit": "CPU per-triangle centroid UV sampling, not full raster interpolation; no fine-detail quality claims",
@@ -124,7 +153,8 @@ for name, rot in views.items():
             else "debug colors per original scene node",
             "asset_modified": False,
             "selected_node": a.node,
-            "source_camera_aligned": False,
+            "source_camera_aligned": camera_info is not None,
+            "source_camera": camera_info,
             "display_axis_conversion": "OpenCV x/right y/down z/forward to x/right y/up z/back"
             if a.opencv_frame
             else None,

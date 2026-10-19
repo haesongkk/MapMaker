@@ -50,5 +50,8 @@ uv pip install --python .venv-sam3d/bin/python --no-deps \
 uv pip install --python .venv-sam3d/bin/python --no-deps --no-build-isolation -r /opt/sam3d-native.txt
 uv pip install --python .venv-sam3d/bin/python --no-deps --no-build-isolation -e /opt/sam3d
 .venv-sam3d/bin/python /opt/sam3d/patching/hydra
+uv pip install --python .venv-sam3d/bin/python --no-deps --only-binary :all: --require-hashes \
+    -r configs/serverless/geometry-runtime.txt
+.venv-sam3d/bin/python -c 'import manifold3d; assert abs(manifold3d.Manifold.cube((1,1,1)).volume()-1)<1e-12'
 mkdir -p /opt/mapmaker-models/.runtime/sam3d-torch/hub
 checkout_source dinov2 https://github.com/facebookresearch/dinov2.git /opt/mapmaker-models/.runtime/sam3d-torch/hub/facebookresearch_dinov2_main

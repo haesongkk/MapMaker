@@ -1,12 +1,31 @@
 """RAM++ -> existing SAM3 text prompts -> original-resolution instance masks."""
 
 from pathlib import Path
-import gc, re, sys, time
+import gc, hashlib, os, re, sys, time
 import numpy as np
 from PIL import Image, ImageDraw
 from .scene_run import ROOT, SAM3_CHECKPOINT, write, read, sha, status
 from .object_candidates import candidates
 from .runtime_paths import RAM_CHECKPOINT
+from .mask_selection import select_masks, rejection_reason, MAX_RECONSTRUCTION_OBJECTS
+from .analysis_regions import analysis_boxes, rank_candidates
+
+
+def save_mask_candidates(run, raw, distinct_count):
+    candidate_dir = run / 'masks/candidates'
+    candidate_dir.mkdir(parents=True, exist_ok=True)
+    records = []
+    for rec, mask in raw:
+        rec['geometry_key'] = hashlib.sha256(np.packbits(mask).tobytes()).hexdigest()
+        asset = f"masks/candidates/{rec['geometry_key']}.png"
+        Image.fromarray(mask.astype('uint8') * 255).save(run / asset)
+        records.append(dict(rec, mask=asset, mask_sha256=sha(run / asset)))
+    # Keep the manifest inside the existing transferable masks namespace.
+    asset = 'masks/candidates.json'
+    write(run / asset, records)
+    return dict(asset=asset, count=len(records), distinct_eligible_count=distinct_count,
+        reconstruction_limit=MAX_RECONSTRUCTION_OBJECTS,
+        limitation='Unselected masks are retained for evidence review; retention does not authorize reconstruction')
 
 
 def ram_tags(
@@ -48,7 +67,29 @@ def run_scene(run):
         for name in (
             "object_candidates.py",
             "scene_vision.py",
+            "mask_selection.py",
+            "mask_geometry.py",
+            "scene_contacts.py",
+            "scene_source_guard.py",
+            "scene_pose_refinement.py",
+            "scene_overlap_refinement.py",
+            "scene_overlap.py",
+            "scene_pose_search.py",
+            "scene_support_guard.py",
+            "scene_collision.py",
+            "scene_structure.py",
+            "scene_orientation.py",
+            "scene_vanishing.py",
+            "scene_projection.py",
+            "scene_composite_review.py",
+            "analysis_regions.py",
+            "segmentation_regions.py",
+            "point_proposals.py",
+            "mask_corroboration.py",
+            "scene_geometry.py",
             "scene_reconstruct.py",
+            "reconstruction_review.py",
+            "reconstruction_evidence.py",
             "scene_assembly.py",
             "scene_placement.py",
             "scene_pipeline.py",
@@ -59,20 +100,11 @@ def run_scene(run):
     views = [image_path]
     regions = []
     source = Image.open(image_path).convert("RGB")
-    if max(source.size) > 768:
-        for index, (x, y) in enumerate(
-            ((0, 0), (0.4, 0), (0, 0.4), (0.4, 0.4), (0.2, 0.2))
-        ):
-            box = (
-                int(x * source.width),
-                int(y * source.height),
-                min(source.width, int((x + 0.6) * source.width)),
-                min(source.height, int((y + 0.6) * source.height)),
-            )
-            path = run / "input" / f"analysis_region_{index}.png"
-            source.crop(box).save(path)
-            views.append(path)
-            regions.append({"image": str(path.relative_to(run)), "box": box})
+    for index, box in enumerate(analysis_boxes(*source.size)):
+        path = run / "input" / f"analysis_region_{index}.png"
+        source.crop(box).save(path)
+        views.append(path)
+        regions.append({"image": str(path.relative_to(run)), "box": box})
     tags_by_view = ram_tags(
         views, RAM_CHECKPOINT, threshold_scale=0.75
     )
@@ -81,18 +113,8 @@ def run_scene(run):
     # Prioritize labels corroborated across views; this is not an image-specific list.
     from .object_candidates import ALIASES
 
-    votes = {
-        name: sum(
-            any(ALIASES.get(t, t) == name for t in values)
-            for values in tags_by_view.values()
-        )
-        for name in prompts
-    }
-    ranked = sorted(prompts, key=lambda name: (-votes[name], name))
-    rejected.extend(
-        {"tag": name, "reason": "candidate budget 40"} for name in ranked[40:]
-    )
-    prompts = ranked[:40]
+    prompts, votes, overflow = rank_candidates(prompts, tags_by_view, str(image_path), ALIASES)
+    assert not overflow  # Rank execution order, never discard localized evidence by vote count.
     extraction = {
         "model": "RAM++",
         "threshold_scale": 0.75,
@@ -103,6 +125,7 @@ def run_scene(run):
         },
         "regions": regions,
         "candidate_votes": votes,
+        "candidate_policy": "all eligible detector tags segmented; localized tags scheduled first; no vote-count cutoff",
         "candidates": prompts,
         "rejected": rejected,
         "checkpoint": str(RAM_CHECKPOINT),
@@ -114,8 +137,6 @@ def run_scene(run):
     meta["object_extraction"] = extraction
     meta["timing"]["object_extraction_seconds"] = time.monotonic() - start
     write(run / "scene_metadata.json", meta)
-    if not prompts:
-        raise RuntimeError("RAM++ found no eligible independent object candidates")
     gc.collect()
     torch.cuda.empty_cache()
     start = time.monotonic()
@@ -124,8 +145,11 @@ def run_scene(run):
     from sam3.model.sam3_image_processor import Sam3Processor
 
     processor = Sam3Processor(
-        build_sam3_image_model(checkpoint_path=str(SAM3_CHECKPOINT), load_from_HF=False)
+        build_sam3_image_model(checkpoint_path=str(SAM3_CHECKPOINT), load_from_HF=False,
+                              enable_inst_interactivity=True)
     )
+    from .point_proposals import scan_small_instances, validate_interactive_weights
+    interactive_weights = validate_interactive_weights(processor.model, SAM3_CHECKPOINT)
     image = Image.open(image_path).convert("RGB")
     raw = []
     detections = []
@@ -158,12 +182,68 @@ def run_scene(run):
                     "area": int(mask.sum()),
                 }
                 detections.append(rec)
-                if score < 0.6:
-                    rec["rejected_reason"] = "mask confidence < 0.6"
-                elif rec["area"] < image.width * image.height * 0.003:
-                    rec["rejected_reason"] = "area < 0.003 of image"
-                else:
+                reason = rejection_reason(rec, image.width * image.height)
+                if reason:
+                    rec['rejected_reason'] = reason
+                # Keep weak, nonempty observations for cross-view review. Selection
+                # remains a separate decision and preserves the model score.
+                if rec['confidence'] >= .6 and rec['area'] >= max(64, image.width * image.height * .0005):
                     raw.append((rec, mask))
+        point_masks, point_report = scan_small_instances(processor.model, state, image.size,
+            progress=lambda current, total: status(run, 'segmenting',
+                f'Segmenting small regions {current}/{total}...', current=current, total=total))
+        raw.extend(point_masks)
+        detections.extend(rec for rec, _ in point_masks)
+        extraction['point_segmentation'] = dict(point_report, weights=interactive_weights)
+        if os.environ.get('MAPMAKER_MULTISCALE_POINTS', '0') == '1':
+            from .multiscale_points import scan_point_crops
+            zoom_masks, zoom_report = scan_point_crops(processor, image,
+                progress=lambda view, views, current, total: status(run, 'segmenting',
+                    f'Segmenting zoomed small regions {view+1}/{views}: {current}/{total}...'))
+            raw.extend(zoom_masks)
+            detections.extend(rec for rec, _ in zoom_masks)
+            extraction['multiscale_point_segmentation'] = zoom_report
+    from .segmentation_regions import crop_queries, restore_crop_mask
+    queries = crop_queries(prompts, regions, extraction['tags_by_view'], ALIASES,
+                           [(rec, mask) for rec, mask in raw
+                            if rejection_reason(rec, image.width * image.height) is None],
+                           image.width * image.height)
+    total = sum(len(query['prompts']) for query in queries)
+    current = 0
+    with torch.inference_mode(), torch.autocast("cuda", dtype=torch.bfloat16):
+        for query in queries:
+            box = query['box']
+            crop = image.crop(box)
+            state = processor.set_image(crop)
+            for prompt in query['prompts']:
+                current += 1
+                status(run, 'segmenting', f'Segmenting localized candidates {current}/{total}...',
+                       current=current, total=total)
+                processor.reset_all_prompts(state)
+                out = processor.set_text_prompt(state=state, prompt=prompt)
+                masks = out['masks'].cpu().numpy().reshape(-1, crop.height, crop.width).astype(bool)
+                scores = out['scores'].float().cpu().tolist()
+                for index, (mask, score) in enumerate(zip(masks, scores)):
+                    restored = restore_crop_mask(mask, box, image.size)
+                    rec = dict(name=prompt, candidate_index=index, confidence=score,
+                               source_crop=list(box), area=int(mask.sum()))
+                    detections.append(rec)
+                    reason = ('truncated crop mask' if restored is None else
+                              rejection_reason(rec, image.width * image.height))
+                    if reason:
+                        rec['rejected_reason'] = reason
+                    if (restored is not None and rec['confidence'] >= .6
+                            and rec['area'] >= max(64, image.width * image.height * .0005)):
+                        raw.append((rec, restored))
+    extraction['localized_segmentation'] = dict(views=len(queries), prompts=total,
+        policy='detector-localized prompts without sufficient mask evidence inside that crop; reject crop-truncated fragments')
+    write(run / 'object_candidates.json', extraction)
+    finish_segmentation(run, image, raw, detections, meta, start, torch.__version__)
+
+
+def finish_segmentation(run, image, raw, detections, meta, start, torch_version):
+    from .mask_corroboration import corroborate
+    cross_view_evidence = corroborate(raw, image.width * image.height)
     selected = []
     counts = {}
     objects = []
@@ -178,27 +258,15 @@ def run_scene(run):
             [40, 210, 210],
         ]
     )
-    for rec, mask in sorted(
-        raw,
-        key=lambda x: (
-            -x[0]["area"],
-            -x[0]["confidence"],
-            x[0]["name"],
-            x[0]["candidate_index"],
-        ),
-    ):
-        if any(
-            (mask & m).sum() / max(1, (mask | m).sum()) > 0.8
-            or (mask & m).sum() / max(1, mask.sum()) > 0.9
-            for m in selected
-        ):
-            rec["rejected_reason"] = (
-                "duplicate IoU > 0.8 or > 0.9 contained in a larger mask"
-            )
-            continue
-        if len(objects) >= 12:
-            rec["rejected_reason"] = "major-object limit 12"
-            continue
+    eligible = select_masks(raw, image.width * image.height, limit=None, cross_view_small=True)
+    # Keep the original observations in the budgeted pass too: deduplication
+    # would otherwise remove the second view needed to substantiate agreement.
+    chosen = select_masks(raw, image.width * image.height, limit=MAX_RECONSTRUCTION_OBJECTS,
+                          cross_view_small=True)
+    # Preserve valid masks beyond the reconstruction budget so later geometry
+    # review/replay does not require repeating GPU segmentation.
+    meta['segmentation_candidates'] = save_mask_candidates(run, raw, len(eligible))
+    for rec, mask in chosen:
         slug = re.sub("[^a-z0-9]+", "_", rec["name"]).strip("_") or "object"
         n = counts.get(slug, 0)
         counts[slug] = n + 1
@@ -213,6 +281,9 @@ def run_scene(run):
             "mask_sha256": sha(run / rel),
             "mask_area": rec["area"],
             "confidence": rec["confidence"],
+            "confidence_kind": rec.get('confidence_kind', 'detector_mask_and_presence_score'),
+            "proposal_method": rec.get('proposal_method', 'detector_text_prompt'),
+            "selection_evidence": rec.get('selection_evidence', {'route': 'single_view_confidence'}),
             "bbox": [
                 int(xx.min()),
                 int(yy.min()),
@@ -244,17 +315,25 @@ def run_scene(run):
             "checkpoint": str(SAM3_CHECKPOINT),
             "processor_confidence_threshold": 0.5,
             "selection_confidence_threshold": 0.6,
-            "min_area_fraction": 0.003,
+            "min_area_fraction": 0.0005,
+            "min_area_pixels": 64,
+            "small_area_fraction": 0.003,
+            "small_confidence_threshold": 0.8,
+            "reserved_small_slots": 3,
             "duplicate_iou": 0.8,
             "contained_fraction": 0.9,
-            "max_objects": 12,
+            "containment_policy": "label-free similar-size masks only; small containment remains ambiguous",
+            "max_objects": MAX_RECONSTRUCTION_OBJECTS,
+            "retained_candidate_masks": meta['segmentation_candidates']['count'],
+            "cross_view_evidence": cross_view_evidence,
+            "cross_view_selection_enabled": True,
             "mask_resolution": list(image.size),
             "detections": detections,
         },
     )
     meta["objects"] = objects
     meta["timing"]["segmentation_seconds"] = time.monotonic() - start
-    meta["pipeline"]["vision_torch"] = torch.__version__
+    meta["pipeline"]["vision_torch"] = torch_version
     write(run / "scene_metadata.json", meta)
     if not objects:
         raise RuntimeError(

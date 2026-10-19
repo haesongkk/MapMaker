@@ -43,9 +43,10 @@ def create_run(data, output=None):
 
 
 class Pipeline:
-    def __init__(self):
+    def __init__(self, *, inference_checkpoint=False):
         self.worker = None
         self.worker_log = None
+        self.inference_checkpoint = inference_checkpoint
         atexit.register(self.close)
 
     def close(self):
@@ -71,7 +72,8 @@ class Pipeline:
                 stderr=subprocess.STDOUT,
                 text=True,
             )
-        self.worker.stdin.write(__import__("json").dumps({"run": str(run)}) + "\n")
+        self.worker.stdin.write(__import__("json").dumps({"run": str(run),
+            "inference_checkpoint": self.inference_checkpoint}) + "\n")
         self.worker.stdin.flush()
         result = run / "logs/reconstruction_result.json"
         while not result.exists():

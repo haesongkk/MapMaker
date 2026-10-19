@@ -1,13 +1,14 @@
 """Apply a checksum-pinned application bundle to the existing GPU runtime.
 
-This script is supplied as the endpoint's Python entrypoint. It does not install
-dependencies or weights; runtime changes still require a full Docker build.
+This script is supplied as the endpoint's Python entrypoint. Optional geometry
+uses one checksum-pinned isolated wheel, with no dependency upgrades or weights.
 """
 import hashlib
 import io
 import os
 from pathlib import Path, PurePosixPath
 import stat
+import sys
 import zipfile
 
 import boto3
@@ -40,5 +41,12 @@ with zipfile.ZipFile(io.BytesIO(bundle)) as archive:
             destination.write_bytes(archive.read(item))
 print('MapMaker application release:', os.environ['MAPMAKER_RELEASE_SHA256'], flush=True)
 os.chdir(root)
+if os.environ.get('MAPMAKER_OVERLAP_REPAIR', '0') == '1':
+    sys.path.insert(0, str(root))
+    from scripts.native_geometry_overlay import stage_geometry_wheel, verify_native_runtime
+    target = stage_geometry_wheel(root/'configs/serverless/native_geometry.whl', root/'.runtime')
+    verification = verify_native_runtime('/opt/mapmaker/.venv-sam3d/bin/python', target)
+    os.environ['MAPMAKER_GEOMETRY_CP311_PATH'] = str(target)
+    print('Pinned native geometry verified:', verification, flush=True)
 python = '/opt/mapmaker/.venv/bin/python'
 os.execv(python, [python, '-m', 'mapmaker.serverless_worker'])

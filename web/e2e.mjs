@@ -68,7 +68,7 @@ try {
     await readFile(path.join(run, "scene_metadata.json"), "utf8"),
   );
   const count = meta.objects.filter((o) => o.status === "generated").length;
-  if ((await page.locator(".object-row").count()) !== count || count === 0)
+  if ((await page.locator("input[data-object-id]").count()) !== count || count === 0)
     throw new Error("Object list mismatch");
   report.checks.status = report.resumed
     ? report.stages.length > 0

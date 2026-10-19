@@ -6,6 +6,32 @@ const $ = (s) => document.querySelector(s),
 let renderer, camera, controls, scene, model, runId, sourceUrl;
 let grid, axisCanvas;
 let sceneDownloadUrl;
+let autoFrameModel = true;
+function fitSceneCamera() {
+  if (!model) return;
+  const box = new THREE.Box3().setFromObject(model);
+  if (box.isEmpty()) return;
+  const center = box.getCenter(new THREE.Vector3());
+  const direction = new THREE.Vector3(-0.25, 0.22, -1).normalize();
+  const right = new THREE.Vector3().crossVectors(camera.up, direction).normalize();
+  const up = new THREE.Vector3().crossVectors(direction, right);
+  const tangentY = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+  const tangentX = tangentY * Math.max(camera.aspect, 0.001);
+  let distance = 0.5;
+  for (const x of [box.min.x, box.max.x])
+    for (const y of [box.min.y, box.max.y])
+      for (const z of [box.min.z, box.max.z]) {
+        const offset = new THREE.Vector3(x, y, z).sub(center);
+        distance = Math.max(distance, offset.dot(direction) + 1.12 * Math.max(
+          Math.abs(offset.dot(right)) / tangentX, Math.abs(offset.dot(up)) / tangentY));
+      }
+  camera.near = distance / 1000;
+  camera.far = distance * 100;
+  camera.updateProjectionMatrix();
+  camera.position.copy(center).addScaledVector(direction, distance);
+  controls.target.copy(center);
+  controls.update();
+}
 async function loadSceneBytes(url, size) {
   const parts = [];
   const chunk = 8 * 1024 * 1024;
@@ -89,18 +115,21 @@ function initViewer() {
   light.position.set(-3, 5, -4);
   scene.add(light);
   controls = new OrbitControls(camera, renderer.domElement);
+  controls.addEventListener("start", () => { autoFrameModel = false; });
   controls.addEventListener("change", render);
   new ResizeObserver(() => {
     const { width, height } = viewport.getBoundingClientRect();
     renderer.setSize(width, height);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+    if (autoFrameModel) fitSceneCamera();
     render();
   }).observe(viewport);
 }
 async function showScene(meta) {
   if (!renderer) initViewer();
   clearModel();
+  autoFrameModel = true;
   $("#empty").hidden = true;
   $("#scene-summary").textContent = "Loading scene...";
   const assetPath = `/runs/${runId}/${meta.scene_asset}`;
@@ -130,7 +159,6 @@ async function showScene(meta) {
   const box = new THREE.Box3().setFromObject(model),
     center = box.getCenter(new THREE.Vector3()),
     size = box.getSize(new THREE.Vector3());
-  const distance = Math.max(size.length() * 1.35, 0.5);
   const span = Math.max(size.x, size.z, 0.1) * 1.8;
   const step = 10 ** Math.floor(Math.log10(span / 20));
   const divisions = Math.ceil(span / step);
@@ -141,17 +169,46 @@ async function showScene(meta) {
   grid.material.opacity = .55;
   grid.material.depthWrite = false;
   scene.add(grid);
-  camera.near = distance / 1000;
-  camera.far = distance * 100;
-  camera.updateProjectionMatrix();
-  camera.position
-    .copy(center)
-    .add(new THREE.Vector3(-0.25 * distance, 0.22 * distance, -distance));
-  controls.target.copy(center);
-  controls.update();
+  fitSceneCamera();
   render();
   const objects = meta.objects.filter((o) => o.status === "generated");
   $("#objects").replaceChildren();
+  const surfaces = meta.structure?.surfaces || [];
+  if (surfaces.length) {
+    const row = document.createElement('label');
+    row.className = 'object-row';
+    const check = document.createElement('input');
+    check.type = 'checkbox'; check.checked = true; check.id = 'show-room';
+    const label = document.createElement('span'); label.textContent = 'Room surfaces';
+    const cutaway = document.createElement('button');
+    cutaway.type = 'button'; cutaway.id = 'room-cutaway'; cutaway.textContent = 'Cutaway';
+    let cut = false;
+    const kinds = { floor: true, wall: true, ceiling: true, observed: true };
+    const update = () => {
+      for (const surface of surfaces) {
+        const node = model.getObjectByName(surface.node);
+        if (node) node.visible = check.checked && kinds[surface.kind] && (!cut || surface.kind === 'floor');
+      }
+      cutaway.setAttribute('aria-pressed', String(cut));
+      render();
+    };
+    check.addEventListener('change', update);
+    cutaway.addEventListener('click', () => { cut = !cut; update(); });
+    row.append(check, label); $("#objects").append(row, cutaway);
+    for (const kind of ['floor', 'wall', 'ceiling', 'observed']) {
+      const group = surfaces.filter(s => s.kind === kind);
+      if (!group.length) continue;
+      const item = document.createElement('label'); item.className = 'object-row';
+      const toggle = document.createElement('input'); toggle.type = 'checkbox'; toggle.checked = true;
+      toggle.dataset.surfaceKind = kind;
+      toggle.addEventListener('change', () => {
+        kinds[kind] = toggle.checked; update();
+      });
+      const text = document.createElement('span'); text.textContent = kind === 'observed' ? 'Observed context' : kind;
+      item.append(toggle, text); $("#objects").append(item);
+    }
+    update();
+  }
   for (const obj of objects) {
     const node = model.getObjectByName(obj.id);
     if (!node) throw new Error(`Scene node missing: ${obj.id}`);
@@ -167,13 +224,19 @@ async function showScene(meta) {
     });
     const name = document.createElement("span");
     name.textContent = obj.name;
+    if (obj.geometry_source === 'observed_mask_residual') {
+      name.title = 'Visible surface from the image; hidden shape is unknown';
+      const detail = document.createElement('small');
+      detail.textContent = 'observed surface';
+      name.append(document.createElement('br'), detail);
+    }
     const id = document.createElement("small");
     id.textContent = obj.id.slice(-2);
     row.append(check, name, id);
     $("#objects").append(row);
   }
   $("#object-count").textContent = objects.length;
-  $("#scene-summary").textContent = `${objects.length} independent objects · Grid Y=0`;
+  $("#scene-summary").textContent = `${objects.length} independent objects · ${surfaces.length ? surfaces.length + ' observed room patches' : 'Grid Y=0'}`;
   const link = $("#export");
   link.href = sceneDownloadUrl || `/runs/${runId}/scene.glb?download`;
   link.download = "scene.glb";

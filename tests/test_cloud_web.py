@@ -147,7 +147,7 @@ def test_worker_publishes_completion_only_after_artifacts(tmp_path, monkeypatch)
             events.append("completion")
             super().put_json(*args)
 
-    def pipeline(run):
+    def pipeline(run, *, before_finalize=None):
         (run / "scene.glb").write_bytes(b"glb")
         status(run, "done", "Done")
 

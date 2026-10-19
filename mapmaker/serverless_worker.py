@@ -65,7 +65,7 @@ def handler(job):
         try:
             prepare_models(store, run)
             if PIPELINE is None:
-                PIPELINE = Pipeline()
+                PIPELINE = Pipeline(inference_checkpoint=True)
             with GpuMeasurement(run):
                 PIPELINE.run(run)
             success = True

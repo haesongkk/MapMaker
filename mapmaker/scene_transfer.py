@@ -167,6 +167,20 @@ class ArtifactStore:
     def upload_result(self, run_id, path):
         self.client.upload_file(str(path), self.bucket, self.key(run_id, "result.zip"))
 
+    def upload_inference_checkpoint(self, run_id, path, metadata):
+        """Commit a recoverable inference archive separately from final results."""
+        key = self.key(run_id, "inference.zip")
+        digest = sha(path)
+        size = Path(path).stat().st_size
+        self.client.upload_file(str(path), self.bucket, key)
+        if self.client.head_object(Bucket=self.bucket, Key=key)['ContentLength'] != size:
+            raise ValueError('Incomplete inference checkpoint upload')
+        self.put_json(run_id, 'inference-checkpoint.json', dict(
+            protocol=1, run_id=run_id, artifact_kind='inference_checkpoint',
+            archive_sha256=digest, archive_bytes=size, scene_complete=False,
+            input_sha256=metadata['input_sha256'], deployment=metadata.get('deployment'),
+            generated_objects=sum(o.get('status') == 'generated' for o in metadata['objects'])))
+
     def put_progress(self, run_id, data):
         self.client.put_object(Bucket=self.bucket, Key=self.key(run_id, "progress.json"), Body=data)
 

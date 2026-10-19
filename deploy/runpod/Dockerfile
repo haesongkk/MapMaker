@@ -10,7 +10,7 @@ RUN bash /opt/build_runtime.sh
 COPY mapmaker mapmaker
 COPY scripts scripts
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev --extra serverless --extra remote && \
+RUN uv sync --frozen --no-dev --extra serverless --extra remote --extra geometry && \
     mkdir -p .runtime/sam3d-recovery && \
     .venv-sam3d/bin/python scripts/sam3d_runtime_audit.py
 

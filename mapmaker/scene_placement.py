@@ -1,10 +1,12 @@
 """CPU placement in the assembled GLB frame: +Y up, column-vector matrices.
 
 Never normalize individual meshes: their exported origins, child transforms and
-SAM3D poses must stay paired. All roots receive global alignment; all objects become upright, and floor furniture is grounded.
+SAM3D poses must stay paired. Shared alignment preserves relative orientation;
+individual moves require geometric evidence, never object names.
 """
 
 import copy
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -13,17 +15,10 @@ import numpy as np
 import trimesh
 
 CONTACT_TOLERANCE_RATIO = 0.01
-PLACEMENT_VERSION = 4
+PLACEMENT_VERSION = 10
 MEAN_UP_EPSILON = 1e-6
 FLOOR_NODE = "background_floor"
 
-# Grounding categories only; every generated object receives individual upright rotation.
-FLOOR_CATEGORIES = frozenset({
-    "sofa", "couch", "loveseat", "chair", "armchair", "office chair",
-    "table", "coffee table", "dining table", "desk", "computer desk",
-    "bed", "cabinet", "bureau", "dresser", "wardrobe", "nightstand",
-    "refrigerator", "bookcase", "bookshelf", "ottoman", "hassock", "bar stool",
-})
 
 
 def update_transform(obj, matrix):
@@ -60,6 +55,23 @@ def bounds_of(vertices):
     return np.array([vertices.min(axis=0), vertices.max(axis=0)])
 
 
+def remove_object_tree(scene, oid):
+    descendants = []
+    for node in scene.graph.nodes_geometry:
+        parent = node
+        while parent not in (oid, scene.graph.base_frame):
+            parent = scene.graph.transforms.parents.get(parent, scene.graph.base_frame)
+        if parent == oid:
+            descendants.append(node)
+    for node in descendants:
+        _, geometry = scene.graph[node]
+        scene.delete_geometry(geometry)
+        if node in scene.graph.nodes:
+            scene.graph.transforms.remove_node(node)
+    if oid in scene.graph.nodes:
+        scene.graph.transforms.remove_node(oid)
+
+
 def rotation_to_world_up(up):
     """Shortest proper rotation; exact antiparallel uses the fixed world X axis."""
     target = np.array([0., 1., 0.])
@@ -74,7 +86,7 @@ def rotation_to_world_up(up):
     return np.eye(3) + sine * skew + (1. - cosine) * (skew @ skew)
 
 
-def correct_placement(scene, objects):
+def correct_placement(scene, objects, orientation=None):
     """Equal-weight mean of ALL object local +Y vectors; no individual correction."""
     if not objects:
         raise ValueError("Cannot place an empty scene")
@@ -92,10 +104,11 @@ def correct_placement(scene, objects):
         ups[oid] = matrix[:3, 1] / lengths[1]
     mean = np.mean(list(ups.values()), axis=0)
     magnitude = float(np.linalg.norm(mean))
-    if not np.isfinite(magnitude) or magnitude < MEAN_UP_EPSILON:
+    if (not np.isfinite(magnitude) or magnitude < MEAN_UP_EPSILON) and not (orientation and orientation.get('accepted')):
         raise ValueError("Mean object Y-up is undefined or nearly cancels; alignment aborted")
-    mean_up = mean / magnitude
-    rotation = rotation_to_world_up(mean_up)
+    mean_up = mean / magnitude if magnitude >= MEAN_UP_EPSILON else np.asarray(orientation['up'])
+    alignment_up = np.asarray(orientation["up"]) if orientation and orientation.get("accepted") else mean_up
+    rotation = rotation_to_world_up(alignment_up)
     rotated = {oid: points @ rotation.T for oid, points in vertices.items()}
     minimum = min(float(points[:, 1].min()) for points in rotated.values())
     common = np.eye(4)
@@ -130,7 +143,8 @@ def correct_placement(scene, objects):
                           "penetrating_count": int(np.sum(offsets < -tolerance)),
                           "mean_absolute_contact_error": float(np.mean(abs(offsets)))}
     return {"floor_y": 0., "up_axis": "+Y", "floor_source": "global_rotated_minimum",
-            "method": "equal_weight_all_object_mean_up", "individual_correction": False,
+            "method": orientation.get('reason', 'pointmap_surface_normals') if orientation and orientation.get("accepted") else "equal_weight_all_object_mean_up",
+            "orientation_evidence": orientation or {"accepted": False, "reason": "no_pointmap"}, "individual_correction": False,
             "object_ids": [o["id"] for o in objects],
             "mean_up_before": mean_up.tolist(), "mean_up_after": (rotation @ mean_up).tolist(),
             "mean_up_magnitude": magnitude, "mean_up_epsilon": MEAN_UP_EPSILON,
@@ -143,80 +157,47 @@ def correct_placement(scene, objects):
 
 
 def align_objects(scene, objects, placement):
-    """Upright every object around its own root; ground only floor furniture.
-
-    Non-floor objects retain their root position. No attachment inference or contact-area search.
-    """
-    selected = []
+    """Preserve relative pose: no semantic grounding or individual upright prior."""
     for obj in objects:
-        oid = obj["id"]
-        before = np.asarray(scene.graph[oid][0], dtype=float).copy()
-        points = object_vertices(scene, oid)
-        up = before[:3, 1] / np.linalg.norm(before[:3, 1])
-        eligible = obj.get("name", "").strip().lower() in FLOOR_CATEGORIES
-        delta = np.eye(4)
-        pivot = before[:3, 3].copy()
-        ground_shift = 0.
-        delta[:3, :3] = rotation_to_world_up(up)
-        delta[:3, 3] = pivot - delta[:3, :3] @ pivot
-        if eligible:
-            rotated = trimesh.transform_points(points, delta)
-            ground_shift = -float(rotated[:, 1].min())
-            delta[1, 3] += ground_shift
-            selected.append(oid)
-        after = delta @ before
-        final_points = trimesh.transform_points(points, delta)
-        bounds = bounds_of(final_points)
-        scene.graph.update(frame_from=scene.graph.base_frame, frame_to=oid, matrix=after)
-        record = obj["placement"]
-        record["global_matrix"] = before.tolist()
-        record["world_bounds_global"] = record["world_bounds_after"]
-        record["world_up_global"] = up.tolist()
-        record["individual"] = {
-            "applied": True, "grounded": eligible,
-            "reason": "upright_and_ground" if eligible else "upright_only",
-            "pivot": pivot.tolist(), "pivot_kind": "object_root_world_position",
-            "transform": delta.tolist(), "ground_shift_y": ground_shift,
-            "rotation_degrees": float(np.degrees(np.arccos(np.clip(up[1], -1., 1.)))),
-        }
-        record["reason"] = "individual_upright_and_ground" if eligible else "individual_upright_only"
-        record["world_bounds_after"] = bounds.tolist()
-        record["world_up_after"] = (after[:3, 1] / np.linalg.norm(after[:3, 1])).tolist()
-        record["world_center"] = bounds.mean(axis=0).tolist()
-        record["world_bottom_center"] = [float(bounds[:, 0].mean()), float(bounds[0, 1]), float(bounds[:, 2].mean())]
-        update_transform(obj, after)
-    tolerance = placement["contact_tolerance"]
-    support_metrics = {}
-    for phase, bounds_key, up_key in (("before", "world_bounds_global", "world_up_global"),
-                                      ("after", "world_bounds_after", "world_up_after")):
-        supports = [o["placement"] for o in objects if o["id"] in selected]
-        offsets = np.array([r[bounds_key][0][1] for r in supports])
-        angles = [float(np.degrees(np.arccos(np.clip(r[up_key][1], -1., 1.)))) for r in supports]
-        support_metrics[phase] = {"object_count": len(supports),
-            "floating_count": int(np.sum(offsets > tolerance)),
-            "penetrating_count": int(np.sum(offsets < -tolerance)),
-            "max_up_angle_degrees": max(angles, default=0.),
-            "max_absolute_contact_error": float(np.max(abs(offsets))) if len(offsets) else 0.}
-    ups = np.array([o["placement"]["world_up_after"] for o in objects])
-    mean = ups.mean(axis=0); length = float(np.linalg.norm(mean))
-    placement.update(individual_correction=True, individual_object_ids=[o["id"] for o in objects],
-        grounded_object_ids=selected,
-        individual_method="all_objects_local_up_to_world_up; floor_categories_only_ground; no prop following",
-        individual_metrics=support_metrics, global_metrics=placement.pop("metrics"),
-        global_mean_up_after=placement.pop("mean_up_after"),
-        global_minimum_y_after=placement.pop("minimum_y_after"),
-        mean_up_after=(mean / length).tolist() if length >= MEAN_UP_EPSILON else None,
-        minimum_y_after=min(o["placement"]["world_bounds_after"][0][1] for o in objects))
-    offsets = np.array([o["placement"]["world_bounds_after"][0][1] for o in objects])
-    placement["metrics"] = {"before": placement["global_metrics"]["before"], "after": {
-        "object_count": len(objects), "floating_count": int(np.sum(offsets > tolerance)),
-        "penetrating_count": int(np.sum(offsets < -tolerance)),
-        "mean_absolute_contact_error": float(np.mean(abs(offsets)))}}
-    placement["method"] = "global_mean_up_then_all_object_upright_and_floor_ground"
+        record = obj['placement']
+        record['global_matrix'] = obj['transform']['matrix']
+        record['world_bounds_global'] = record['world_bounds_after']
+        record['world_up_global'] = record['world_up_after']
+        record['individual'] = dict(applied=False, grounded=False,
+            reason='preserve_pose_until_geometric_evidence', transform=np.eye(4).tolist(),
+            ground_shift_y=0.)
+    placement.update(individual_correction=False, individual_object_ids=[],
+                     grounded_object_ids=[], individual_method='preserve_relative_pose')
     return placement
 
 
-def finalize_scene(run, *, render=True):
+def group_export_nodes(scene, objects, surfaces):
+    """Explicit GLB hierarchy, retaining every object's world transform."""
+    groups = {'objects': 'mapmaker_objects', 'space': 'mapmaker_space'}
+    # SceneGraph.update adds edges but does not remove a previous parent's edge.
+    # A replay of an already grouped GLB can therefore export multiple parents.
+    # Rebuild one canonical parent tree from current world transforms instead.
+    original = scene.graph
+    nodes = [node for node in original.nodes if node != original.base_frame and node not in groups.values()]
+    world = {node: original[node][0].copy() for node in nodes}
+    parents = dict(original.transforms.parents)
+    overrides = {obj['id']: groups['objects'] for obj in objects}
+    overrides.update({surface['node']: groups['space'] for surface in surfaces})
+    graph = trimesh.scene.transforms.SceneGraph(base_frame=original.base_frame)
+    for group in groups.values():
+        graph.update(frame_from=original.base_frame, frame_to=group, matrix=np.eye(4))
+    for node in nodes:
+        parent = overrides.get(node, parents.get(node, original.base_frame))
+        parent_world = world[parent] if parent in world else np.eye(4)
+        attributes = {key: copy.deepcopy(value) for key, value in original.transforms.node_data[node].items()
+                      if key in ('geometry', 'metadata')}
+        graph.update(frame_from=parent, frame_to=node,
+                     matrix=np.linalg.inv(parent_world) @ world[node], **attributes)
+    scene.graph = graph
+    return groups
+
+
+def finalize_scene(run, *, render=True, overlap_repair=None, supported_repair=None):
     """Finalize an assembled run, also usable on verified legacy worker results.
 
     Caller publishes done only after this returns. Original pose/asset files stay
@@ -224,13 +205,30 @@ def finalize_scene(run, *, render=True):
     """
     from .scene_run import read, write, sha
 
+    if overlap_repair is None:
+        setting = os.environ.get('MAPMAKER_OVERLAP_REPAIR', '0')
+        if setting not in ('0', '1'):
+            raise ValueError('MAPMAKER_OVERLAP_REPAIR must be 0 or 1')
+        overlap_repair = setting == '1'
+    if supported_repair is None:
+        setting = os.environ.get('MAPMAKER_SUPPORTED_REPAIR', '0')
+        if setting not in ('0','1'):
+            raise ValueError('MAPMAKER_SUPPORTED_REPAIR must be 0 or 1')
+        supported_repair = setting == '1'
     run = Path(run)
     meta = read(run / "scene_metadata.json")
+    if overlap_repair or supported_repair:
+        if not meta.get('pointmap'):
+            raise ValueError('Overlap repair requires a verified pointmap')
     existing = meta.get("placement", {})
     if existing.get("version") == PLACEMENT_VERSION:
         if existing.get("scene_sha256") != sha(run / "scene.glb"):
             raise ValueError("Finalized scene hash mismatch")
-        if not meta.get("background"):
+        if overlap_repair and not existing.get('overlap_refinement', {}).get('complete'):
+            raise ValueError('Overlap repair requires replay from uncorrected inference assets')
+        if supported_repair and not existing.get('supported_refinement', {}).get('complete'):
+            raise ValueError('Supported repair requires replay from uncorrected inference assets')
+        if not any(b.get("node") == FLOOR_NODE for b in meta.get("background", [])):
             return existing
         # Legacy v4 results already have aligned objects: remove only their slab.
         scene = trimesh.load(run / "scene.glb", force="scene", process=False)
@@ -250,16 +248,89 @@ def finalize_scene(run, *, render=True):
             subprocess.run([sys.executable, "-m", "mapmaker.scene_preview", str(run / "scene.glb"),
                             "--out", str(run / "previews/meshes"), "--material"], check=True)
         return existing
-    if existing:
+    if existing and existing.get('version') not in (4, 5, 6, 7, 8):
         raise ValueError("Unsupported placement version; replay from an uncorrected run")
+    if overlap_repair or supported_repair:
+        # An already verified finalized result needs no native work in the
+        # parent interpreter; fresh geometry processing always requires it.
+        import manifold3d
     objects = [o for o in meta["objects"] if o.get("status") == "generated"]
     scene = trimesh.load(run / "scene.glb", force="scene", process=False)
+    if existing.get('version') in (4, 5, 6, 7, 8):
+        if existing.get('scene_sha256') != sha(run / 'scene.glb'):
+            raise ValueError('Finalized scene hash mismatch')
+        # Replay from recorded original roots, never apply another correction to v4 poses.
+        for obj in objects:
+            original = np.asarray(obj['placement']['original_matrix'], dtype=float)
+            scene.graph.update(frame_from=scene.graph.base_frame, frame_to=obj['id'], matrix=original)
+        if FLOOR_NODE in scene.graph.nodes_geometry:
+            _, geometry = scene.graph[FLOOR_NODE]
+            scene.delete_geometry(geometry)
+            scene.graph.transforms.remove_node(FLOOR_NODE)
+    if existing.get('version') in (6, 7, 8):
+        for record in meta.get('structure', {}).get('surfaces', []):
+            node = record['node']
+            if node in scene.graph.nodes_geometry:
+                _, geometry = scene.graph[node]
+                scene.delete_geometry(geometry)
+                scene.graph.transforms.remove_node(node)
     if FLOOR_NODE in scene.graph.nodes:
         raise ValueError("Unversioned background floor already exists")
-    original_hash = sha(run / "scene.glb")
-    placement = correct_placement(scene, objects)
+    original_hash = existing.get('original_scene_sha256') or sha(run / "scene.glb")
+    orientation = None
+    if meta.get('pointmap'):
+        info = meta['pointmap']
+        path = run/info['asset']
+        if info.get('frame') != 'sam3d_pytorch3d_camera' or sha(path) != info['sha256']:
+            raise ValueError('Pointmap frame or hash mismatch')
+        from .scene_orientation import estimate_up
+        from PIL import Image
+        image = (np.asarray(Image.open(run/meta['input_image']).convert('RGB'))
+                 if meta.get('input_image') else None)
+        with np.load(path, allow_pickle=False) as archive:
+            points = archive['points']
+            orientation = estimate_up(points, image)
+        if existing.get('version') in (6, 7, 8):
+            from .mask_geometry import refine_selected
+            from PIL import Image
+            refine_selected(run, meta, points, np.asarray(Image.open(run/meta['input_image']).convert('RGB')))
+            for obj in objects:
+                if obj['status'] in ('duplicate', 'structural'):
+                    remove_object_tree(scene, obj['id'])
+            objects = [obj for obj in objects if obj['status'] == 'generated']
+        from .scene_projection import route_inconsistent_context
+        routed = route_inconsistent_context(run, scene, objects, points)
+        meta['projection_context_review'] = dict(uses_object_names=False, routed_ids=routed)
+        objects = [obj for obj in objects if obj['status'] == 'generated']
+        from .scene_composite_review import review_reconstructed_composites
+        composite_decisions = review_reconstructed_composites(run, scene, objects, points)
+        meta['reconstructed_composite_review'] = dict(uses_object_names=False, decisions=composite_decisions)
+        objects = [obj for obj in objects if obj['status'] == 'generated']
+    placement = correct_placement(scene, objects, orientation)
     align_objects(scene, objects, placement)
-    meta["background"] = []
+    from .scene_structure import restore_structure
+    structure = (restore_structure(run, scene, meta, placement,
+        proposal_method='reference_stable_normals',occlusion_method='guarded_enclosed_plane_evidence') if supported_repair
+        else restore_structure(run, scene, meta, placement))
+    if meta.get('pointmap'):
+        from .scene_pose_refinement import refine_poses
+        placement['pose_refinement']=refine_poses(run,scene,objects,points,placement,structure,strict_source=supported_repair)
+    from .scene_contacts import improve_contacts
+    source_guard = None
+    if meta.get('pointmap'):
+        from .scene_source_guard import contact_source_guard
+        source_guard = contact_source_guard(run,scene,meta,placement,points)
+    improve_contacts(scene, objects, placement, structure=structure,source_guard=source_guard)
+    if supported_repair and meta.get('pointmap'):
+        from .scene_supported_refinement import refine_supported_poses
+        placement['supported_refinement']=refine_supported_poses(run,scene,objects,points,placement,structure)
+    if overlap_repair and meta.get('pointmap'):
+        from .scene_overlap_refinement import refine_overlaps
+        placement['overlap_refinement'] = refine_overlaps(run, scene, objects, points, placement, structure,
+                                                        strict_source=supported_repair)
+    meta['structure'] = structure
+    meta['background'] = structure['surfaces']
+    groups = group_export_nodes(scene, objects, structure['surfaces'])
     scene.export(run / "scene.glb")
     reloaded = trimesh.load(run / "scene.glb", force="scene", process=False)
     for obj in objects:
@@ -267,12 +338,14 @@ def finalize_scene(run, *, render=True):
             raise ValueError(f"Placement transform changed in GLB: {obj['id']}")
         if not np.allclose(bounds_of(object_vertices(reloaded, obj["id"])), obj["placement"]["world_bounds_after"], atol=1e-6):
             raise ValueError(f"Placement bounds changed in GLB: {obj['id']}")
-    meta.setdefault("assembly", {}).update(bounds=reloaded.bounds.tolist(), geometry_nodes=len(reloaded.graph.nodes_geometry))
-    meta["assembly"]["method"] = "official SAM3D assembly followed by shared mean-up alignment, then all-object upright and floor-furniture grounding; no background geometry"
+    meta.setdefault("assembly", {}).update(bounds=reloaded.bounds.tolist(), geometry_nodes=len(reloaded.graph.nodes_geometry), groups=groups)
+    meta["assembly"]["method"] = "official SAM3D assembly, shared alignment, observed structural surfaces and label-free bounded contacts"
     placement.update(version=PLACEMENT_VERSION, original_scene_sha256=original_hash,
                      scene_sha256=sha(run / "scene.glb"), implementation_sha256=sha(Path(__file__)))
+    if existing:
+        placement['upgraded_from_version'] = existing['version']
     meta["placement"] = placement
-    meta["pipeline"].update(placement_method="official SAM3D + global mean-up + all-object upright and floor-furniture grounding", structural_geometry=False)
+    meta["pipeline"].update(placement_method="official SAM3D + shared alignment + label-free geometry contacts", structural_geometry=bool(structure["surfaces"]))
     meta["preview_method"] = "CPU mesh preview of final scene.glb; Gaussian previews retain original SAM3D pose and contain no floor"
     write(run / "scene_metadata.json", meta)
     if render:
