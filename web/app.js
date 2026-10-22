@@ -5,7 +5,6 @@ const $ = (s) => document.querySelector(s),
   viewport = $("#viewport");
 let renderer, camera, controls, scene, model, runId, sourceUrl;
 let grid, axisCanvas;
-let sceneDownloadUrl;
 let autoFrameModel = true;
 function fitSceneCamera() {
   if (!model) return;
@@ -33,7 +32,7 @@ function fitSceneCamera() {
   controls.update();
 }
 async function loadSceneBytes(url, size) {
-  const parts = [];
+  const bytes = new Uint8Array(size);
   const chunk = 8 * 1024 * 1024;
   for (let start = 0; start < size; start += chunk) {
     const end = Math.min(start + chunk, size) - 1;
@@ -48,9 +47,9 @@ async function loadSceneBytes(url, size) {
     if (!response?.ok) throw new Error('Could not download scene');
     const data = await response.arrayBuffer();
     if (data.byteLength !== end - start + 1) throw new Error('Incomplete scene download');
-    parts.push(data);
+    bytes.set(new Uint8Array(data), start);
   }
-  return new Blob(parts, { type: 'model/gltf-binary' });
+  return bytes.buffer;
 }
 function drawAxes() {
   if (!axisCanvas) return;
@@ -133,13 +132,10 @@ async function showScene(meta) {
   $("#empty").hidden = true;
   $("#scene-summary").textContent = "Loading scene...";
   const assetPath = `/runs/${runId}/${meta.scene_asset}`;
-  if (sceneDownloadUrl) URL.revokeObjectURL(sceneDownloadUrl);
-  sceneDownloadUrl = null;
   let gltf;
   if (meta.scene_bytes) {
-    const blob = await loadSceneBytes(assetPath, meta.scene_bytes);
-    sceneDownloadUrl = URL.createObjectURL(blob);
-    gltf = await new GLTFLoader().parseAsync(await blob.arrayBuffer(), '');
+    const buffer = await loadSceneBytes(assetPath, meta.scene_bytes);
+    gltf = await new GLTFLoader().parseAsync(buffer, '');
   } else {
     gltf = await new GLTFLoader().loadAsync(meta.scene_url || assetPath);
   }
@@ -238,7 +234,7 @@ async function showScene(meta) {
   $("#object-count").textContent = objects.length;
   $("#scene-summary").textContent = `${objects.length} independent objects · ${surfaces.length ? surfaces.length + ' observed room patches' : 'Grid Y=0'}`;
   const link = $("#export");
-  link.href = sceneDownloadUrl || `/runs/${runId}/scene.glb?download`;
+  link.href = `/runs/${runId}/scene.glb?download`;
   link.download = "scene.glb";
   link.classList.remove("disabled");
   link.setAttribute("aria-disabled", "false");

@@ -12,10 +12,17 @@ def finish_scene(run, *, inference_checkpoint=False, store=None):
         from .scene_transfer import ArtifactStore, pack_run
         store = store or ArtifactStore()
         status(run, 'exporting', 'Saving inference before geometry checks...')
+        # Preserve metadata before archive packing/upload can fail.
+        store.put_json(run.name, 'inference-summary.json', read(run / 'scene_metadata.json'))
         with tempfile.TemporaryDirectory(prefix='.inference-', dir=run.parent) as tmp:
             archive = Path(tmp) / 'inference.zip'
-            pack_run(run, archive)
-            store.upload_inference_checkpoint(run.name, archive, read(run / 'scene_metadata.json'))
+            try:
+                pack_run(run, archive)
+                store.upload_inference_checkpoint(run.name, archive, read(run / 'scene_metadata.json'))
+            except Exception:
+                store.put_json(run.name, 'checkpoint-error.json', dict(
+                    error=traceback.format_exc(), disk_free_bytes=shutil.disk_usage(run).free))
+                raise
     from .scene_export import finish_mode
     finish_mode(run)
 

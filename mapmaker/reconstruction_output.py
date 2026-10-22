@@ -3,37 +3,43 @@ import os, sys, time, traceback
 from .scene_run import read, write, sha, status
 from .runtime_paths import SAM3D_CHECKPOINT, DINO_PROVENANCE
 
-def export_inference(run, meta, successful, outputs, *, maximum_retries=None):
+def export_inference(run, meta, successful, outputs, *, maximum_retries=None, baseline=False):
     import torch
-    from inference import make_scene, ready_gaussian_for_video_rendering, render_video
     if not successful:
         raise RuntimeError("No objects reconstructed; inspect logs/reconstruction.log")
     start = time.monotonic()
     status(run, "assembling", "Assembling scene with original SAM3D poses...")
-    from .scene_assembly import assemble
+    if baseline:
+        from .baseline_assembly import assemble_streamed
+        meta['assembly'] = assemble_streamed(run, successful)
+        meta['timing']['assembly_seconds'] = time.monotonic() - start
+        meta['preview_method'] = 'saved GLB web viewer; no Gaussian aggregation'
+    else:
+        from inference import make_scene, ready_gaussian_for_video_rendering, render_video
+        from .scene_assembly import assemble
 
-    meta["assembly"] = assemble(run, successful)
-    combined = make_scene(*outputs)
-    combined.save_ply(str(run / "previews/scene_posed.ply"))
-    meta["timing"]["assembly_seconds"] = time.monotonic() - start
-    status(run, "exporting", "Exporting GLB and rendering preview...")
-    try:
-        import imageio.v2 as imageio
+        meta["assembly"] = assemble(run, successful)
+        combined = make_scene(*outputs)
+        combined.save_ply(str(run / "previews/scene_posed.ply"))
+        meta["timing"]["assembly_seconds"] = time.monotonic() - start
+        status(run, "exporting", "Exporting GLB and rendering preview...")
+        try:
+            import imageio.v2 as imageio
 
-        display = ready_gaussian_for_video_rendering(combined)
-        frames = render_video(display, r=2, fov=60, resolution=512, num_frames=12)[
-            "color"
-        ]
-        for i in (0, 3, 6, 9):
-            imageio.imwrite(run / "previews" / f"combined_view_{i:02d}.png", frames[i])
-        imageio.imwrite(run / "previews/combined_preview.png", frames[0])
-        meta["preview_method"] = (
-            "official make_scene + ready_gaussian_for_video_rendering + render_video; display normalization only"
-        )
-        del display, frames
-    except Exception as exc:
-        meta["errors"].append({"stage": "gaussian_preview", "error": str(exc)})
-        traceback.print_exc()
+            display = ready_gaussian_for_video_rendering(combined)
+            frames = render_video(display, r=2, fov=60, resolution=512, num_frames=12)[
+                "color"
+            ]
+            for i in (0, 3, 6, 9):
+                imageio.imwrite(run / "previews" / f"combined_view_{i:02d}.png", frames[i])
+            imageio.imwrite(run / "previews/combined_preview.png", frames[0])
+            meta["preview_method"] = (
+                "official make_scene + ready_gaussian_for_video_rendering + render_video; display normalization only"
+            )
+            del display, frames
+        except Exception as exc:
+            meta["errors"].append({"stage": "gaussian_preview", "error": str(exc)})
+            traceback.print_exc()
     meta["scene_asset"] = "scene.glb"
     meta["pipeline"].update(
         reconstruction_torch=torch.__version__,

@@ -32,8 +32,11 @@ def report_progress(run, store, stop):
 def handler(job):
     global PIPELINE
     payload = job["input"]
-    if payload.get("protocol") != 1 or not re.fullmatch(r"[a-f0-9]{32}", payload.get("run_id", "")):
+    if payload.get("protocol") not in (1, 2) or not re.fullmatch(r"[a-f0-9]{32}", payload.get("run_id", "")):
         raise ValueError("Invalid MapMaker job")
+    # Protocol 2 prevents older workers from silently running RAM++ for Qwen jobs.
+    if payload.get('protocol') == 2 and payload.get('tagger') != 'qwen2.5-vl-7b':
+        raise ValueError('Unsupported protocol-2 tagger')
     # Local scratch supports atomic rename; do not write inference artifacts on global storage.
     scratch = Path(os.environ.get("MAPMAKER_SCRATCH", "/tmp/mapmaker-jobs"))
     scratch.mkdir(parents=True, exist_ok=True)
@@ -48,6 +51,10 @@ def handler(job):
         run.mkdir()
         unpack_run(archive, run)
         meta = read(run / "scene_metadata.json")
+        if payload.get('protocol') == 2 and (
+                meta.get('execution', {}).get('tagger') != payload['tagger'] or
+                meta.get('execution', {}).get('mode') != 1):
+            raise ValueError('Qwen job execution metadata mismatch')
         if meta["run_id"] != run.name or meta["input_image"] != "input/source_image.png":
             raise ValueError("Input metadata mismatch")
         if sha(run / "input/source_image.png") != meta["input_sha256"]:
@@ -78,18 +85,29 @@ def handler(job):
             stop.set()
             reporter.join(timeout=46)
         archive = root / "result.zip"
-        pack_run(run, archive)
-        store.upload_result(run.name, archive)
+        try:
+            pack_run(run, archive)
+            store.upload_result(run.name, archive)
+        except Exception:
+            store.put_json(run.name, 'failure.json', dict(
+                phase='result_pack_or_upload', error=traceback.format_exc(),
+                metadata=read(run / 'scene_metadata.json'),
+                logs={p.name: p.read_text(errors='replace')[-24000:]
+                      for p in (run/'logs').glob('*.log')}))
+            raise
         if payload.get("publish_web"):
             files = store.publish_files(run)
             store.put_json(run.name, "completion.json", {
                 "run_id": run.name, **read(run / "status.json"),
                 "metadata": read(run / "scene_metadata.json"), "files": files,
             })
-        return {"protocol": 1, "run_id": run.name, "archive_sha256": sha(archive),
+        result = {"protocol": 1, "run_id": run.name, "archive_sha256": sha(archive),
                 "success": success,
                 "scene_sha256": sha(run / "scene.glb") if success else None,
                 "archive_bytes": archive.stat().st_size}
+        # Retain the verified download manifest after Runpod's job record expires.
+        store.put_json(run.name, 'result-manifest.json', result)
+        return result
 
 
 def main():

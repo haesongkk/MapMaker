@@ -81,7 +81,8 @@ def test_inference_is_recoverable_when_geometry_fails(tmp_path, monkeypatch):
     assert not (tmp_path / 'corrupted').exists()
 
 
-def test_interrupted_checkpoint_upload_does_not_commit(tmp_path):
+def test_interrupted_checkpoint_upload_does_not_commit(tmp_path, monkeypatch):
+    monkeypatch.setattr('time.sleep', lambda _: None)
     store = ArtifactStore.__new__(ArtifactStore)
     store.client = MemoryClient(fail=True)
     store.bucket = 'test'
@@ -89,7 +90,27 @@ def test_interrupted_checkpoint_upload_does_not_commit(tmp_path):
     archive.write_bytes(b'archive')
     with pytest.raises(RuntimeError, match='upload interrupted'):
         store.upload_inference_checkpoint('a' * 32, archive, dict(input_sha256='b' * 64, objects=[]))
-    assert store.client.data == {}
+    assert store.key('a'*32, 'inference-checkpoint.json') not in store.client.data
+    diagnostic=json.loads(store.client.data[store.key('a'*32,'inference.zip.upload-error.json')])
+    assert diagnostic['attempt']==3 and diagnostic['archive_bytes']==7
+    assert 'upload interrupted' in diagnostic['error']
+
+
+def test_archive_retry_recovers_without_regenerating_inference(tmp_path,monkeypatch):
+    monkeypatch.setattr('time.sleep',lambda _:None)
+    store=ArtifactStore.__new__(ArtifactStore);store.bucket='test'
+    class TransientClient(MemoryClient):
+        attempts=0
+        def upload_file(self,*args):
+            self.attempts+=1
+            if self.attempts==1:raise RuntimeError('temporary upload failure')
+            super().upload_file(*args)
+    store.client=TransientClient();archive=tmp_path/'archive.zip';archive.write_bytes(b'original inference')
+    store.upload_inference_checkpoint('a'*32,archive,dict(input_sha256='b'*64,objects=[]))
+    assert store.client.attempts==2
+    assert store.client.data[store.key('a'*32,'inference.zip')]==b'original inference'
+    marker=json.loads(store.client.data[store.key('a'*32,'inference-checkpoint.json')])
+    assert marker['archive_sha256']==sha(archive)
 
 
 def test_checkpoint_request_reaches_reconstruction_process(tmp_path, monkeypatch):

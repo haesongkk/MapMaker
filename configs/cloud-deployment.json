@@ -6,6 +6,6 @@
   "browser_gateway_origin": "https://zlkpn4g5odgrqq-8080.proxy.runpod.net",
   "gpu_branch": "codex/full-serverless-deploy",
   "web_branch": "codex/full-serverless-web",
-  "gpu_application_sha256": "47fb1a517a24e0d1b32e13fa1ad1f5cf3502696dcf947c591006cb77f4069fbb",
-  "gpu_application_key": "mapmaker-releases/47fb1a517a24e0d1b32e13fa1ad1f5cf3502696dcf947c591006cb77f4069fbb/application.zip"
+  "gpu_application_sha256": "56020d732de4e5f2ce749299ce3c23db53a4a2d1fb27e7b8e358cb897d7d8b9e",
+  "gpu_application_key": "mapmaker-releases/56020d732de4e5f2ce749299ce3c23db53a4a2d1fb27e7b8e358cb897d7d8b9e/application.zip"
 }

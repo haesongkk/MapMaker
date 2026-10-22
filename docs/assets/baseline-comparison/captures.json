@@ -1,0 +1,212 @@
+[
+  {
+    "alias": "baseline-house-new",
+    "folder": ".runtime/minimal-baseline/runs/45fb194b52bc4d3f9d870dbd6893d7d3",
+    "asset": "docs/assets/baseline-comparison/baseline-house-new.png",
+    "run": "824145110c160ada39fee087327ce401",
+    "camera": [
+      -1.2556060461244987,
+      0.8400474956386873,
+      -2.4349664552101165
+    ],
+    "target": [
+      -0.28097745397609075,
+      -0.017625665451910577,
+      1.4635479133835116
+    ],
+    "triangles": 15204828,
+    "errors": [],
+    "camera_policy": "historical_camera_and_target",
+    "reference": "four-way-house-1",
+    "scene_sha256": "75e99e0c9fbfda84a5bb52ddc8d184e159f9f0b43e551da5ef709b1eef59e825"
+  },
+  {
+    "alias": "baseline-office-new",
+    "folder": ".runtime/minimal-baseline/runs/8858a43fe37b412eaf45f6db5b163d80",
+    "asset": "docs/assets/baseline-comparison/baseline-office-new.png",
+    "run": "c087e1a36c701443004833bf501813ba",
+    "camera": [
+      -1.063688516236605,
+      1.0842772377291268,
+      -2.210524777016844
+    ],
+    "target": [
+      -0.09719117957524182,
+      0.23375958146712716,
+      1.655464569628605
+    ],
+    "triangles": 15978668,
+    "errors": [],
+    "camera_policy": "historical_camera_and_target",
+    "reference": "four-way-office-1",
+    "scene_sha256": "3a54e1ffab6d67026a1d69ac8dbeabb19e2cfafdc4aff03a3fa53928364caa71"
+  },
+  {
+    "alias": "baseline-stairhall-new",
+    "folder": ".runtime/minimal-baseline/recovered/ca7278c142344ebb8ff042dda18ca9d2",
+    "asset": "docs/assets/baseline-comparison/baseline-stairhall-new.png",
+    "run": "29322adc5d60f3c50f39a42f2ccea138",
+    "camera": [
+      -0.9670965208932792,
+      0.9828535111081058,
+      -2.0284912507655832
+    ],
+    "target": [
+      -0.05881399778019047,
+      0.18356489076858717,
+      1.6046388416867765
+    ],
+    "triangles": 6580186,
+    "errors": [],
+    "camera_policy": "historical_camera_and_target",
+    "reference": "four-way-stairhall-1",
+    "scene_sha256": "4d242263517736b1dc6bba72aa514903f1b33a47115c8cdb3f54a70450ec7d6b"
+  },
+  {
+    "alias": "baseline-sample-01-new",
+    "folder": ".runtime/minimal-baseline/recovered/e91470e861ec48a1a60d1c687b5c7c48",
+    "asset": "docs/assets/baseline-comparison/baseline-sample-01-new.png",
+    "run": "8ac302856bde4a9f6dbff108c1e08281",
+    "camera": [
+      -0.7626971911622227,
+      1.0585284013156653,
+      -2.0245530308881596
+    ],
+    "target": [
+      0.19266730993317693,
+      0.21780764035171443,
+      1.7969049734934357
+    ],
+    "triangles": 10677340,
+    "errors": [],
+    "camera_policy": "historical_camera_and_target",
+    "reference": "four-way-sample-01-1",
+    "scene_sha256": "248a1bb6c4bf9238c58c4c99c4d330b6bfa570ba25c2264162343bf532c54592"
+  },
+  {
+    "alias": "baseline-sample-02-new",
+    "folder": ".runtime/minimal-baseline/recovered/b1f6657932ef4a82a4ff9d4d083dc790",
+    "asset": "docs/assets/baseline-comparison/baseline-sample-02-new.png",
+    "run": "6d1ed016f23a363f3fb962d42f540902",
+    "camera": [
+      -1.4289404644797066,
+      1.474383474658425,
+      -3.5238063300699087
+    ],
+    "target": [
+      -0.0006577603149143796,
+      0.2174946949934069,
+      2.1893244865892667
+    ],
+    "triangles": 37775086,
+    "errors": [],
+    "camera_policy": "historical_camera_and_target",
+    "reference": "four-way-sample-02-1",
+    "scene_sha256": "90e09512037a2f989b9c3fea182996ed05b3fa3a7333ceeaee1fa295a3721886"
+  },
+  {
+    "alias": "baseline-sample-03-new",
+    "folder": ".runtime/minimal-baseline/recovered/98b1cff82eec40f6b2cfd7c50a43e079",
+    "asset": "docs/assets/baseline-comparison/baseline-sample-03-new.png",
+    "run": "1f763a2aee762fb1570ed7a492788c35",
+    "camera": [
+      -1.747836468109853,
+      2.088707327676117,
+      -3.574550894141552
+    ],
+    "target": [
+      -0.16950450881162363,
+      0.699775203493677,
+      2.7387769430513607
+    ],
+    "triangles": 12234362,
+    "errors": [],
+    "camera_policy": "historical_camera_and_target",
+    "reference": "four-way-sample-03-1",
+    "scene_sha256": "e4bc2f893bbd6d3090ed135ffb72a711cef544f1a748f4de96940136b69d1e08"
+  },
+  {
+    "alias": "baseline-sample-04-new",
+    "folder": ".runtime/minimal-baseline/recovered/281ac163c2bf4ed28af870f93f153b45",
+    "asset": "docs/assets/baseline-comparison/baseline-sample-04-new.png",
+    "run": "4933c963b6d08d9fb812d761cbe7d1b2",
+    "camera": [
+      -0.7067849146502592,
+      0.5933694376859262,
+      -1.964709236516246
+    ],
+    "target": [
+      0.071019764342243,
+      -0.09109867982747494,
+      1.14650947945376
+    ],
+    "triangles": 8918456,
+    "errors": [],
+    "camera_policy": "historical_camera_and_target",
+    "reference": "four-way-sample-04-1",
+    "scene_sha256": "9014ce9097ce7d91ef9036d5876d3cae1ed3ecca43d0f5cfeb53e7ce1d56b541"
+  },
+  {
+    "alias": "baseline-displaycase-new",
+    "folder": ".runtime/minimal-baseline/recovered/7d5a12cdcf3445a0ae4dc84277d0da5d",
+    "asset": "docs/assets/baseline-comparison/baseline-displaycase-new.png",
+    "run": "6ec086424b2f4d25a814f8a56e1a26f3",
+    "camera": [
+      -1.2334318573429126,
+      0.8895141743096058,
+      -3.659423150056246
+    ],
+    "target": [
+      -0.06945459912035779,
+      -0.13478581292624142,
+      0.9964858828339691
+    ],
+    "triangles": 44869136,
+    "errors": [],
+    "camera_policy": "historical_camera_and_target",
+    "reference": "four-way-displaycase-1",
+    "scene_sha256": "dc4b7ff77f9713b0ecffc42876be4847f2bc3c78a8f5a5c9428dd7f7c4ce9d6c"
+  },
+  {
+    "alias": "baseline-sample-05-new",
+    "folder": ".runtime/minimal-baseline/recovered/7090bb12f34e4994a07c58835b7526e3",
+    "asset": "docs/assets/baseline-comparison/baseline-sample-05-new.png",
+    "run": "afe07162de549385d3a98d466d798654",
+    "camera": [
+      -0.5092001905023732,
+      0.4443994544653598,
+      1.050217767173608
+    ],
+    "target": [
+      -0.050824078025107196,
+      0.041028475485365395,
+      2.883722217082674
+    ],
+    "triangles": 8289446,
+    "errors": [],
+    "camera_policy": "historical_camera_and_target",
+    "reference": "four-way-sample-05-1",
+    "scene_sha256": "04cacbf030909a96ca4a41c804171712403ba412779b63dce5b3bf9a6256b7d0"
+  },
+  {
+    "alias": "baseline-restaurant-new",
+    "folder": ".runtime/minimal-baseline/recovered/99552fed4fa54c7fba3afe09e921dc09",
+    "asset": "docs/assets/baseline-comparison/baseline-restaurant-new.png",
+    "run": "b21fb9473fbec6b3889b4238f7deaa66",
+    "camera": [
+      -1.412653662405421,
+      1.113538531450515,
+      -2.2214877402908035
+    ],
+    "target": [
+      -0.13069294380046903,
+      -0.014586900921843391,
+      2.9063551341290097
+    ],
+    "triangles": 95016284,
+    "errors": [],
+    "camera_policy": "historical_camera_and_target",
+    "reference": "four-way-restaurant-1",
+    "scene_sha256": "c7d27be695cb71241a42a7f0a550aeda2dd3a1bb3d2383fcbd312eceab76413f"
+  }
+]

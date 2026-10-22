@@ -1,0 +1,44 @@
+[
+  {
+    "alias": "qwen-house-new",
+    "folder": "D:/MapMaker/.runtime/qwen-baseline/runs/a61356c009f5447e92d4612ed4feefec",
+    "asset": "docs/assets/qwen-baseline-comparison/qwen-house-new.png",
+    "run": "959723a24fc778af51dc078596b08d8e",
+    "camera": [
+      -1.2556060461244987,
+      0.8400474956386873,
+      -2.4349664552101165
+    ],
+    "target": [
+      -0.28097745397609075,
+      -0.017625665451910577,
+      1.4635479133835116
+    ],
+    "triangles": 18453744,
+    "errors": [],
+    "camera_policy": "historical_camera_and_target",
+    "reference": "four-way-house-1",
+    "scene_sha256": "815a8b213f87acaa85157f54c1815f97aeb0903fbda62cb28d9215785e71e007"
+  },
+  {
+    "alias": "qwen-office-new",
+    "folder": "D:/MapMaker/.runtime/qwen-baseline/runs/fdb7e33ca8144517aa7b2b08602de978",
+    "asset": "docs/assets/qwen-baseline-comparison/qwen-office-new.png",
+    "run": "cb61c9fd0586cf25706fa9adfb6c4b8d",
+    "camera": [
+      -1.063688516236605,
+      1.0842772377291268,
+      -2.210524777016844
+    ],
+    "target": [
+      -0.09719117957524182,
+      0.23375958146712716,
+      1.655464569628605
+    ],
+    "triangles": 19030156,
+    "errors": [],
+    "camera_policy": "historical_camera_and_target",
+    "reference": "four-way-office-1",
+    "scene_sha256": "2af5d31450f5ec2b02f9bb4f2e3594c643b9406c3abf3f91d07677e0c2e5ca9d"
+  }
+]

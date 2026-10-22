@@ -14,9 +14,10 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self,head=False):
         manifest = dict(globals()['manifest'])
         manifest['scenes'] = dict(manifest['scenes'])
-        extra = docs/'assets/four-way-comparison/viewers.json'
-        if extra.is_file():
-            manifest['scenes'].update(json.loads(extra.read_text(encoding='utf-8')))
+        for name in ('four-way-comparison', 'baseline-comparison', 'qwen-baseline-comparison', 'qwen-baseline-v2-comparison'):
+            extra = docs/'assets'/name/'viewers.json'
+            if extra.is_file():
+                manifest['scenes'].update(json.loads(extra.read_text(encoding='utf-8')))
         batch = None
         if batch_file is not None:
             batch = json.loads(batch_file.read_text(encoding='utf-8'))

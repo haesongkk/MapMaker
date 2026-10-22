@@ -107,6 +107,16 @@ class Pipeline:
             env["PYTHONPATH"] = str(ROOT) + os.pathsep + env.get("PYTHONPATH", "")
             env.setdefault("OMP_NUM_THREADS", "8")
             env.setdefault("MKL_NUM_THREADS", "8")
+            execution = read(run / 'scene_metadata.json').get('execution', {})
+            if execution.get('tagger') == 'qwen2.5-vl-7b':
+                if execution.get('mode') != 1:
+                    raise ValueError('Qwen tag comparison requires mode 1')
+                # A resident SAM3D process must release VRAM before loading Qwen.
+                self.close()
+                self.worker = self.worker_log = None
+                from .qwen_tags import prepare_and_run
+                with (run / 'logs/qwen.log').open('w') as log:
+                    prepare_and_run(run, env, log)
             with (run / "logs/vision.log").open("w") as log:
                 subprocess.run(
                     [
@@ -122,22 +132,25 @@ class Pipeline:
                     check=True,
                 )
             self.reconstruct(run)
-            with (run / "logs/preview.log").open("w") as log:
-                subprocess.run(
-                    [
-                        sys.executable,
-                        "-m",
-                        "mapmaker.scene_preview",
-                        str(run / "scene.glb"),
-                        "--out",
-                        str(run / "previews/meshes"),
-                        "--material",
-                    ],
-                    cwd=ROOT,
-                    stdout=log,
-                    stderr=subprocess.STDOUT,
-                    check=True,
-                )
+            from .execution_modes import requested
+            selected = requested(read(run / 'scene_metadata.json'))
+            if selected is None or not selected.initial:
+                with (run / "logs/preview.log").open("w") as log:
+                    subprocess.run(
+                        [
+                            sys.executable,
+                            "-m",
+                            "mapmaker.scene_preview",
+                            str(run / "scene.glb"),
+                            "--out",
+                            str(run / "previews/meshes"),
+                            "--material",
+                        ],
+                        cwd=ROOT,
+                        stdout=log,
+                        stderr=subprocess.STDOUT,
+                        check=True,
+                    )
             meta = read(run / "scene_metadata.json")
             meta["timing"]["total_seconds"] = time.monotonic() - start
             meta["finished_at"] = now()

@@ -18,7 +18,6 @@ def run_scene(run):
     MODEL, load_image = prepare()
     meta["timing"]["reconstruction_model_ready_seconds"] = time.monotonic() - start
     image = load_image(str(run / meta["input_image"]))
-    outputs = []
     successful = []
     start = time.monotonic()
     for index, obj in enumerate(meta["objects"]):
@@ -47,9 +46,6 @@ def run_scene(run):
             obj["status"] = "generated"
             obj["asset_sha256"] = sha(run / obj["asset"])
             successful.append(obj)
-            outputs.append(
-                {k: result[k] for k in ("gaussian", "rotation", "translation", "scale")}
-            )
             del result
         except Exception as exc:
             obj["status"] = "failed"
@@ -64,8 +60,8 @@ def run_scene(run):
         torch.cuda.empty_cache()
     meta["timing"]["object_reconstruction_seconds"] = time.monotonic() - start
     from .reconstruction_output import export_inference
-    export_inference(run, meta, successful, outputs)
-    del outputs, image
+    export_inference(run, meta, successful, [], baseline=True)
+    del image
     gc.collect()
     torch.cuda.empty_cache()
 

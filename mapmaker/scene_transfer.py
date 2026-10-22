@@ -165,14 +165,39 @@ class ArtifactStore:
         self.client.upload_file(str(path), self.bucket, self.key(run_id, "input.zip"))
 
     def upload_result(self, run_id, path):
-        self.client.upload_file(str(path), self.bucket, self.key(run_id, "result.zip"))
+        self.upload_verified(run_id, path, 'result.zip')
+
+    def upload_verified(self, run_id, path, name):
+        """Retry archive transport without rerunning inference; verify stored size."""
+        import time
+        import traceback
+        path = Path(path)
+        size = path.stat().st_size
+        key = self.key(run_id, name)
+        for attempt in range(1, 4):
+            try:
+                self.client.upload_file(str(path), self.bucket, key)
+                if self.client.head_object(Bucket=self.bucket, Key=key)['ContentLength'] != size:
+                    raise ValueError('Uploaded archive size mismatch')
+                return
+            except Exception:
+                error = traceback.format_exc()
+                # This tiny record survives independently of a multi-GB archive.
+                try:
+                    self.put_json(run_id, name + '.upload-error.json', dict(
+                        attempt=attempt, archive_bytes=size, error=error))
+                except Exception:
+                    pass
+                if attempt == 3:
+                    raise
+                time.sleep(attempt * 2)
 
     def upload_inference_checkpoint(self, run_id, path, metadata):
         """Commit a recoverable inference archive separately from final results."""
         key = self.key(run_id, "inference.zip")
         digest = sha(path)
         size = Path(path).stat().st_size
-        self.client.upload_file(str(path), self.bucket, key)
+        self.upload_verified(run_id, path, 'inference.zip')
         if self.client.head_object(Bucket=self.bucket, Key=key)['ContentLength'] != size:
             raise ValueError('Incomplete inference checkpoint upload')
         self.put_json(run_id, 'inference-checkpoint.json', dict(

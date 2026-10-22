@@ -144,7 +144,10 @@ def test_worker_publishes_completion_only_after_artifacts(tmp_path, monkeypatch)
             return {"scene.glb": {}}
 
         def put_json(self, *args):
-            events.append("completion")
+            events.append(args[1])
+            if args[1] == 'result-manifest.json':
+                assert args[2]['archive_bytes'] > 0
+                assert len(args[2]['archive_sha256']) == 64
             super().put_json(*args)
 
     def pipeline(run, *, before_finalize=None):
@@ -159,7 +162,7 @@ def test_worker_publishes_completion_only_after_artifacts(tmp_path, monkeypatch)
     result = worker.handler({"input": {"protocol": 1, "run_id": run.name,
                             "input_sha256": sha(bundle), "publish_web": True}})
     assert result["success"]
-    assert events == ["archive", "files", "completion"]
+    assert events == ["archive", "files", "completion.json", "result-manifest.json"]
 
 
 def test_http_frontend_static_upload_status_and_artifact_proxy():

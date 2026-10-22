@@ -1,0 +1,1064 @@
+{
+  "numbering": "four_way_v2",
+  "stages": {
+    "1": {
+      "name": "RAM++ minimal baseline",
+      "status": "implemented"
+    },
+    "2": {
+      "name": "Qwen improved prompt baseline",
+      "status": "implemented"
+    },
+    "3": {
+      "name": "Stage 2 plus placement correction",
+      "status": "not_implemented"
+    },
+    "4": {
+      "name": "Stage 3 plus generated background",
+      "status": "not_implemented"
+    }
+  },
+  "samples": {
+    "house": {
+      "1": {
+        "run_id": "45fb194b52bc4d3f9d870dbd6893d7d3",
+        "path": ".runtime/minimal-baseline/runs/45fb194b52bc4d3f9d870dbd6893d7d3",
+        "input_sha256": "32378994affe53fdc4e633717aaa89b1548065270eed8b2a4ddf1758af89d9f4",
+        "scene_sha256": "75e99e0c9fbfda84a5bb52ddc8d184e159f9f0b43e551da5ef709b1eef59e825",
+        "deployment": {
+          "application_sha256": "b06c8c7698b5cf5bc1babc0aaba7111fc00d14cf8ad163f0df64bb1ebebe3e50"
+        },
+        "tags": [
+          "armchair",
+          "carpet",
+          "ceiling",
+          "ceiling fan",
+          "chair",
+          "couch",
+          "den",
+          "furniture",
+          "hassock",
+          "home",
+          "living room",
+          "pillow",
+          "room",
+          "television"
+        ],
+        "masks": 21,
+        "generated": 21,
+        "failed": 0,
+        "recovery": null,
+        "viewer": "baseline-house-new",
+        "capture": {
+          "alias": "baseline-house-new",
+          "folder": ".runtime/minimal-baseline/runs/45fb194b52bc4d3f9d870dbd6893d7d3",
+          "asset": "docs/assets/baseline-comparison/baseline-house-new.png",
+          "run": "824145110c160ada39fee087327ce401",
+          "camera": [
+            -1.2556060461244987,
+            0.8400474956386873,
+            -2.4349664552101165
+          ],
+          "target": [
+            -0.28097745397609075,
+            -0.017625665451910577,
+            1.4635479133835116
+          ],
+          "triangles": 15204828,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-house-1",
+          "scene_sha256": "75e99e0c9fbfda84a5bb52ddc8d184e159f9f0b43e551da5ef709b1eef59e825"
+        }
+      },
+      "2": {
+        "run_id": "bc1ca87ea33544a686b7cb0d4b647097",
+        "path": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/bc1ca87ea33544a686b7cb0d4b647097",
+        "input_sha256": "32378994affe53fdc4e633717aaa89b1548065270eed8b2a4ddf1758af89d9f4",
+        "scene_sha256": "bf088b5bf9c61f6b3c350bf0ce58550f4ddb2b1d4a536274e7ef39cf253280a5",
+        "deployment": {
+          "application_sha256": "7d9e3fdaef030a438b3088f75e8d7dfe0ef1323bda83004547048abeb10366c5"
+        },
+        "tags": [
+          "couch",
+          "ottoman",
+          "chair",
+          "pillow",
+          "plant",
+          "lamp",
+          "sign",
+          "door",
+          "window",
+          "mirror",
+          "television",
+          "fan"
+        ],
+        "masks": 26,
+        "generated": 26,
+        "failed": 0,
+        "recovery": null,
+        "viewer": "qwen-v2-house-new",
+        "capture": {
+          "alias": "qwen-v2-house-new",
+          "folder": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/bc1ca87ea33544a686b7cb0d4b647097",
+          "asset": "docs/assets/qwen-baseline-v2-comparison/qwen-v2-house-new.png",
+          "run": "2d723c49a9d1f89c67c99059fe54c17c",
+          "camera": [
+            -1.2556060461244987,
+            0.8400474956386873,
+            -2.4349664552101165
+          ],
+          "target": [
+            -0.28097745397609075,
+            -0.017625665451910577,
+            1.4635479133835116
+          ],
+          "triangles": 13726360,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-house-1",
+          "scene_sha256": "bf088b5bf9c61f6b3c350bf0ce58550f4ddb2b1d4a536274e7ef39cf253280a5"
+        }
+      }
+    },
+    "office": {
+      "1": {
+        "run_id": "8858a43fe37b412eaf45f6db5b163d80",
+        "path": ".runtime/minimal-baseline/runs/8858a43fe37b412eaf45f6db5b163d80",
+        "input_sha256": "aa66075c2454313a80b5296a269e3ea695d644cc4178b5a20e29039ae9b6e43d",
+        "scene_sha256": "3a54e1ffab6d67026a1d69ac8dbeabb19e2cfafdc4aff03a3fa53928364caa71",
+        "deployment": {
+          "application_sha256": "b06c8c7698b5cf5bc1babc0aaba7111fc00d14cf8ad163f0df64bb1ebebe3e50"
+        },
+        "tags": [
+          "bookcase",
+          "bookshelf",
+          "lamp",
+          "chair",
+          "table",
+          "fill",
+          "floor",
+          "record player",
+          "picture frame",
+          "room",
+          "speaker",
+          "stool",
+          "typewriter",
+          "wood floor"
+        ],
+        "masks": 26,
+        "generated": 26,
+        "failed": 0,
+        "recovery": null,
+        "viewer": "baseline-office-new",
+        "capture": {
+          "alias": "baseline-office-new",
+          "folder": ".runtime/minimal-baseline/runs/8858a43fe37b412eaf45f6db5b163d80",
+          "asset": "docs/assets/baseline-comparison/baseline-office-new.png",
+          "run": "c087e1a36c701443004833bf501813ba",
+          "camera": [
+            -1.063688516236605,
+            1.0842772377291268,
+            -2.210524777016844
+          ],
+          "target": [
+            -0.09719117957524182,
+            0.23375958146712716,
+            1.655464569628605
+          ],
+          "triangles": 15978668,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-office-1",
+          "scene_sha256": "3a54e1ffab6d67026a1d69ac8dbeabb19e2cfafdc4aff03a3fa53928364caa71"
+        }
+      },
+      "2": {
+        "run_id": "bb19ab8c1ae9466ca1df4f76cc2cfeea",
+        "path": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/bb19ab8c1ae9466ca1df4f76cc2cfeea",
+        "input_sha256": "aa66075c2454313a80b5296a269e3ea695d644cc4178b5a20e29039ae9b6e43d",
+        "scene_sha256": "a6c60189e823baf77cf5e289de20f8125cebb9ed2a25a48a320417a5a4a74d0a",
+        "deployment": {
+          "application_sha256": "7d9e3fdaef030a438b3088f75e8d7dfe0ef1323bda83004547048abeb10366c5"
+        },
+        "tags": [
+          "desk",
+          "chair",
+          "bookshelf",
+          "gramophone",
+          "typewriter",
+          "globe",
+          "lamp",
+          "picture_frame",
+          "book",
+          "cushion",
+          "door",
+          "window"
+        ],
+        "masks": 35,
+        "generated": 35,
+        "failed": 0,
+        "recovery": null,
+        "viewer": "qwen-v2-office-new",
+        "capture": {
+          "alias": "qwen-v2-office-new",
+          "folder": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/bb19ab8c1ae9466ca1df4f76cc2cfeea",
+          "asset": "docs/assets/qwen-baseline-v2-comparison/qwen-v2-office-new.png",
+          "run": "ac7d47dea43a8046b0e764a51f67a368",
+          "camera": [
+            -1.063688516236605,
+            1.0842772377291268,
+            -2.210524777016844
+          ],
+          "target": [
+            -0.09719117957524182,
+            0.23375958146712716,
+            1.655464569628605
+          ],
+          "triangles": 23473548,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-office-1",
+          "scene_sha256": "a6c60189e823baf77cf5e289de20f8125cebb9ed2a25a48a320417a5a4a74d0a"
+        }
+      }
+    },
+    "restaurant": {
+      "1": {
+        "run_id": "99552fed4fa54c7fba3afe09e921dc09",
+        "path": ".runtime/minimal-baseline/recovered/99552fed4fa54c7fba3afe09e921dc09",
+        "input_sha256": "72b2876e74f6698b871c1f401a799f6ceece71fd7f7e6d7e0d5d8197c13e3cdd",
+        "scene_sha256": "c7d27be695cb71241a42a7f0a550aeda2dd3a1bb3d2383fcbd312eceab76413f",
+        "deployment": {
+          "application_sha256": "df756bb6961f7bf329593c310f92e4e280e439986d1d890e6792eebe4d2faa3a"
+        },
+        "tags": [
+          "atrium",
+          "balustrade",
+          "building",
+          "carpet",
+          "ceiling",
+          "chair",
+          "chandelier",
+          "pillar",
+          "cruise ship",
+          "table",
+          "dining room",
+          "dinning table",
+          "restaurant",
+          "hotel",
+          "hallway",
+          "room",
+          "wall lamp",
+          "stair"
+        ],
+        "masks": 149,
+        "generated": 149,
+        "failed": 0,
+        "recovery": {
+          "kind": "verified_inference_checkpoint",
+          "finalized_at": "2026-10-22T15:21:49.270171+00:00",
+          "archive_sha256": "e5d20d1bdfeed4804b136e3a8c563afd204313320e289a10b29a3668dea7c2f5",
+          "scene_sha256": "c7d27be695cb71241a42a7f0a550aeda2dd3a1bb3d2383fcbd312eceab76413f",
+          "note": "Original scene, masks, object assets and official transforms verified and preserved; mode-1 finalization only."
+        },
+        "viewer": "baseline-restaurant-new",
+        "capture": {
+          "alias": "baseline-restaurant-new",
+          "folder": ".runtime/minimal-baseline/recovered/99552fed4fa54c7fba3afe09e921dc09",
+          "asset": "docs/assets/baseline-comparison/baseline-restaurant-new.png",
+          "run": "b21fb9473fbec6b3889b4238f7deaa66",
+          "camera": [
+            -1.412653662405421,
+            1.113538531450515,
+            -2.2214877402908035
+          ],
+          "target": [
+            -0.13069294380046903,
+            -0.014586900921843391,
+            2.9063551341290097
+          ],
+          "triangles": 95016284,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-restaurant-1",
+          "scene_sha256": "c7d27be695cb71241a42a7f0a550aeda2dd3a1bb3d2383fcbd312eceab76413f"
+        }
+      },
+      "2": {
+        "run_id": "6e8fd0b3b2d941a0b642cb25294a5b48",
+        "path": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/6e8fd0b3b2d941a0b642cb25294a5b48",
+        "input_sha256": "72b2876e74f6698b871c1f401a799f6ceece71fd7f7e6d7e0d5d8197c13e3cdd",
+        "scene_sha256": "5d7ad7db8e0c65efb9db3c9fa959a0b2fcb36d828d15e1b0201bc70782ca26d8",
+        "deployment": {
+          "application_sha256": "56020d732de4e5f2ce749299ce3c23db53a4a2d1fb27e7b8e358cb897d7d8b9e"
+        },
+        "tags": [
+          "chandelier",
+          "staircase",
+          "statue",
+          "table",
+          "chair",
+          "lamp",
+          "painting"
+        ],
+        "masks": 116,
+        "generated": 116,
+        "failed": 0,
+        "recovery": null,
+        "viewer": "qwen-v2-restaurant-new",
+        "capture": {
+          "alias": "qwen-v2-restaurant-new",
+          "folder": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/6e8fd0b3b2d941a0b642cb25294a5b48",
+          "asset": "docs/assets/qwen-baseline-v2-comparison/qwen-v2-restaurant-new.png",
+          "run": "8bc763fad7029d7aef218afcfa6732e8",
+          "camera": [
+            -1.412653662405421,
+            1.113538531450515,
+            -2.2214877402908035
+          ],
+          "target": [
+            -0.13069294380046903,
+            -0.014586900921843391,
+            2.9063551341290097
+          ],
+          "triangles": 84798238,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-restaurant-1",
+          "scene_sha256": "5d7ad7db8e0c65efb9db3c9fa959a0b2fcb36d828d15e1b0201bc70782ca26d8"
+        }
+      }
+    },
+    "displaycase": {
+      "1": {
+        "run_id": "7d5a12cdcf3445a0ae4dc84277d0da5d",
+        "path": ".runtime/minimal-baseline/recovered/7d5a12cdcf3445a0ae4dc84277d0da5d",
+        "input_sha256": "0d24aeb4b109ee6ef7c8904f050f7382ab9b91e0b17f7fccc34df08e43664bae",
+        "scene_sha256": "dc4b7ff77f9713b0ecffc42876be4847f2bc3c78a8f5a5c9428dd7f7c4ce9d6c",
+        "deployment": {
+          "application_sha256": "b06c8c7698b5cf5bc1babc0aaba7111fc00d14cf8ad163f0df64bb1ebebe3e50"
+        },
+        "tags": [
+          "artifact",
+          "bowl",
+          "case",
+          "ceramic",
+          "pottery",
+          "collection",
+          "display",
+          "museum",
+          "showcase",
+          "vase"
+        ],
+        "masks": 80,
+        "generated": 80,
+        "failed": 0,
+        "recovery": {
+          "kind": "verified_inference_checkpoint",
+          "finalized_at": "2026-10-22T15:18:31.714466+00:00",
+          "archive_sha256": "84f57cb143f344f923738bb4b1e6017e86877a7c7dd22fe323c097f55c1cfe5a",
+          "scene_sha256": "dc4b7ff77f9713b0ecffc42876be4847f2bc3c78a8f5a5c9428dd7f7c4ce9d6c",
+          "note": "Original scene, masks, object assets and official transforms verified and preserved; mode-1 finalization only."
+        },
+        "viewer": "baseline-displaycase-new",
+        "capture": {
+          "alias": "baseline-displaycase-new",
+          "folder": ".runtime/minimal-baseline/recovered/7d5a12cdcf3445a0ae4dc84277d0da5d",
+          "asset": "docs/assets/baseline-comparison/baseline-displaycase-new.png",
+          "run": "6ec086424b2f4d25a814f8a56e1a26f3",
+          "camera": [
+            -1.2334318573429126,
+            0.8895141743096058,
+            -3.659423150056246
+          ],
+          "target": [
+            -0.06945459912035779,
+            -0.13478581292624142,
+            0.9964858828339691
+          ],
+          "triangles": 44869136,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-displaycase-1",
+          "scene_sha256": "dc4b7ff77f9713b0ecffc42876be4847f2bc3c78a8f5a5c9428dd7f7c4ce9d6c"
+        }
+      },
+      "2": {
+        "run_id": "28038a040d8544c28b0bfb2eee89f685",
+        "path": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/28038a040d8544c28b0bfb2eee89f685",
+        "input_sha256": "0d24aeb4b109ee6ef7c8904f050f7382ab9b91e0b17f7fccc34df08e43664bae",
+        "scene_sha256": "0669ea578ed60cbfa8f76869b2f2e92925fcb020e56039fe3adf3438e53db6e4",
+        "deployment": {
+          "application_sha256": "7d9e3fdaef030a438b3088f75e8d7dfe0ef1323bda83004547048abeb10366c5"
+        },
+        "tags": [
+          "ceramic bowl",
+          "ceramic dish",
+          "ceramic jug",
+          "ceramic vase"
+        ],
+        "masks": 30,
+        "generated": 30,
+        "failed": 0,
+        "recovery": null,
+        "viewer": "qwen-v2-displaycase-new",
+        "capture": {
+          "alias": "qwen-v2-displaycase-new",
+          "folder": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/28038a040d8544c28b0bfb2eee89f685",
+          "asset": "docs/assets/qwen-baseline-v2-comparison/qwen-v2-displaycase-new.png",
+          "run": "8d5f14de713dfb9597a8c46eaf51566c",
+          "camera": [
+            -1.2334318573429126,
+            0.8895141743096058,
+            -3.659423150056246
+          ],
+          "target": [
+            -0.06945459912035779,
+            -0.13478581292624142,
+            0.9964858828339691
+          ],
+          "triangles": 16948300,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-displaycase-1",
+          "scene_sha256": "0669ea578ed60cbfa8f76869b2f2e92925fcb020e56039fe3adf3438e53db6e4"
+        }
+      }
+    },
+    "stairhall": {
+      "1": {
+        "run_id": "ca7278c142344ebb8ff042dda18ca9d2",
+        "path": ".runtime/minimal-baseline/recovered/ca7278c142344ebb8ff042dda18ca9d2",
+        "input_sha256": "d8ec07e937603302066a0e1597f73076359725cb60f1c326a7c1afa9618c06e5",
+        "scene_sha256": "4d242263517736b1dc6bba72aa514903f1b33a47115c8cdb3f54a70450ec7d6b",
+        "deployment": {
+          "application_sha256": "bc07f243ed26b3073627b867ba24eb5ad78486de5f126af148d5e35f457ab005"
+        },
+        "tags": [
+          "balustrade",
+          "building",
+          "carpet",
+          "ceiling",
+          "chandelier",
+          "pillar",
+          "entrance hall",
+          "floor",
+          "gold",
+          "hall",
+          "hallway",
+          "palace",
+          "rail",
+          "room",
+          "stair",
+          "stairwell",
+          "tile wall"
+        ],
+        "masks": 27,
+        "generated": 27,
+        "failed": 0,
+        "recovery": {
+          "kind": "verified_inference_checkpoint",
+          "finalized_at": "2026-10-22T15:14:42.362607+00:00",
+          "archive_sha256": "1ff59fc216f64088a9be1df74fa0c18c6f8294969b193811326e735106d8a44d",
+          "scene_sha256": "4d242263517736b1dc6bba72aa514903f1b33a47115c8cdb3f54a70450ec7d6b",
+          "note": "Original scene, masks, object assets and official transforms verified and preserved; mode-1 finalization only."
+        },
+        "viewer": "baseline-stairhall-new",
+        "capture": {
+          "alias": "baseline-stairhall-new",
+          "folder": ".runtime/minimal-baseline/recovered/ca7278c142344ebb8ff042dda18ca9d2",
+          "asset": "docs/assets/baseline-comparison/baseline-stairhall-new.png",
+          "run": "29322adc5d60f3c50f39a42f2ccea138",
+          "camera": [
+            -0.9670965208932792,
+            0.9828535111081058,
+            -2.0284912507655832
+          ],
+          "target": [
+            -0.05881399778019047,
+            0.18356489076858717,
+            1.6046388416867765
+          ],
+          "triangles": 6580186,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-stairhall-1",
+          "scene_sha256": "4d242263517736b1dc6bba72aa514903f1b33a47115c8cdb3f54a70450ec7d6b"
+        }
+      },
+      "2": {
+        "run_id": "54e5367430df4798a6826dac11f9a5fd",
+        "path": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/54e5367430df4798a6826dac11f9a5fd",
+        "input_sha256": "d8ec07e937603302066a0e1597f73076359725cb60f1c326a7c1afa9618c06e5",
+        "scene_sha256": "ba04d85535434fef66f1a1afee87c94c0ed53cfd715db8a4c97fc5facc1e6726",
+        "deployment": {
+          "application_sha256": "7d9e3fdaef030a438b3088f75e8d7dfe0ef1323bda83004547048abeb10366c5"
+        },
+        "tags": [
+          "chandelier",
+          "statue",
+          "door",
+          "window",
+          "staircase",
+          "railing"
+        ],
+        "masks": 22,
+        "generated": 22,
+        "failed": 0,
+        "recovery": null,
+        "viewer": "qwen-v2-stairhall-new",
+        "capture": {
+          "alias": "qwen-v2-stairhall-new",
+          "folder": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/54e5367430df4798a6826dac11f9a5fd",
+          "asset": "docs/assets/qwen-baseline-v2-comparison/qwen-v2-stairhall-new.png",
+          "run": "2daf3ba7d5714abd9409cbe1ae8d6826",
+          "camera": [
+            -0.9670965208932792,
+            0.9828535111081058,
+            -2.0284912507655832
+          ],
+          "target": [
+            -0.05881399778019047,
+            0.18356489076858717,
+            1.6046388416867765
+          ],
+          "triangles": 4768760,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-stairhall-1",
+          "scene_sha256": "ba04d85535434fef66f1a1afee87c94c0ed53cfd715db8a4c97fc5facc1e6726"
+        }
+      }
+    },
+    "sample-01": {
+      "1": {
+        "run_id": "e91470e861ec48a1a60d1c687b5c7c48",
+        "path": ".runtime/minimal-baseline/recovered/e91470e861ec48a1a60d1c687b5c7c48",
+        "input_sha256": "e4ec6b4712cd1707d46de909a70adef606a319dfe3b3ef39b3fdc3399d73b286",
+        "scene_sha256": "248a1bb6c4bf9238c58c4c99c4d330b6bfa570ba25c2264162343bf532c54592",
+        "deployment": {
+          "application_sha256": "bc07f243ed26b3073627b867ba24eb5ad78486de5f126af148d5e35f457ab005"
+        },
+        "tags": [
+          "bookshelf",
+          "chair",
+          "table",
+          "dining room",
+          "dinning table",
+          "floor",
+          "platter",
+          "room",
+          "window",
+          "wood floor"
+        ],
+        "masks": 15,
+        "generated": 15,
+        "failed": 0,
+        "recovery": {
+          "kind": "verified_inference_checkpoint",
+          "finalized_at": "2026-10-22T15:15:12.713513+00:00",
+          "archive_sha256": "7de556af1b6b8b57af0cd8c3f0e8ab18572d82016bc5731334b3ab637b8ef1fc",
+          "scene_sha256": "248a1bb6c4bf9238c58c4c99c4d330b6bfa570ba25c2264162343bf532c54592",
+          "note": "Original scene, masks, object assets and official transforms verified and preserved; mode-1 finalization only."
+        },
+        "viewer": "baseline-sample-01-new",
+        "capture": {
+          "alias": "baseline-sample-01-new",
+          "folder": ".runtime/minimal-baseline/recovered/e91470e861ec48a1a60d1c687b5c7c48",
+          "asset": "docs/assets/baseline-comparison/baseline-sample-01-new.png",
+          "run": "8ac302856bde4a9f6dbff108c1e08281",
+          "camera": [
+            -0.7626971911622227,
+            1.0585284013156653,
+            -2.0245530308881596
+          ],
+          "target": [
+            0.19266730993317693,
+            0.21780764035171443,
+            1.7969049734934357
+          ],
+          "triangles": 10677340,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-sample-01-1",
+          "scene_sha256": "248a1bb6c4bf9238c58c4c99c4d330b6bfa570ba25c2264162343bf532c54592"
+        }
+      },
+      "2": {
+        "run_id": "dd8ff8fbb9384a62af7ad43f1f4ba7f5",
+        "path": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/dd8ff8fbb9384a62af7ad43f1f4ba7f5",
+        "input_sha256": "e4ec6b4712cd1707d46de909a70adef606a319dfe3b3ef39b3fdc3399d73b286",
+        "scene_sha256": "32ccdd9264fcf52a3ab59a670044c785da94e9fd21e9253856f157610ffbdcd5",
+        "deployment": {
+          "application_sha256": "7d9e3fdaef030a438b3088f75e8d7dfe0ef1323bda83004547048abeb10366c5"
+        },
+        "tags": [
+          "dining table",
+          "chair",
+          "cushion",
+          "bookshelf",
+          "book",
+          "plant",
+          "lamp",
+          "door",
+          "window"
+        ],
+        "masks": 27,
+        "generated": 27,
+        "failed": 0,
+        "recovery": null,
+        "viewer": "qwen-v2-sample-01-new",
+        "capture": {
+          "alias": "qwen-v2-sample-01-new",
+          "folder": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/dd8ff8fbb9384a62af7ad43f1f4ba7f5",
+          "asset": "docs/assets/qwen-baseline-v2-comparison/qwen-v2-sample-01-new.png",
+          "run": "f7bf6c417afbf31d10c8f0ead5eb72c6",
+          "camera": [
+            -0.7626971911622227,
+            1.0585284013156653,
+            -2.0245530308881596
+          ],
+          "target": [
+            0.19266730993317693,
+            0.21780764035171443,
+            1.7969049734934357
+          ],
+          "triangles": 18946030,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-sample-01-1",
+          "scene_sha256": "32ccdd9264fcf52a3ab59a670044c785da94e9fd21e9253856f157610ffbdcd5"
+        }
+      }
+    },
+    "sample-02": {
+      "1": {
+        "run_id": "b1f6657932ef4a82a4ff9d4d083dc790",
+        "path": ".runtime/minimal-baseline/recovered/b1f6657932ef4a82a4ff9d4d083dc790",
+        "input_sha256": "e2b175ed95fdfde88e05e4740810a4a7cf8176e5c76e7265d7b504757020bc84",
+        "scene_sha256": "90e09512037a2f989b9c3fea182996ed05b3fa3a7333ceeaee1fa295a3721886",
+        "deployment": {
+          "application_sha256": "bc07f243ed26b3073627b867ba24eb5ad78486de5f126af148d5e35f457ab005"
+        },
+        "tags": [
+          "armchair",
+          "backyard",
+          "chair",
+          "daybed",
+          "couch",
+          "pad",
+          "table",
+          "fire pit",
+          "furniture",
+          "outdoor",
+          "pillow",
+          "plant",
+          "terrace",
+          "umbrella"
+        ],
+        "masks": 44,
+        "generated": 44,
+        "failed": 0,
+        "recovery": {
+          "kind": "verified_inference_checkpoint",
+          "finalized_at": "2026-10-22T15:16:45.367569+00:00",
+          "archive_sha256": "9aea9e7decbac289d28f788fe675e8241e08065cedf056c741ec3ec12121f1d0",
+          "scene_sha256": "90e09512037a2f989b9c3fea182996ed05b3fa3a7333ceeaee1fa295a3721886",
+          "note": "Original scene, masks, object assets and official transforms verified and preserved; mode-1 finalization only."
+        },
+        "viewer": "baseline-sample-02-new",
+        "capture": {
+          "alias": "baseline-sample-02-new",
+          "folder": ".runtime/minimal-baseline/recovered/b1f6657932ef4a82a4ff9d4d083dc790",
+          "asset": "docs/assets/baseline-comparison/baseline-sample-02-new.png",
+          "run": "6d1ed016f23a363f3fb962d42f540902",
+          "camera": [
+            -1.4289404644797066,
+            1.474383474658425,
+            -3.5238063300699087
+          ],
+          "target": [
+            -0.0006577603149143796,
+            0.2174946949934069,
+            2.1893244865892667
+          ],
+          "triangles": 37775086,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-sample-02-1",
+          "scene_sha256": "90e09512037a2f989b9c3fea182996ed05b3fa3a7333ceeaee1fa295a3721886"
+        }
+      },
+      "2": {
+        "run_id": "c498791114894f509512609173bd0133",
+        "path": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/c498791114894f509512609173bd0133",
+        "input_sha256": "e2b175ed95fdfde88e05e4740810a4a7cf8176e5c76e7265d7b504757020bc84",
+        "scene_sha256": "ab04a1436e57480eed9ef29b93b1500c26aac2e84eb34f150458c1f60ce02c53",
+        "deployment": {
+          "application_sha256": "56020d732de4e5f2ce749299ce3c23db53a4a2d1fb27e7b8e358cb897d7d8b9e"
+        },
+        "tags": [
+          "outdoor sofa",
+          "cushion",
+          "coffee table",
+          "plant",
+          "umbrella",
+          "door",
+          "window"
+        ],
+        "masks": 40,
+        "generated": 40,
+        "failed": 0,
+        "recovery": null,
+        "viewer": "qwen-v2-sample-02-new",
+        "capture": {
+          "alias": "qwen-v2-sample-02-new",
+          "folder": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/c498791114894f509512609173bd0133",
+          "asset": "docs/assets/qwen-baseline-v2-comparison/qwen-v2-sample-02-new.png",
+          "run": "713a54f8d7479135a4b14f76826ad2ff",
+          "camera": [
+            -1.4289404644797066,
+            1.474383474658425,
+            -3.5238063300699087
+          ],
+          "target": [
+            -0.0006577603149143796,
+            0.2174946949934069,
+            2.1893244865892667
+          ],
+          "triangles": 32408984,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-sample-02-1",
+          "scene_sha256": "ab04a1436e57480eed9ef29b93b1500c26aac2e84eb34f150458c1f60ce02c53"
+        }
+      }
+    },
+    "sample-03": {
+      "1": {
+        "run_id": "98b1cff82eec40f6b2cfd7c50a43e079",
+        "path": ".runtime/minimal-baseline/recovered/98b1cff82eec40f6b2cfd7c50a43e079",
+        "input_sha256": "9ae1ac0b984720bb3115cb59dde19df90b435b6fe400f78d86b5e6b736fd4227",
+        "scene_sha256": "e4bc2f893bbd6d3090ed135ffb72a711cef544f1a748f4de96940136b69d1e08",
+        "deployment": {
+          "application_sha256": "df756bb6961f7bf329593c310f92e4e280e439986d1d890e6792eebe4d2faa3a"
+        },
+        "tags": [
+          "chair",
+          "pad",
+          "table",
+          "dinning table",
+          "floor",
+          "home appliance",
+          "kitchen table",
+          "mat",
+          "office supply",
+          "pen",
+          "room",
+          "speaker",
+          "stool",
+          "yoga mat"
+        ],
+        "masks": 24,
+        "generated": 24,
+        "failed": 0,
+        "recovery": {
+          "kind": "verified_inference_checkpoint",
+          "finalized_at": "2026-10-22T15:17:17.894823+00:00",
+          "archive_sha256": "990e75609df7d3d3a66b463a75418ad23c3ac174057313558d67b56315f63964",
+          "scene_sha256": "e4bc2f893bbd6d3090ed135ffb72a711cef544f1a748f4de96940136b69d1e08",
+          "note": "Original scene, masks, object assets and official transforms verified and preserved; mode-1 finalization only."
+        },
+        "viewer": "baseline-sample-03-new",
+        "capture": {
+          "alias": "baseline-sample-03-new",
+          "folder": ".runtime/minimal-baseline/recovered/98b1cff82eec40f6b2cfd7c50a43e079",
+          "asset": "docs/assets/baseline-comparison/baseline-sample-03-new.png",
+          "run": "1f763a2aee762fb1570ed7a492788c35",
+          "camera": [
+            -1.747836468109853,
+            2.088707327676117,
+            -3.574550894141552
+          ],
+          "target": [
+            -0.16950450881162363,
+            0.699775203493677,
+            2.7387769430513607
+          ],
+          "triangles": 12234362,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-sample-03-1",
+          "scene_sha256": "e4bc2f893bbd6d3090ed135ffb72a711cef544f1a748f4de96940136b69d1e08"
+        }
+      },
+      "2": {
+        "run_id": "a36aff96ecaa478eaa8e591c11ee2071",
+        "path": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/a36aff96ecaa478eaa8e591c11ee2071",
+        "input_sha256": "9ae1ac0b984720bb3115cb59dde19df90b435b6fe400f78d86b5e6b736fd4227",
+        "scene_sha256": "e58d938dc376c81105c1e0596590b48aa076fbb1caef58aa3ad8dd3aef368e06",
+        "deployment": {
+          "application_sha256": "7d9e3fdaef030a438b3088f75e8d7dfe0ef1323bda83004547048abeb10366c5"
+        },
+        "tags": [
+          "dining table",
+          "chair",
+          "kitchen counter",
+          "oven",
+          "cabinet",
+          "trash can",
+          "remote control",
+          "mask",
+          "tissue box",
+          "pen",
+          "cat scratcher",
+          "door",
+          "window"
+        ],
+        "masks": 15,
+        "generated": 15,
+        "failed": 0,
+        "recovery": null,
+        "viewer": "qwen-v2-sample-03-new",
+        "capture": {
+          "alias": "qwen-v2-sample-03-new",
+          "folder": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/a36aff96ecaa478eaa8e591c11ee2071",
+          "asset": "docs/assets/qwen-baseline-v2-comparison/qwen-v2-sample-03-new.png",
+          "run": "0ab9258e44b4073458970ecd6526f9b8",
+          "camera": [
+            -1.747836468109853,
+            2.088707327676117,
+            -3.574550894141552
+          ],
+          "target": [
+            -0.16950450881162363,
+            0.699775203493677,
+            2.7387769430513607
+          ],
+          "triangles": 6710978,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-sample-03-1",
+          "scene_sha256": "e58d938dc376c81105c1e0596590b48aa076fbb1caef58aa3ad8dd3aef368e06"
+        }
+      }
+    },
+    "sample-04": {
+      "1": {
+        "run_id": "281ac163c2bf4ed28af870f93f153b45",
+        "path": ".runtime/minimal-baseline/recovered/281ac163c2bf4ed28af870f93f153b45",
+        "input_sha256": "dd8fbcf1f705cd1be9980298bfd3fe6586562c61c9ad1548c173731c41a941e5",
+        "scene_sha256": "9014ce9097ce7d91ef9036d5876d3cae1ed3ecca43d0f5cfeb53e7ce1d56b541",
+        "deployment": {
+          "application_sha256": "df756bb6961f7bf329593c310f92e4e280e439986d1d890e6792eebe4d2faa3a"
+        },
+        "tags": [
+          "apartment",
+          "carpet",
+          "couch",
+          "curtain",
+          "table",
+          "furniture",
+          "glass door",
+          "living room",
+          "modern",
+          "room",
+          "slide",
+          "television",
+          "window"
+        ],
+        "masks": 17,
+        "generated": 17,
+        "failed": 0,
+        "recovery": {
+          "kind": "verified_inference_checkpoint",
+          "finalized_at": "2026-10-22T15:17:41.376627+00:00",
+          "archive_sha256": "4e2fd6bfe4b0d8317abac2b418a2c4635d906033cefb8e373c0b55f00e038b85",
+          "scene_sha256": "9014ce9097ce7d91ef9036d5876d3cae1ed3ecca43d0f5cfeb53e7ce1d56b541",
+          "note": "Original scene, masks, object assets and official transforms verified and preserved; mode-1 finalization only."
+        },
+        "viewer": "baseline-sample-04-new",
+        "capture": {
+          "alias": "baseline-sample-04-new",
+          "folder": ".runtime/minimal-baseline/recovered/281ac163c2bf4ed28af870f93f153b45",
+          "asset": "docs/assets/baseline-comparison/baseline-sample-04-new.png",
+          "run": "4933c963b6d08d9fb812d761cbe7d1b2",
+          "camera": [
+            -0.7067849146502592,
+            0.5933694376859262,
+            -1.964709236516246
+          ],
+          "target": [
+            0.071019764342243,
+            -0.09109867982747494,
+            1.14650947945376
+          ],
+          "triangles": 8918456,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-sample-04-1",
+          "scene_sha256": "9014ce9097ce7d91ef9036d5876d3cae1ed3ecca43d0f5cfeb53e7ce1d56b541"
+        }
+      },
+      "2": {
+        "run_id": "e398380ed8a549239fd23480ac94f1e3",
+        "path": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/e398380ed8a549239fd23480ac94f1e3",
+        "input_sha256": "dd8fbcf1f705cd1be9980298bfd3fe6586562c61c9ad1548c173731c41a941e5",
+        "scene_sha256": "9157557f3bf9dcc3b9b5b5b2e787f251b657413f3886393a06f31e8bb90ae35a",
+        "deployment": {
+          "application_sha256": "7d9e3fdaef030a438b3088f75e8d7dfe0ef1323bda83004547048abeb10366c5"
+        },
+        "tags": [
+          "couch",
+          "coffee_table",
+          "book",
+          "cup",
+          "saucer",
+          "plant",
+          "curtain",
+          "window",
+          "tv_stand",
+          "tv"
+        ],
+        "masks": 17,
+        "generated": 17,
+        "failed": 0,
+        "recovery": null,
+        "viewer": "qwen-v2-sample-04-new",
+        "capture": {
+          "alias": "qwen-v2-sample-04-new",
+          "folder": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/e398380ed8a549239fd23480ac94f1e3",
+          "asset": "docs/assets/qwen-baseline-v2-comparison/qwen-v2-sample-04-new.png",
+          "run": "8153f063a30e91ea9c5c00fd1e98d0d6",
+          "camera": [
+            -0.7067849146502592,
+            0.5933694376859262,
+            -1.964709236516246
+          ],
+          "target": [
+            0.071019764342243,
+            -0.09109867982747494,
+            1.14650947945376
+          ],
+          "triangles": 8468950,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-sample-04-1",
+          "scene_sha256": "9157557f3bf9dcc3b9b5b5b2e787f251b657413f3886393a06f31e8bb90ae35a"
+        }
+      }
+    },
+    "sample-05": {
+      "1": {
+        "run_id": "7090bb12f34e4994a07c58835b7526e3",
+        "path": ".runtime/minimal-baseline/recovered/7090bb12f34e4994a07c58835b7526e3",
+        "input_sha256": "b2d41ffcbd1d5a8061c793544d4bb53f4657c3bb21750e4b721eeae103c63947",
+        "scene_sha256": "04cacbf030909a96ca4a41c804171712403ba412779b63dce5b3bf9a6256b7d0",
+        "deployment": {
+          "application_sha256": "df756bb6961f7bf329593c310f92e4e280e439986d1d890e6792eebe4d2faa3a"
+        },
+        "tags": [
+          "bed",
+          "bedroom",
+          "bureau",
+          "computer",
+          "computer desk",
+          "table",
+          "dollhouse",
+          "laptop",
+          "miniature",
+          "nightstand",
+          "picture frame",
+          "pillow",
+          "plant",
+          "room",
+          "stool"
+        ],
+        "masks": 17,
+        "generated": 17,
+        "failed": 0,
+        "recovery": {
+          "kind": "verified_inference_checkpoint",
+          "finalized_at": "2026-10-22T15:18:33.912967+00:00",
+          "archive_sha256": "e6fd7e81da69349c08ff6457d201ddd7e35aab357c422b04ad0470bf6232dad7",
+          "scene_sha256": "04cacbf030909a96ca4a41c804171712403ba412779b63dce5b3bf9a6256b7d0",
+          "note": "Original scene, masks, object assets and official transforms verified and preserved; mode-1 finalization only."
+        },
+        "viewer": "baseline-sample-05-new",
+        "capture": {
+          "alias": "baseline-sample-05-new",
+          "folder": ".runtime/minimal-baseline/recovered/7090bb12f34e4994a07c58835b7526e3",
+          "asset": "docs/assets/baseline-comparison/baseline-sample-05-new.png",
+          "run": "afe07162de549385d3a98d466d798654",
+          "camera": [
+            -0.5092001905023732,
+            0.4443994544653598,
+            1.050217767173608
+          ],
+          "target": [
+            -0.050824078025107196,
+            0.041028475485365395,
+            2.883722217082674
+          ],
+          "triangles": 8289446,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-sample-05-1",
+          "scene_sha256": "04cacbf030909a96ca4a41c804171712403ba412779b63dce5b3bf9a6256b7d0"
+        }
+      },
+      "2": {
+        "run_id": "eaf28301a64e4c37a5775e542d939395",
+        "path": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/eaf28301a64e4c37a5775e542d939395",
+        "input_sha256": "b2d41ffcbd1d5a8061c793544d4bb53f4657c3bb21750e4b721eeae103c63947",
+        "scene_sha256": "d23a4cc4b1195d6ef672664fe01addaf8fdded9fd7f5a4d00e55f39d3173245c",
+        "deployment": {
+          "application_sha256": "56020d732de4e5f2ce749299ce3c23db53a4a2d1fb27e7b8e358cb897d7d8b9e"
+        },
+        "tags": [
+          "bed",
+          "nightstand",
+          "desk",
+          "stool",
+          "computer",
+          "keyboard",
+          "mouse",
+          "lamp",
+          "cushion",
+          "pillow",
+          "book",
+          "plant",
+          "window",
+          "curtain"
+        ],
+        "masks": 33,
+        "generated": 33,
+        "failed": 0,
+        "recovery": null,
+        "viewer": "qwen-v2-sample-05-new",
+        "capture": {
+          "alias": "qwen-v2-sample-05-new",
+          "folder": "D:/MapMaker/.runtime/qwen-baseline-v2/runs/eaf28301a64e4c37a5775e542d939395",
+          "asset": "docs/assets/qwen-baseline-v2-comparison/qwen-v2-sample-05-new.png",
+          "run": "20a674965316de673e060303ef6e53d4",
+          "camera": [
+            -0.5092001905023732,
+            0.4443994544653598,
+            1.050217767173608
+          ],
+          "target": [
+            -0.050824078025107196,
+            0.041028475485365395,
+            2.883722217082674
+          ],
+          "triangles": 18181858,
+          "errors": [],
+          "camera_policy": "historical_camera_and_target",
+          "reference": "four-way-sample-05-1",
+          "scene_sha256": "d23a4cc4b1195d6ef672664fe01addaf8fdded9fd7f5a4d00e55f39d3173245c"
+        }
+      }
+    }
+  }
+}
