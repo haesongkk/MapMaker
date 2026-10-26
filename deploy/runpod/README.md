@@ -21,7 +21,9 @@ Browser <--- bounded HTTP artifact reads <- web/API <- S3
 
 The live deployment uses `configs/cloud-deployment.json`. The web image is built
 from `main`. The GPU GitHub integration also follows `main`, using
-`deploy/runpod/Dockerfile.application` to reuse the verified CUDA/model runtime.
+`deploy/runpod/Dockerfile.release` for runtime-image builds. The Runpod private
+registry image cannot be used as a base by the GitHub builder (401 Unauthorized),
+so application-only promotion continues through the pinned ZIP below.
 The GPU endpoint additionally applies the explicitly pinned application release
 recorded in `configs/cloud-deployment.json`; a main push does not automatically
 advance that application ZIP. Advance and verify the release hash when promoting
@@ -37,8 +39,8 @@ and `configs`; dependencies and weights are unchanged. Worker results record the
 application hash in `metadata.deployment.application_sha256`.
 
 The full-image commands below remain the deployment path for dependency/runtime
-changes. Routine main builds use the application-only Dockerfile; use the full
-GPU Dockerfile only when deliberately updating dependencies or the CUDA runtime.
+changes. The GPU GitHub build rebuilds the full runtime; application-only
+promotion uses the pinned ZIP without requiring a successful new runtime build.
 
 Build from the repository root, replacing `REGISTRY` with your registry:
 

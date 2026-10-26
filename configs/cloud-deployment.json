@@ -6,7 +6,7 @@
   "browser_gateway_origin": "https://zlkpn4g5odgrqq-8080.proxy.runpod.net",
   "gpu_branch": "main",
   "web_branch": "main",
-  "gpu_dockerfile": "deploy/runpod/Dockerfile.application",
+  "gpu_dockerfile": "deploy/runpod/Dockerfile.release",
   "web_dockerfile": "deploy/runpod/Dockerfile.web",
   "gpu_application_commit": "ed75c32466fa422e28d081721493c32f260c0e2e",
   "gpu_application_sha256": "052b4207602f6752165fd5f2ef867d0dd544f4841a95b205862ce68d4c99606b",
