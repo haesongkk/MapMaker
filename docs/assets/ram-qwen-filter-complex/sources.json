@@ -1,0 +1,35 @@
+[
+  {
+    "sample": "present-office-b",
+    "source_url": "https://www.lundia.co.uk/blogs/open-shelving-unit/how-to-configure-and-expand-your-lundia-open-shelving-unit-a-step-by-step-guide",
+    "image_url": "https://www.lundia.co.uk/cdn/shop/articles/Expand-Your-Lundia-Open-Shelving-Unit_700x.png?v=1765302418",
+    "input_path": "docs/assets/ram-qwen-filter-complex/office-b-input.png",
+    "image_kind": "\uc0c1\ud488 \uc5f0\ucd9c \uc774\ubbf8\uc9c0 \u00b7 \uc2e4\uc0ac/\ub80c\ub354 \ubbf8\ud655\uc778",
+    "size": [
+      700,
+      658
+    ]
+  },
+  {
+    "sample": "present-office-c",
+    "source_url": "https://zior.in/collections/study-room",
+    "image_url": "https://zior.in/cdn/shop/collections/ChatGPT_Image_Dec_20_2025_04_44_50_PM.png?v=1766229311",
+    "input_path": "docs/assets/ram-qwen-filter-complex/office-c-input.png",
+    "image_kind": "\uc0c1\ud488 \uc5f0\ucd9c \uc774\ubbf8\uc9c0 \u00b7 \uc2e4\uc0ac/\ub80c\ub354 \ubbf8\ud655\uc778",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "sample": "present-office-d",
+    "source_url": "https://blenderartists.org/t/minimal-study-room/1517261",
+    "image_url": "https://blenderartists.org/uploads/default/original/4X/c/1/b/c1bbca68b3e7ca1ad014b8ccc5d35b6437897d1e.jpeg",
+    "input_path": "docs/assets/ram-qwen-filter-complex/office-d-input.png",
+    "image_kind": "\uc0c1\ud488 \uc5f0\ucd9c \uc774\ubbf8\uc9c0 \u00b7 \uc2e4\uc0ac/\ub80c\ub354 \ubbf8\ud655\uc778",
+    "size": [
+      564,
+      705
+    ]
+  }
+]

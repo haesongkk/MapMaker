@@ -33,6 +33,26 @@ Do not infer objects that are not clearly visible.
 
 Return only a JSON array of strings.'''
 
+MOVABLE_PROMPT = '''List tags that refer to movable objects visible in this image.
+
+Return only a JSON array of strings.'''
+
+FURNITURE_PROMPT = '''List the furniture and other movable physical objects visible in this image.
+
+Use specific, common object names, with one tag per object category.
+Return only a JSON array of strings.'''
+
+
+def prompt_for(meta):
+    policy = meta.get('execution', {}).get('qwen_prompt_policy', 'default')
+    if policy == 'movable_v1':
+        return MOVABLE_PROMPT
+    if policy == 'furniture_v1':
+        return FURNITURE_PROMPT
+    if policy == 'default':
+        return PROMPT
+    raise ValueError(f'Unknown Qwen prompt policy: {policy}')
+
 
 def parse_tags(text):
     # Models may wrap valid JSON in a single Markdown code block. Unwrap only
@@ -47,7 +67,7 @@ def parse_tags(text):
     return value  # Preserve exact strings, order, and repeated labels.
 
 
-def prepare_and_run(run, env, log):
+def prepare_and_run(run, env, log, *, background_filter=False):
     overlay = ROOT / '.runtime/qwen-deps-4.51.3'
     marker = overlay / '.ready'
     child_env = dict(env, HF_HUB_OFFLINE='0', TRANSFORMERS_OFFLINE='0')
@@ -60,7 +80,19 @@ def prepare_and_run(run, env, log):
             env=child_env, stdout=log, stderr=subprocess.STDOUT, check=True)
         marker.touch()
     child_env['PYTHONPATH'] = str(overlay) + os.pathsep + env['PYTHONPATH']
-    subprocess.run([str(VISION_PYTHON), '-m', 'mapmaker.qwen_tags', str(run)],
+    batch = read(Path(run)/'scene_metadata.json').get('execution', {}).get('saved_tag_filter_batch')
+    if batch is not None:
+        source = Path(run)/'logs/furniture-filter-inputs.json'
+        output = Path(run)/'logs/furniture-filter-results.json'
+        write(source, batch)
+        subprocess.run([str(VISION_PYTHON), str(ROOT/'scripts/filter_saved_ram_tags.py'),
+                        'infer', '--input', str(source), '--output', str(output)],
+                       cwd=ROOT, env=child_env, stdout=log, stderr=subprocess.STDOUT, check=True)
+        from .scene_transfer import ArtifactStore
+        ArtifactStore().put_json(Path(run).name, 'furniture-filter-results.json', read(output))
+    command = (['mapmaker.qwen_background_filter', 'filter', str(run)]
+               if background_filter else ['mapmaker.qwen_tags', str(run)])
+    subprocess.run([str(VISION_PYTHON), '-m', *command],
         cwd=ROOT, env=child_env, stdout=log, stderr=subprocess.STDOUT, check=True)
 
 
@@ -71,12 +103,13 @@ def run_tags(run):
     from PIL import Image
     run = Path(run)
     meta = read(run / 'scene_metadata.json')
+    prompt = prompt_for(meta)
     status(run, 'analyzing', 'Loading Qwen2.5-VL-7B-Instruct...')
     processor = AutoProcessor.from_pretrained(MODEL, revision=REVISION)
     model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
         MODEL, revision=REVISION, torch_dtype=torch.bfloat16).eval().to('cuda')
     messages = [{'role':'user', 'content':[
-        {'type':'image'}, {'type':'text','text':PROMPT}]}]
+        {'type':'image'}, {'type':'text','text':prompt}]}]
     text = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
     image = Image.open(run / meta['input_image']).convert('RGB')
     inputs = processor(text=[text], images=[image], padding=True, return_tensors='pt').to('cuda')
@@ -87,7 +120,7 @@ def run_tags(run):
     generated = result[:, inputs.input_ids.shape[1]:]
     raw = processor.batch_decode(generated, skip_special_tokens=True,
                                 clean_up_tokenization_spaces=False)[0]
-    evidence = dict(model=MODEL, revision=REVISION, prompt=PROMPT, raw_response=raw,
+    evidence = dict(model=MODEL, revision=REVISION, prompt=prompt, raw_response=raw,
         input_sha256=sha(run/meta['input_image']), transformers=transformers.__version__,
         generation=dict(max_new_tokens=2048, do_sample=False, seed=42),
         image_processor_policy='model_default', generated_tokens=generated.shape[1])

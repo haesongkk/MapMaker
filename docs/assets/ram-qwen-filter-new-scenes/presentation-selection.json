@@ -1,0 +1,114 @@
+{
+  "version": "vision-furniture",
+  "baseline": "RAM++ 기본 태그 → SAM3 → SAM3D",
+  "prompt": "List the furniture and other movable physical objects visible in this image.\n\nUse specific, common object names, with one tag per object category.\nReturn only a JSON array of strings.",
+  "samples": [
+    {
+      "sample": "present-office-c",
+      "asset_root": "docs/assets/ram-qwen-filter-complex",
+      "role": "대표 결과물 · 복합 가구 장면",
+      "reason": "책상·의자·책장에 화분과 소품이 함께 있는 장면입니다. 정면과 양옆에서 주요 가구의 몸통과 지지 구조를 확인했고, 원목 색감과 책장 내부 표현도 남습니다.",
+      "limitation": "책상 다리 일부가 판형으로 변하고 소품·화분의 높이 오차가 남습니다. 벽 없는 액자와 코르크보드가 떠 보이며, 소품 중복까지 모두 해결된 것은 아닙니다.",
+      "result": {
+        "path": "D:/MapMaker/.runtime/complex-candidates/runs/d7aa384e6c1e43de9b776c085381dec5",
+        "scene_sha256": "b39c443532619d2a61ca7429a6e7d1af57d174123d4c428bc8019db7a62a4a2f",
+        "input_sha256": "0e5087a1d644d8790b46fbaf6d36407cba2c8425a016de3d61436787c085a235",
+        "tags": [
+          "desk",
+          "chair",
+          "bookcase",
+          "lamp",
+          "computer",
+          "potted_plant",
+          "corkboard",
+          "frame",
+          "rug"
+        ],
+        "objects": 22,
+        "mask_counts": {
+          "desk": 1,
+          "chair": 1,
+          "bookcase": 1,
+          "lamp": 1,
+          "computer": 1,
+          "potted_plant": 13,
+          "corkboard": 1,
+          "frame": 2,
+          "rug": 1
+        },
+        "alias": "presentation-present-office-c-vision-furniture"
+      }
+    },
+    {
+      "sample": "present-cabinet",
+      "asset_root": "docs/assets/ram-qwen-filter-presentation",
+      "role": "주요 가구 중복 개선",
+      "reason": "수납장의 몸통·서랍 면·다리가 이어지고 큰 식물과의 구성이 읽힙니다. 여러 각도에서 주요 가구 형상을 확인했습니다.",
+      "limitation": "작은 화병이 상판 위에 떠 있고 소품 중복이 남습니다. 원본 나무색보다 밝게 표현됩니다.",
+      "result": {
+        "path": "D:/MapMaker/.runtime/presentation-candidates/runs/3520dcb782bf45c381a682d686b1d90d",
+        "scene_sha256": "e448cde9651539eb4892d973094e3889cb014049d8153dcd744c7f8d254c4cde",
+        "input_sha256": "049c70d0fa3fda5abdb395f87675984d83dffbabddfaa5e02cca2a797f7502ff",
+        "tags": [
+          "dresser",
+          "plant",
+          "pot",
+          "book",
+          "vase"
+        ],
+        "objects": 8,
+        "mask_counts": {
+          "dresser": 1,
+          "plant": 2,
+          "pot": 1,
+          "book": 2,
+          "vase": 2
+        },
+        "alias": "presentation-present-cabinet-vision-furniture"
+      }
+    },
+    {
+      "sample": "new-office",
+      "asset_root": "docs/assets/ram-qwen-filter-new-scenes",
+      "role": "배경 메시 제거 효과",
+      "reason": "기본 RAM++ 결과에서는 방 메시가 가구를 가립니다. 최종 결과에서는 책상·의자·모니터의 구성이 드러나 변화가 분명합니다.",
+      "limitation": "창·블라인드는 남고 서랍장 형상이 확장되어, 정밀한 형상·배치 복원을 주장하는 사례는 아닙니다.",
+      "result": {
+        "path": "D:/MapMaker/.runtime/new-scene-comparison/runs/ae0cf8b7be6c4abaab2517ab0a9d439b",
+        "scene_sha256": "716d76c91e4e2c0a87e4d86733cef3695b4272b8802c1e6f62d1f60b0e2a5b36",
+        "input_sha256": "a87224537ef87d00f48167cd9ca8902cdf408f32a069fa3420426562a909fa03",
+        "tags": [
+          "desk",
+          "chair",
+          "computer_monitor",
+          "keyboard",
+          "mouse",
+          "speaker",
+          "cabinet",
+          "plant",
+          "window",
+          "blinds"
+        ],
+        "masks": 12,
+        "objects": 12,
+        "failed": 0,
+        "alias": "new-comparison-new-office-vision-furniture",
+        "mask_counts": {
+          "desk": 1,
+          "chair": 1,
+          "computer_monitor": 1,
+          "keyboard": 1,
+          "mouse": 1,
+          "speaker": 2,
+          "plant": 3,
+          "window": 1,
+          "blinds": 1
+        },
+        "unmatched_tags": [
+          "cabinet"
+        ]
+      }
+    }
+  ],
+  "manual_geometry_edits": false
+}

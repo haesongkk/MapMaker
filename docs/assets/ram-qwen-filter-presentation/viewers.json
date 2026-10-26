@@ -1,0 +1,8 @@
+{
+  "presentation-present-chair-baseline": ".runtime/presentation-candidates/runs/0c7ecb8f8f1a46af8ecc4b4081743802",
+  "presentation-present-chair-vision-furniture": ".runtime/presentation-candidates/runs/9d64329b002945d8a41483d18e6b3a21",
+  "presentation-present-cabinet-baseline": ".runtime/presentation-candidates/runs/08f64d4b575b4e0aab6e63b406f197fb",
+  "presentation-present-cabinet-vision-furniture": ".runtime/presentation-candidates/runs/3520dcb782bf45c381a682d686b1d90d",
+  "presentation-present-bench-baseline": ".runtime/presentation-candidates/runs/bf3cc75fe7964770ab88743ef4ba91d1",
+  "presentation-present-bench-vision-furniture": ".runtime/presentation-candidates/runs/2f0a44cbcfaa4c60a9da43ab5c7b7bc2"
+}

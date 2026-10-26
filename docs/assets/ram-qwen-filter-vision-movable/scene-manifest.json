@@ -1,0 +1,104 @@
+{
+  "house": {
+    "source_scene_sha256": "75e99e0c9fbfda84a5bb52ddc8d184e159f9f0b43e551da5ef709b1eef59e825",
+    "scene_sha256": "5949684c424c785e6a5892c6e75b3aba371dc44bd4b309e57bbec1d7084b8239",
+    "objects_before": 21,
+    "objects_after": 21,
+    "masks": 21,
+    "failed": 0,
+    "tags": [
+      "flea market sign",
+      "leather couch",
+      "leather chair",
+      "ottoman",
+      "side table",
+      "potted plant",
+      "mirror",
+      "television",
+      "ceiling fan",
+      "rug",
+      "pillow",
+      "door"
+    ],
+    "input_sha256": "32378994affe53fdc4e633717aaa89b1548065270eed8b2a4ddf1758af89d9f4",
+    "path": "D:/MapMaker/.runtime/qwen-vision-movable/runs/038fc197ac614fa19877da3d473b19ab"
+  },
+  "office": {
+    "source_scene_sha256": "3a54e1ffab6d67026a1d69ac8dbeabb19e2cfafdc4aff03a3fa53928364caa71",
+    "scene_sha256": "ecaadb292d6a99fddd9a9742e2df2bee1ff5a9168caa84af3042578f53f97314",
+    "objects_before": 26,
+    "objects_after": 4,
+    "masks": 4,
+    "failed": 0,
+    "tags": [
+      "gramophone",
+      "typewriter",
+      "globe",
+      "chair"
+    ],
+    "input_sha256": "aa66075c2454313a80b5296a269e3ea695d644cc4178b5a20e29039ae9b6e43d",
+    "path": "D:/MapMaker/.runtime/qwen-vision-movable/runs/4af2519e364d440d82af7af0590101b1"
+  },
+  "sample-01": {
+    "source_scene_sha256": "248a1bb6c4bf9238c58c4c99c4d330b6bfa570ba25c2264162343bf532c54592",
+    "scene_sha256": "2247dba45dac5043bf995812e700c4149d78d99b07bfb88d1cb88b86047b1263",
+    "objects_before": 15,
+    "objects_after": 43,
+    "masks": 43,
+    "failed": 0,
+    "tags": [
+      "table",
+      "chairs",
+      "cabinet",
+      "sideboard",
+      "plant",
+      "vase",
+      "utensils",
+      "plates",
+      "wine_glasses"
+    ],
+    "input_sha256": "e4ec6b4712cd1707d46de909a70adef606a319dfe3b3ef39b3fdc3399d73b286",
+    "path": "D:/MapMaker/.runtime/qwen-vision-movable/runs/896421c0477246b0bda0610caf7d708c"
+  },
+  "sample-02": {
+    "source_scene_sha256": "90e09512037a2f989b9c3fea182996ed05b3fa3a7333ceeaee1fa295a3721886",
+    "scene_sha256": "06a762ee163c8c0d49afec34dccec4a90b00233d1c24b38f2033e9cae0188803",
+    "objects_before": 44,
+    "objects_after": 37,
+    "masks": 37,
+    "failed": 0,
+    "tags": [
+      "outdoor furniture",
+      "coffee table",
+      "cushions",
+      "pillows",
+      "planters",
+      "umbrella",
+      "candles"
+    ],
+    "input_sha256": "e2b175ed95fdfde88e05e4740810a4a7cf8176e5c76e7265d7b504757020bc84",
+    "path": "D:/MapMaker/.runtime/qwen-vision-movable/runs/ac1bd24b000b4eaf97e31fa763a99e1e"
+  },
+  "sample-04": {
+    "source_scene_sha256": "9014ce9097ce7d91ef9036d5876d3cae1ed3ecca43d0f5cfeb53e7ce1d56b541",
+    "scene_sha256": "a397d6fca3e222dfdf91eaa7dfad7a440249973d1f11179a933464594768977c",
+    "objects_before": 17,
+    "objects_after": 21,
+    "masks": 21,
+    "failed": 0,
+    "tags": [
+      "couch",
+      "coffee_table",
+      "book",
+      "cup",
+      "saucer",
+      "television",
+      "curtains",
+      "rug",
+      "plant",
+      "shelf"
+    ],
+    "input_sha256": "dd8fbcf1f705cd1be9980298bfd3fe6586562c61c9ad1548c173731c41a941e5",
+    "path": "D:/MapMaker/.runtime/qwen-vision-movable/runs/88b7844eb7d2413ebf7e7497d03339c0"
+  }
+}

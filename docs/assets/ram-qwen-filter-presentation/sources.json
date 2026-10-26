@@ -1,0 +1,57 @@
+[
+  {
+    "sample": "present-chair",
+    "source_url": "https://houseofmorrison.com/products/marigold-chair",
+    "image_url": "https://houseofmorrison.com/cdn/shop/files/HOM_061923_1-263_1100x.jpg?v=1689008022",
+    "input_path": "docs/assets/ram-qwen-filter-presentation/chair-input.png",
+    "image_kind": "\uc0c1\ud488 \uc5f0\ucd9c \uc774\ubbf8\uc9c0 \u00b7 \uc2e4\uc0ac/\ub80c\ub354 \ubbf8\ud655\uc778",
+    "size": [
+      1024,
+      684
+    ]
+  },
+  {
+    "sample": "present-cabinet",
+    "source_url": "https://www.modernfurniture.com.au/products/hayton-tall-ideboard-70cm-white-oak",
+    "image_url": "https://www.modernfurniture.com.au/cdn/shop/files/342007HaytontallsideboardLifestyle1-1000_1024x1024.jpg?v=1700990245",
+    "input_path": "docs/assets/ram-qwen-filter-presentation/cabinet-input.png",
+    "image_kind": "\uc0c1\ud488 \uc5f0\ucd9c \uc774\ubbf8\uc9c0 \u00b7 \uc2e4\uc0ac/\ub80c\ub354 \ubbf8\ud655\uc778",
+    "size": [
+      1024,
+      1024
+    ]
+  },
+  {
+    "sample": "present-dresser",
+    "source_url": "https://www.casavee.com.br/comoda-kaki-4-gavetas-115-cm-x-80-cm-x-45-cm-tauari",
+    "image_url": "https://casavee.cdn.magazord.com.br/img/2024/10/produto/5681/11-comoda-kaki-4g-final.jpg?ims=fit-in%2F1000x1000%2Ffilters%3Afill%28white%29",
+    "input_path": "docs/assets/ram-qwen-filter-presentation/dresser-input.png",
+    "image_kind": "\uc0c1\ud488 \uc5f0\ucd9c \uc774\ubbf8\uc9c0 \u00b7 \uc2e4\uc0ac/\ub80c\ub354 \ubbf8\ud655\uc778",
+    "size": [
+      1000,
+      1000
+    ]
+  },
+  {
+    "sample": "present-bench",
+    "source_url": "https://www.wayfair.com/furniture/pdp/wade-logan-linzy-modern-wood-bench-w010371284.html",
+    "image_url": "https://assets.wfcdn.com/im/48726512/resize-h800-w800%5Ecompr-r85/2664/266473401/Linzy%2BModern%2BWood%2BBench.jpg",
+    "input_path": "docs/assets/ram-qwen-filter-presentation/bench-input.png",
+    "image_kind": "\uc0c1\ud488 \uc5f0\ucd9c \uc774\ubbf8\uc9c0 \u00b7 \uc2e4\uc0ac/\ub80c\ub354 \ubbf8\ud655\uc778",
+    "size": [
+      800,
+      800
+    ]
+  },
+  {
+    "sample": "present-bench2",
+    "source_url": "https://www.homedepot.com/p/PLANK-BEAM-Contour-46-in-Blonde-Dining-Bench-2400313000-010/339045877",
+    "image_url": "https://images.thdstatic.com/productImages/47248df8-7cf3-582d-aee2-77f17c6be97b/svn/blonde-plank-beam-dining-benches-2400313000-010-64_600.jpg",
+    "input_path": "docs/assets/ram-qwen-filter-presentation/bench2-input.png",
+    "image_kind": "\uc0c1\ud488 \uc5f0\ucd9c \uc774\ubbf8\uc9c0 \u00b7 \uc2e4\uc0ac/\ub80c\ub354 \ubbf8\ud655\uc778",
+    "size": [
+      600,
+      600
+    ]
+  }
+]

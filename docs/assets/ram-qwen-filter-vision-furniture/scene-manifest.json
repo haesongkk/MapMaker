@@ -1,0 +1,114 @@
+{
+  "house": {
+    "source_scene_sha256": "75e99e0c9fbfda84a5bb52ddc8d184e159f9f0b43e551da5ef709b1eef59e825",
+    "scene_sha256": "a572cdd27283c7a241ba5d5a992e69e2e988555478a831f24d120d9d92a92670",
+    "objects_before": 21,
+    "objects_after": 21,
+    "masks": 21,
+    "failed": 0,
+    "tags": [
+      "leather couch",
+      "ottoman",
+      "leather armchair",
+      "side table",
+      "television",
+      "fan",
+      "rug",
+      "pillow",
+      "candle holder",
+      "mirror",
+      "door",
+      "fireplace",
+      "wall art",
+      "sign"
+    ],
+    "input_sha256": "32378994affe53fdc4e633717aaa89b1548065270eed8b2a4ddf1758af89d9f4",
+    "path": "D:/MapMaker/.runtime/qwen-vision-furniture/runs/4778ed4b6e08491eb813a6a3331992c4"
+  },
+  "office": {
+    "source_scene_sha256": "3a54e1ffab6d67026a1d69ac8dbeabb19e2cfafdc4aff03a3fa53928364caa71",
+    "scene_sha256": "8161ac3d9d0bbfe186b66d82199c5d1275ab7c2ddda2b96152bb850188e53929",
+    "objects_before": 26,
+    "objects_after": 15,
+    "masks": 15,
+    "failed": 0,
+    "tags": [
+      "desk",
+      "chair",
+      "bookshelf",
+      "typewriter",
+      "globe",
+      "gramophone",
+      "lamp",
+      "map",
+      "books"
+    ],
+    "input_sha256": "aa66075c2454313a80b5296a269e3ea695d644cc4178b5a20e29039ae9b6e43d",
+    "path": "D:/MapMaker/.runtime/qwen-vision-furniture/runs/7da39729d4c94d62b61e558fd482520a"
+  },
+  "sample-01": {
+    "source_scene_sha256": "248a1bb6c4bf9238c58c4c99c4d330b6bfa570ba25c2264162343bf532c54592",
+    "scene_sha256": "d8667b46d02235c6afd8f52d862edbcb6c4667c71376a19c83e8bf139afeab49",
+    "objects_before": 15,
+    "objects_after": 30,
+    "masks": 30,
+    "failed": 0,
+    "tags": [
+      "dining table",
+      "chair",
+      "bookshelf",
+      "sideboard",
+      "plant",
+      "vase",
+      "plate",
+      "cutlery",
+      "wine glass"
+    ],
+    "input_sha256": "e4ec6b4712cd1707d46de909a70adef606a319dfe3b3ef39b3fdc3399d73b286",
+    "path": "D:/MapMaker/.runtime/qwen-vision-furniture/runs/e5a496209a43407f95687a852b6a81c0"
+  },
+  "sample-02": {
+    "source_scene_sha256": "90e09512037a2f989b9c3fea182996ed05b3fa3a7333ceeaee1fa295a3721886",
+    "scene_sha256": "b19cb97321594bc2b43c6c457b7c04456e8a22579c5cf1c51337524124268abe",
+    "objects_before": 44,
+    "objects_after": 25,
+    "masks": 25,
+    "failed": 0,
+    "tags": [
+      "outdoor sofa",
+      "pillow",
+      "coffee table",
+      "plant pot",
+      "umbrella",
+      "candle holder",
+      "candle",
+      "chair"
+    ],
+    "input_sha256": "e2b175ed95fdfde88e05e4740810a4a7cf8176e5c76e7265d7b504757020bc84",
+    "path": "D:/MapMaker/.runtime/qwen-vision-furniture/runs/10234794b2204e5da535ee745adbe63b"
+  },
+  "sample-04": {
+    "source_scene_sha256": "9014ce9097ce7d91ef9036d5876d3cae1ed3ecca43d0f5cfeb53e7ce1d56b541",
+    "scene_sha256": "c375e77216f98b94898217e9b5e7c58d3d31f48fcba267917a070299456e4273",
+    "objects_before": 17,
+    "objects_after": 22,
+    "masks": 22,
+    "failed": 0,
+    "tags": [
+      "sofa",
+      "coffee_table",
+      "tv_stand",
+      "tv",
+      "curtains",
+      "window",
+      "rug",
+      "book",
+      "mug",
+      "plant",
+      "shelf",
+      "clock"
+    ],
+    "input_sha256": "dd8fbcf1f705cd1be9980298bfd3fe6586562c61c9ad1548c173731c41a941e5",
+    "path": "D:/MapMaker/.runtime/qwen-vision-furniture/runs/33bdb943c6e34628a40e4d6274146490"
+  }
+}

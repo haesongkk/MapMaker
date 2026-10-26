@@ -32,11 +32,13 @@ def report_progress(run, store, stop):
 def handler(job):
     global PIPELINE
     payload = job["input"]
-    if payload.get("protocol") not in (1, 2) or not re.fullmatch(r"[a-f0-9]{32}", payload.get("run_id", "")):
+    if payload.get("protocol") not in (1, 2, 4) or not re.fullmatch(r"[a-f0-9]{32}", payload.get("run_id", "")):
         raise ValueError("Invalid MapMaker job")
     # Protocol 2 prevents older workers from silently running RAM++ for Qwen jobs.
     if payload.get('protocol') == 2 and payload.get('tagger') != 'qwen2.5-vl-7b':
         raise ValueError('Unsupported protocol-2 tagger')
+    if payload.get('protocol') == 4 and payload.get('tagger') != 'ram++-qwen-background-v1':
+        raise ValueError('Unsupported protocol-4 tagger')
     # Local scratch supports atomic rename; do not write inference artifacts on global storage.
     scratch = Path(os.environ.get("MAPMAKER_SCRATCH", "/tmp/mapmaker-jobs"))
     scratch.mkdir(parents=True, exist_ok=True)
@@ -51,7 +53,7 @@ def handler(job):
         run.mkdir()
         unpack_run(archive, run)
         meta = read(run / "scene_metadata.json")
-        if payload.get('protocol') == 2 and (
+        if payload.get('protocol') in (2, 4) and (
                 meta.get('execution', {}).get('tagger') != payload['tagger'] or
                 meta.get('execution', {}).get('mode') != 1):
             raise ValueError('Qwen job execution metadata mismatch')

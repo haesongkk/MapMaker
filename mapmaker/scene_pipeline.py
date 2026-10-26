@@ -108,6 +108,19 @@ class Pipeline:
             env.setdefault("OMP_NUM_THREADS", "8")
             env.setdefault("MKL_NUM_THREADS", "8")
             execution = read(run / 'scene_metadata.json').get('execution', {})
+            if execution.get('tagger') == 'ram++-qwen-background-v1':
+                if execution.get('mode') != 1:
+                    raise ValueError('Background tag filtering requires mode 1')
+                self.close()
+                self.worker = self.worker_log = None
+                with (run / 'logs/ram_filter.log').open('w') as log:
+                    subprocess.run([str(VISION_PYTHON), '-m',
+                                    'mapmaker.qwen_background_filter', 'extract', str(run)],
+                                   cwd=ROOT, env=env, stdout=log,
+                                   stderr=subprocess.STDOUT, check=True)
+                from .qwen_tags import prepare_and_run
+                with (run / 'logs/qwen_filter.log').open('w') as log:
+                    prepare_and_run(run, env, log, background_filter=True)
             if execution.get('tagger') == 'qwen2.5-vl-7b':
                 if execution.get('mode') != 1:
                     raise ValueError('Qwen tag comparison requires mode 1')

@@ -101,6 +101,9 @@ class RemotePipeline:
                 payload = {
                     "protocol": 1, "run_id": run.name, "input_sha256": sha(archive),
                 }
+                tagger = read(run / 'scene_metadata.json').get('execution', {}).get('tagger')
+                if tagger == 'ram++-qwen-background-v1':
+                    payload.update(protocol=4, tagger=tagger)
                 response = self.client.submit(payload, self.timeout)
                 job = response["id"]
                 if not re.fullmatch(r"[a-zA-Z0-9_-]+", job):

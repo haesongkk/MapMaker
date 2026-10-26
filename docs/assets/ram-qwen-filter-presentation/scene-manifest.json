@@ -1,0 +1,178 @@
+{
+  "present-chair": {
+    "baseline": {
+      "path": "D:/MapMaker/.runtime/presentation-candidates/runs/0c7ecb8f8f1a46af8ecc4b4081743802",
+      "scene_sha256": "cf631f48c5af9b60653eded985e3c12d859610b4518d10fe32a94b3cff4e6c15",
+      "input_sha256": "726c588f1527ac6af97c2cf8ce545ae168d7633516db1aa6bb000d10fb71fdf9",
+      "tags": [
+        "armchair",
+        "lamp",
+        "chair",
+        "daybed",
+        "pad",
+        "table lamp",
+        "side table",
+        "floor",
+        "footrest",
+        "furniture",
+        "hassock",
+        "room",
+        "wall lamp",
+        "stool",
+        "white",
+        "wood floor"
+      ],
+      "objects": 10,
+      "mask_counts": {
+        "armchair": 1,
+        "lamp": 1,
+        "chair": 1,
+        "floor": 1,
+        "furniture": 3,
+        "room": 1,
+        "stool": 1,
+        "wood floor": 1
+      },
+      "alias": "presentation-present-chair-baseline"
+    },
+    "vision-furniture": {
+      "path": "D:/MapMaker/.runtime/presentation-candidates/runs/9d64329b002945d8a41483d18e6b3a21",
+      "scene_sha256": "2079e43c0f6e93bb418862fb4ca2e250f9b7def7bd9e671c46cd07ec3c49b8c1",
+      "input_sha256": "726c588f1527ac6af97c2cf8ce545ae168d7633516db1aa6bb000d10fb71fdf9",
+      "tags": [
+        "chair",
+        "floor lamp",
+        "ottoman"
+      ],
+      "objects": 3,
+      "mask_counts": {
+        "chair": 1,
+        "floor lamp": 1,
+        "ottoman": 1
+      },
+      "alias": "presentation-present-chair-vision-furniture"
+    }
+  },
+  "present-cabinet": {
+    "baseline": {
+      "path": "D:/MapMaker/.runtime/presentation-candidates/runs/08f64d4b575b4e0aab6e63b406f197fb",
+      "scene_sha256": "5d45f651e853c02bf1ef85d535314bb7d97947c408a99b8afb9f12f8c7609be7",
+      "input_sha256": "049c70d0fa3fda5abdb395f87675984d83dffbabddfaa5e02cca2a797f7502ff",
+      "tags": [
+        "chest",
+        "bureau",
+        "drawer",
+        "dresser",
+        "file cabinet",
+        "floor",
+        "furniture",
+        "greenery",
+        "hardwood floor",
+        "houseplant",
+        "nightstand",
+        "plant",
+        "pot",
+        "room",
+        "stool",
+        "wood floor"
+      ],
+      "objects": 19,
+      "mask_counts": {
+        "bureau": 1,
+        "drawer": 5,
+        "dresser": 1,
+        "floor": 1,
+        "furniture": 1,
+        "greenery": 2,
+        "hardwood floor": 1,
+        "houseplant": 2,
+        "plant": 2,
+        "pot": 1,
+        "room": 1,
+        "wood floor": 1
+      },
+      "alias": "presentation-present-cabinet-baseline"
+    },
+    "vision-furniture": {
+      "path": "D:/MapMaker/.runtime/presentation-candidates/runs/3520dcb782bf45c381a682d686b1d90d",
+      "scene_sha256": "e448cde9651539eb4892d973094e3889cb014049d8153dcd744c7f8d254c4cde",
+      "input_sha256": "049c70d0fa3fda5abdb395f87675984d83dffbabddfaa5e02cca2a797f7502ff",
+      "tags": [
+        "dresser",
+        "plant",
+        "pot",
+        "book",
+        "vase"
+      ],
+      "objects": 8,
+      "mask_counts": {
+        "dresser": 1,
+        "plant": 2,
+        "pot": 1,
+        "book": 2,
+        "vase": 2
+      },
+      "alias": "presentation-present-cabinet-vision-furniture"
+    }
+  },
+  "present-bench": {
+    "baseline": {
+      "path": "D:/MapMaker/.runtime/presentation-candidates/runs/bf3cc75fe7964770ab88743ef4ba91d1",
+      "scene_sha256": "89a5f59c00da32ff0b502fc3db3140e64dcc7ee435dfae500ea618c2f8137d34",
+      "input_sha256": "8dffad5dbaaf02a6465fe726f24d893991e5790a15fcc5aa9ed74e0619825616",
+      "tags": [
+        "bench",
+        "carpet",
+        "floor",
+        "glass door",
+        "greenery",
+        "living room",
+        "picture frame",
+        "pillow",
+        "plant",
+        "room",
+        "stool",
+        "vase",
+        "white"
+      ],
+      "objects": 9,
+      "mask_counts": {
+        "bench": 1,
+        "carpet": 1,
+        "floor": 1,
+        "greenery": 1,
+        "picture frame": 1,
+        "pillow": 1,
+        "plant": 1,
+        "room": 1,
+        "vase": 1
+      },
+      "alias": "presentation-present-bench-baseline"
+    },
+    "vision-furniture": {
+      "path": "D:/MapMaker/.runtime/presentation-candidates/runs/2f0a44cbcfaa4c60a9da43ab5c7b7bc2",
+      "scene_sha256": "4f8dc4d17054944fe21e28f8c02a0e05c8643c62c0dc482efad49d457297a086",
+      "input_sha256": "8dffad5dbaaf02a6465fe726f24d893991e5790a15fcc5aa9ed74e0619825616",
+      "tags": [
+        "wooden bench",
+        "pillow",
+        "hat",
+        "abstract painting",
+        "white vase",
+        "potted plant",
+        "rug"
+      ],
+      "objects": 7,
+      "mask_counts": {
+        "wooden bench": 1,
+        "pillow": 1,
+        "hat": 1,
+        "abstract painting": 1,
+        "white vase": 1,
+        "potted plant": 1,
+        "rug": 1
+      },
+      "alias": "presentation-present-bench-vision-furniture"
+    }
+  }
+}

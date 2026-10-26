@@ -48,14 +48,19 @@ def run_scene(run):
     regions = []
     tagger = meta.get('execution', {}).get('tagger', 'ram++')
     if tagger == 'qwen2.5-vl-7b':
-        from .qwen_tags import MODEL, REVISION, parse_tags
+        from .qwen_tags import MODEL, REVISION, parse_tags, prompt_for
         evidence = read(run / 'logs/qwen_response.json')
         if (evidence['input_sha256'] != sha(image_path) or
-                evidence['model'] != MODEL or evidence['revision'] != REVISION):
+                evidence['model'] != MODEL or evidence['revision'] != REVISION or
+                evidence['prompt'] != prompt_for(meta)):
             raise ValueError('Qwen tag provenance does not match this run')
         prompts = parse_tags(evidence['raw_response'])
         if prompts != evidence['tags']:
             raise ValueError('Qwen tags differ from its raw response')
+        tags_by_view = {str(image_path): prompts}
+    elif tagger == 'ram++-qwen-background-v1':
+        from .qwen_background_filter import load_result
+        prompts, filter_evidence = load_result(run)
         tags_by_view = {str(image_path): prompts}
     elif tagger == 'ram++':
         tags_by_view = ram_tags(views, RAM_CHECKPOINT)
@@ -86,6 +91,18 @@ def run_scene(run):
             prompt=evidence['prompt'], raw_response=evidence['raw_response'],
             generation=evidence['generation'], evidence='logs/qwen_response.json')
         meta['pipeline']['object_extraction_model'] = MODEL
+    if tagger == 'ram++-qwen-background-v1':
+        from collections import Counter
+        remaining = Counter(prompts)
+        rejected = []
+        for tag in filter_evidence['raw_tags']:
+            if remaining[tag]:
+                remaining[tag] -= 1
+            else:
+                rejected.append(tag)
+        extraction.update(raw_tags=filter_evidence['raw_tags'], rejected=rejected,
+                          policy='qwen_background_filter_v1',
+                          filter_evidence='logs/qwen_filter_response.json')
     write(run / "object_candidates.json", extraction)
     meta["object_extraction"] = extraction
     meta["timing"]["object_extraction_seconds"] = time.monotonic() - start
@@ -198,7 +215,9 @@ def run_scene(run):
             "detections": detections,
         },
     )
-    meta.setdefault("execution", {})["baseline_policy"] = "default_model_outputs_unfiltered_v1"
+    meta.setdefault("execution", {})["baseline_policy"] = (
+        'qwen_background_filter_v1' if tagger == 'ram++-qwen-background-v1'
+        else 'default_model_outputs_unfiltered_v1')
     meta["objects"] = objects
     meta["timing"]["segmentation_seconds"] = time.monotonic() - start
     meta["pipeline"]["vision_torch"] = torch.__version__

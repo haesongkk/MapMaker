@@ -1,0 +1,263 @@
+{
+  "present-chair": {
+    "baseline": {
+      "model": "RAM++",
+      "threshold_policy": "model_default",
+      "code": "mapmaker.initial_vision.ram_tags",
+      "raw_tags": [
+        "armchair",
+        "lamp",
+        "chair",
+        "daybed",
+        "pad",
+        "table lamp",
+        "side table",
+        "floor",
+        "footrest",
+        "furniture",
+        "hassock",
+        "room",
+        "wall lamp",
+        "stool",
+        "white",
+        "wood floor"
+      ],
+      "tags_by_view": {
+        "input/source_image.png": [
+          "armchair",
+          "lamp",
+          "chair",
+          "daybed",
+          "pad",
+          "table lamp",
+          "side table",
+          "floor",
+          "footrest",
+          "furniture",
+          "hassock",
+          "room",
+          "wall lamp",
+          "stool",
+          "white",
+          "wood floor"
+        ]
+      },
+      "regions": [],
+      "candidates": [
+        "armchair",
+        "lamp",
+        "chair",
+        "daybed",
+        "pad",
+        "table lamp",
+        "side table",
+        "floor",
+        "footrest",
+        "furniture",
+        "hassock",
+        "room",
+        "wall lamp",
+        "stool",
+        "white",
+        "wood floor"
+      ],
+      "rejected": [],
+      "policy": "default_model_outputs_unfiltered_v1",
+      "checkpoint": "/opt/mapmaker-models/checkpoints/ram_plus_swin_large_14m.pth",
+      "checkpoint_resolved": "/opt/mapmaker-models/checkpoints/ram_plus_swin_large_14m.pth"
+    },
+    "vision-furniture": {
+      "model": "Qwen/Qwen2.5-VL-7B-Instruct",
+      "revision": "cc594898137f460bfe9f0759e9844b3ce807cfb5",
+      "prompt": "List the furniture and other movable physical objects visible in this image.\n\nUse specific, common object names, with one tag per object category.\nReturn only a JSON array of strings.",
+      "raw_response": "```json\n[\n  \"chair\",\n  \"floor lamp\",\n  \"ottoman\"\n]\n```",
+      "input_sha256": "726c588f1527ac6af97c2cf8ce545ae168d7633516db1aa6bb000d10fb71fdf9",
+      "transformers": "4.51.3",
+      "generation": {
+        "max_new_tokens": 2048,
+        "do_sample": false,
+        "seed": 42
+      },
+      "image_processor_policy": "model_default",
+      "generated_tokens": 21,
+      "tags": [
+        "chair",
+        "floor lamp",
+        "ottoman"
+      ]
+    }
+  },
+  "present-cabinet": {
+    "baseline": {
+      "model": "RAM++",
+      "threshold_policy": "model_default",
+      "code": "mapmaker.initial_vision.ram_tags",
+      "raw_tags": [
+        "chest",
+        "bureau",
+        "drawer",
+        "dresser",
+        "file cabinet",
+        "floor",
+        "furniture",
+        "greenery",
+        "hardwood floor",
+        "houseplant",
+        "nightstand",
+        "plant",
+        "pot",
+        "room",
+        "stool",
+        "wood floor"
+      ],
+      "tags_by_view": {
+        "input/source_image.png": [
+          "chest",
+          "bureau",
+          "drawer",
+          "dresser",
+          "file cabinet",
+          "floor",
+          "furniture",
+          "greenery",
+          "hardwood floor",
+          "houseplant",
+          "nightstand",
+          "plant",
+          "pot",
+          "room",
+          "stool",
+          "wood floor"
+        ]
+      },
+      "regions": [],
+      "candidates": [
+        "chest",
+        "bureau",
+        "drawer",
+        "dresser",
+        "file cabinet",
+        "floor",
+        "furniture",
+        "greenery",
+        "hardwood floor",
+        "houseplant",
+        "nightstand",
+        "plant",
+        "pot",
+        "room",
+        "stool",
+        "wood floor"
+      ],
+      "rejected": [],
+      "policy": "default_model_outputs_unfiltered_v1",
+      "checkpoint": "/opt/mapmaker-models/checkpoints/ram_plus_swin_large_14m.pth",
+      "checkpoint_resolved": "/opt/mapmaker-models/checkpoints/ram_plus_swin_large_14m.pth"
+    },
+    "vision-furniture": {
+      "model": "Qwen/Qwen2.5-VL-7B-Instruct",
+      "revision": "cc594898137f460bfe9f0759e9844b3ce807cfb5",
+      "prompt": "List the furniture and other movable physical objects visible in this image.\n\nUse specific, common object names, with one tag per object category.\nReturn only a JSON array of strings.",
+      "raw_response": "```json\n[\n  \"dresser\",\n  \"plant\",\n  \"pot\",\n  \"book\",\n  \"vase\"\n]\n```",
+      "input_sha256": "049c70d0fa3fda5abdb395f87675984d83dffbabddfaa5e02cca2a797f7502ff",
+      "transformers": "4.51.3",
+      "generation": {
+        "max_new_tokens": 2048,
+        "do_sample": false,
+        "seed": 42
+      },
+      "image_processor_policy": "model_default",
+      "generated_tokens": 29,
+      "tags": [
+        "dresser",
+        "plant",
+        "pot",
+        "book",
+        "vase"
+      ]
+    }
+  },
+  "present-bench": {
+    "baseline": {
+      "model": "RAM++",
+      "threshold_policy": "model_default",
+      "code": "mapmaker.initial_vision.ram_tags",
+      "raw_tags": [
+        "bench",
+        "carpet",
+        "floor",
+        "glass door",
+        "greenery",
+        "living room",
+        "picture frame",
+        "pillow",
+        "plant",
+        "room",
+        "stool",
+        "vase",
+        "white"
+      ],
+      "tags_by_view": {
+        "input/source_image.png": [
+          "bench",
+          "carpet",
+          "floor",
+          "glass door",
+          "greenery",
+          "living room",
+          "picture frame",
+          "pillow",
+          "plant",
+          "room",
+          "stool",
+          "vase",
+          "white"
+        ]
+      },
+      "regions": [],
+      "candidates": [
+        "bench",
+        "carpet",
+        "floor",
+        "glass door",
+        "greenery",
+        "living room",
+        "picture frame",
+        "pillow",
+        "plant",
+        "room",
+        "stool",
+        "vase",
+        "white"
+      ],
+      "rejected": [],
+      "policy": "default_model_outputs_unfiltered_v1",
+      "checkpoint": "/opt/mapmaker-models/checkpoints/ram_plus_swin_large_14m.pth",
+      "checkpoint_resolved": "/opt/mapmaker-models/checkpoints/ram_plus_swin_large_14m.pth"
+    },
+    "vision-furniture": {
+      "model": "Qwen/Qwen2.5-VL-7B-Instruct",
+      "revision": "cc594898137f460bfe9f0759e9844b3ce807cfb5",
+      "prompt": "List the furniture and other movable physical objects visible in this image.\n\nUse specific, common object names, with one tag per object category.\nReturn only a JSON array of strings.",
+      "raw_response": "```json\n[\n  \"wooden bench\",\n  \"pillow\",\n  \"hat\",\n  \"abstract painting\",\n  \"white vase\",\n  \"potted plant\",\n  \"rug\"\n]\n```",
+      "input_sha256": "8dffad5dbaaf02a6465fe726f24d893991e5790a15fcc5aa9ed74e0619825616",
+      "transformers": "4.51.3",
+      "generation": {
+        "max_new_tokens": 2048,
+        "do_sample": false,
+        "seed": 42
+      },
+      "image_processor_policy": "model_default",
+      "generated_tokens": 42,
+      "tags": [
+        "wooden bench",
+        "pillow",
+        "hat",
+        "abstract painting",
+        "white vase",
+        "potted plant",
+        "rug"
+      ]
+    }
+  }
+}

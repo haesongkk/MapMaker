@@ -1,0 +1,326 @@
+{
+  "new-living": {
+    "source_run": ".runtime/new-scene-comparison/runs/17ededd28a8c413b8ec987a55e30c517",
+    "target_run": ".runtime/ram-qwen-filter-new-v2/scenes/new-living",
+    "source_scene_sha256": "e54a95f2a8d05d90e53723bbd318a4f8e279d7aa1317e1c102c4a75a6625b269",
+    "scene_sha256": "2a0243161664e512af5520dfc1f5f67c5071828b3f02fb478e2c35aa3a2f1508",
+    "objects_before": 11,
+    "objects_after": 9,
+    "removed_objects": [
+      {
+        "id": "prompt_0011_mask_0000",
+        "tag": "living room"
+      },
+      {
+        "id": "prompt_0014_mask_0000",
+        "tag": "room"
+      }
+    ],
+    "kept_object_ids": [
+      "prompt_0001_mask_0000",
+      "prompt_0002_mask_0000",
+      "prompt_0003_mask_0000",
+      "prompt_0004_mask_0000",
+      "prompt_0004_mask_0001",
+      "prompt_0007_mask_0000",
+      "prompt_0007_mask_0001",
+      "prompt_0007_mask_0002",
+      "prompt_0013_mask_0000"
+    ],
+    "removed_tags": [
+      "gray",
+      "living room",
+      "modern",
+      "room"
+    ],
+    "kept_tags": [
+      "armchair",
+      "carpet",
+      "chair",
+      "couch",
+      "curtain",
+      "table",
+      "side table",
+      "furniture",
+      "glass table",
+      "hassock",
+      "picture frame"
+    ],
+    "geometry_and_textures_reused": true,
+    "original_transform_matrices_preserved": true,
+    "gpu_inference": false
+  },
+  "new-office": {
+    "source_run": ".runtime/new-scene-comparison/runs/226e472640ed4114a79ad5eebf61ea25",
+    "target_run": ".runtime/ram-qwen-filter-new-v2/scenes/new-office",
+    "source_scene_sha256": "6793028a1b86a036bcd49005b643a73cba7f05328d2b4b34624ae89bf45e8c27",
+    "scene_sha256": "1956851147b2f6b68397c030a297a76de530cca034ad20bb97ec95c61fe6e64a",
+    "objects_before": 37,
+    "objects_after": 30,
+    "removed_objects": [
+      {
+        "id": "prompt_0003_mask_0000",
+        "tag": "ceiling"
+      },
+      {
+        "id": "prompt_0009_mask_0000",
+        "tag": "floor"
+      },
+      {
+        "id": "prompt_0010_mask_0000",
+        "tag": "hardwood"
+      },
+      {
+        "id": "prompt_0010_mask_0001",
+        "tag": "hardwood"
+      },
+      {
+        "id": "prompt_0010_mask_0002",
+        "tag": "hardwood"
+      },
+      {
+        "id": "prompt_0011_mask_0000",
+        "tag": "hardwood floor"
+      },
+      {
+        "id": "prompt_0022_mask_0000",
+        "tag": "wood floor"
+      }
+    ],
+    "kept_object_ids": [
+      "prompt_0004_mask_0000",
+      "prompt_0005_mask_0000",
+      "prompt_0006_mask_0000",
+      "prompt_0008_mask_0000",
+      "prompt_0008_mask_0001",
+      "prompt_0008_mask_0002",
+      "prompt_0008_mask_0003",
+      "prompt_0008_mask_0004",
+      "prompt_0008_mask_0005",
+      "prompt_0012_mask_0000",
+      "prompt_0014_mask_0000",
+      "prompt_0015_mask_0000",
+      "prompt_0016_mask_0000",
+      "prompt_0017_mask_0000",
+      "prompt_0017_mask_0001",
+      "prompt_0017_mask_0002",
+      "prompt_0017_mask_0003",
+      "prompt_0017_mask_0004",
+      "prompt_0017_mask_0005",
+      "prompt_0017_mask_0006",
+      "prompt_0017_mask_0007",
+      "prompt_0017_mask_0008",
+      "prompt_0017_mask_0009",
+      "prompt_0017_mask_0010",
+      "prompt_0018_mask_0000",
+      "prompt_0018_mask_0001",
+      "prompt_0018_mask_0002",
+      "prompt_0019_mask_0000",
+      "prompt_0020_mask_0000",
+      "prompt_0021_mask_0000"
+    ],
+    "removed_tags": [
+      "ceiling",
+      "floor",
+      "hardwood",
+      "hardwood floor",
+      "wood floor"
+    ],
+    "kept_tags": [
+      "black",
+      "lamp",
+      "bureau",
+      "chair",
+      "computer",
+      "computer desk",
+      "table",
+      "drawer",
+      "home office",
+      "modern",
+      "office",
+      "office chair",
+      "office desk",
+      "office supply",
+      "plant",
+      "room",
+      "swivel chair",
+      "window"
+    ],
+    "geometry_and_textures_reused": true,
+    "original_transform_matrices_preserved": true,
+    "gpu_inference": false
+  },
+  "new-dining": {
+    "source_run": ".runtime/new-scene-comparison/runs/34f725e6880f4580a510f536962ac379",
+    "target_run": ".runtime/ram-qwen-filter-new-v2/scenes/new-dining",
+    "source_scene_sha256": "762bfb50f93db512d4d41bac0df009e5b2090e75a8ec708a3a794b3c56b11cda",
+    "scene_sha256": "df93a2afb408f6b4319de2d3cd0cbf6ddee3b4ff674db17349536a521463ac21",
+    "objects_before": 5,
+    "objects_after": 4,
+    "removed_objects": [
+      {
+        "id": "prompt_0003_mask_0000",
+        "tag": "floor"
+      }
+    ],
+    "kept_object_ids": [
+      "prompt_0000_mask_0000",
+      "prompt_0000_mask_0001",
+      "prompt_0001_mask_0000",
+      "prompt_0002_mask_0000"
+    ],
+    "removed_tags": [
+      "floor",
+      "room"
+    ],
+    "kept_tags": [
+      "chair",
+      "table",
+      "dinning table",
+      "stool",
+      "white"
+    ],
+    "geometry_and_textures_reused": true,
+    "original_transform_matrices_preserved": true,
+    "gpu_inference": false
+  },
+  "new-bedroom": {
+    "source_run": ".runtime/new-scene-comparison/runs/ca17f26fcc6c4a62afd6cf0dea83131e",
+    "target_run": ".runtime/ram-qwen-filter-new-v2/scenes/new-bedroom",
+    "source_scene_sha256": "78a9f8ee06fad44abaaecb048313f3b779749a321d13dedf214ed043bb9697eb",
+    "scene_sha256": "6131ac62991771adc3264440ac4dd22f7abf5bb4e3370d23b1c8128095d9c1fc",
+    "objects_before": 11,
+    "objects_after": 10,
+    "removed_objects": [
+      {
+        "id": "prompt_0003_mask_0000",
+        "tag": "ceiling"
+      }
+    ],
+    "kept_object_ids": [
+      "prompt_0000_mask_0000",
+      "prompt_0001_mask_0000",
+      "prompt_0002_mask_0000",
+      "prompt_0002_mask_0001",
+      "prompt_0004_mask_0000",
+      "prompt_0004_mask_0001",
+      "prompt_0006_mask_0000",
+      "prompt_0007_mask_0000",
+      "prompt_0009_mask_0000",
+      "prompt_0013_mask_0000"
+    ],
+    "removed_tags": [
+      "ceiling"
+    ],
+    "kept_tags": [
+      "bed",
+      "bedroom",
+      "lamp",
+      "curtain",
+      "hassock",
+      "headboard",
+      "nightstand",
+      "pillow",
+      "room",
+      "wall lamp",
+      "skylight",
+      "white",
+      "window"
+    ],
+    "geometry_and_textures_reused": true,
+    "original_transform_matrices_preserved": true,
+    "gpu_inference": false
+  },
+  "new-reading": {
+    "source_run": ".runtime/new-scene-comparison/runs/8bb5cb6bb3ea44c08552b09f53ef86f3",
+    "target_run": ".runtime/ram-qwen-filter-new-v2/scenes/new-reading",
+    "source_scene_sha256": "5650a18dd507aa154d83e302fb308a5aea90861a44612d84c9511a155327bee3",
+    "scene_sha256": "7c7831f7d1b5ea4ab4f19ccfaeabdfce36039efd9b7f31bd5cc4b8dd58e27baa",
+    "objects_before": 9,
+    "objects_after": 6,
+    "removed_objects": [
+      {
+        "id": "prompt_0007_mask_0000",
+        "tag": "floor"
+      },
+      {
+        "id": "prompt_0008_mask_0000",
+        "tag": "hardwood floor"
+      },
+      {
+        "id": "prompt_0015_mask_0000",
+        "tag": "wood floor"
+      }
+    ],
+    "kept_object_ids": [
+      "prompt_0001_mask_0000",
+      "prompt_0002_mask_0000",
+      "prompt_0005_mask_0000",
+      "prompt_0006_mask_0000",
+      "prompt_0009_mask_0000",
+      "prompt_0013_mask_0000"
+    ],
+    "removed_tags": [
+      "floor",
+      "hardwood floor",
+      "room",
+      "wood floor"
+    ],
+    "kept_tags": [
+      "armchair",
+      "blanket",
+      "chair",
+      "cloth",
+      "corner",
+      "table",
+      "side table",
+      "plant",
+      "sit",
+      "stool",
+      "vase",
+      "white"
+    ],
+    "geometry_and_textures_reused": true,
+    "original_transform_matrices_preserved": true,
+    "gpu_inference": false
+  },
+  "new-patio": {
+    "source_run": ".runtime/new-scene-comparison/runs/c6fae16d76cf45199922dbfa4deecb5e",
+    "target_run": ".runtime/ram-qwen-filter-new-v2/scenes/new-patio",
+    "source_scene_sha256": "b1d4656d024926992d73c2bc7664cd64343db8cc36b47feb312494ddbeb2a493",
+    "scene_sha256": "ceb9119665b1bc731857ec6d36d5c6579b1fb5a4e5846df370384b4828b6a212",
+    "objects_before": 10,
+    "objects_after": 9,
+    "removed_objects": [
+      {
+        "id": "prompt_0003_mask_0000",
+        "tag": "floor"
+      }
+    ],
+    "kept_object_ids": [
+      "prompt_0000_mask_0000",
+      "prompt_0000_mask_0001",
+      "prompt_0000_mask_0002",
+      "prompt_0002_mask_0000",
+      "prompt_0004_mask_0000",
+      "prompt_0004_mask_0001",
+      "prompt_0004_mask_0002",
+      "prompt_0004_mask_0003",
+      "prompt_0005_mask_0000"
+    ],
+    "removed_tags": [
+      "floor"
+    ],
+    "kept_tags": [
+      "chair",
+      "couple",
+      "deck",
+      "plant",
+      "porch",
+      "stool"
+    ],
+    "geometry_and_textures_reused": true,
+    "original_transform_matrices_preserved": true,
+    "gpu_inference": false
+  }
+}

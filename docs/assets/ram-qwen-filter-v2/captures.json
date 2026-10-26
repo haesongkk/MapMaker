@@ -1,0 +1,195 @@
+[
+  {
+    "sample": "house",
+    "camera": [
+      -1.2556060461244987,
+      0.8400474956386873,
+      -2.4349664552101165
+    ],
+    "target": [
+      -0.28097745397609075,
+      -0.017625665451910577,
+      1.4635479133835116
+    ],
+    "triangles": 7408180,
+    "errors": [],
+    "source_scene_sha256": "75e99e0c9fbfda84a5bb52ddc8d184e159f9f0b43e551da5ef709b1eef59e825",
+    "scene_sha256": "801a2d484ece1b5eccf5d1d5f0e81f64f3a6ce870d6f1f0cad2205de84da75f1",
+    "before_capture": "docs/assets/baseline-comparison/baseline-house-new.png",
+    "camera_policy": "same_camera_and_target_as_verified_baseline"
+  },
+  {
+    "sample": "office",
+    "camera": [
+      -1.063688516236605,
+      1.0842772377291268,
+      -2.210524777016844
+    ],
+    "target": [
+      -0.09719117957524182,
+      0.23375958146712716,
+      1.655464569628605
+    ],
+    "triangles": 15676808,
+    "errors": [],
+    "source_scene_sha256": "3a54e1ffab6d67026a1d69ac8dbeabb19e2cfafdc4aff03a3fa53928364caa71",
+    "scene_sha256": "da1ae102e0a4cd84923db7077a346812ca9200199fe7468219f7a40b9aa420c1",
+    "before_capture": "docs/assets/baseline-comparison/baseline-office-new.png",
+    "camera_policy": "same_camera_and_target_as_verified_baseline",
+    "reused_from": "v1_identical_scene_sha256"
+  },
+  {
+    "sample": "displaycase",
+    "camera": [
+      -1.2334318573429126,
+      0.8895141743096058,
+      -3.659423150056246
+    ],
+    "target": [
+      -0.06945459912035779,
+      -0.13478581292624142,
+      0.9964858828339691
+    ],
+    "triangles": 44869136,
+    "errors": [],
+    "source_scene_sha256": "dc4b7ff77f9713b0ecffc42876be4847f2bc3c78a8f5a5c9428dd7f7c4ce9d6c",
+    "scene_sha256": "8371149d431b94225ae99f905d549907e39ad091945e329ec263d4da69613420",
+    "before_capture": "docs/assets/baseline-comparison/baseline-displaycase-new.png",
+    "camera_policy": "same_camera_and_target_as_verified_baseline",
+    "reused_from": "v1_identical_scene_sha256"
+  },
+  {
+    "sample": "stairhall",
+    "camera": [
+      -0.9670965208932794,
+      0.982853511108106,
+      -2.0284912507655832
+    ],
+    "target": [
+      -0.05881399778019047,
+      0.18356489076858717,
+      1.6046388416867765
+    ],
+    "triangles": 6580186,
+    "errors": [],
+    "source_scene_sha256": "4d242263517736b1dc6bba72aa514903f1b33a47115c8cdb3f54a70450ec7d6b",
+    "scene_sha256": "4d242263517736b1dc6bba72aa514903f1b33a47115c8cdb3f54a70450ec7d6b",
+    "before_capture": "docs/assets/baseline-comparison/baseline-stairhall-new.png",
+    "camera_policy": "same_camera_and_target_as_verified_baseline"
+  },
+  {
+    "sample": "sample-01",
+    "camera": [
+      -0.7626971911622227,
+      1.0585284013156653,
+      -2.0245530308881596
+    ],
+    "target": [
+      0.19266730993317693,
+      0.21780764035171443,
+      1.7969049734934357
+    ],
+    "triangles": 9773030,
+    "errors": [],
+    "source_scene_sha256": "248a1bb6c4bf9238c58c4c99c4d330b6bfa570ba25c2264162343bf532c54592",
+    "scene_sha256": "c0541c9faf6d1b46a9a8fa352fc00fdfca7371f093384a2302e4663afcf3ae71",
+    "before_capture": "docs/assets/baseline-comparison/baseline-sample-01-new.png",
+    "camera_policy": "same_camera_and_target_as_verified_baseline"
+  },
+  {
+    "sample": "sample-02",
+    "camera": [
+      -1.4289404644797066,
+      1.474383474658425,
+      -3.5238063300699087
+    ],
+    "target": [
+      -0.0006577603149143796,
+      0.2174946949934069,
+      2.1893244865892667
+    ],
+    "triangles": 35550518,
+    "errors": [],
+    "source_scene_sha256": "90e09512037a2f989b9c3fea182996ed05b3fa3a7333ceeaee1fa295a3721886",
+    "scene_sha256": "31dd71e89d1aed43f1b6b8f29cbfab12dfb3832adcc65cbe9c67d9df5e66421f",
+    "before_capture": "docs/assets/baseline-comparison/baseline-sample-02-new.png",
+    "camera_policy": "same_camera_and_target_as_verified_baseline"
+  },
+  {
+    "sample": "sample-03",
+    "camera": [
+      -1.747836468109853,
+      2.088707327676117,
+      -3.574550894141552
+    ],
+    "target": [
+      -0.16950450881162363,
+      0.699775203493677,
+      2.7387769430513607
+    ],
+    "triangles": 10710550,
+    "errors": [],
+    "source_scene_sha256": "e4bc2f893bbd6d3090ed135ffb72a711cef544f1a748f4de96940136b69d1e08",
+    "scene_sha256": "0aceaf9b35227102651e080ff97e80146d9bf247623c1ef98c8d329d0483cdcd",
+    "before_capture": "docs/assets/baseline-comparison/baseline-sample-03-new.png",
+    "camera_policy": "same_camera_and_target_as_verified_baseline",
+    "reused_from": "v1_identical_scene_sha256"
+  },
+  {
+    "sample": "sample-04",
+    "camera": [
+      -0.7067849146502592,
+      0.5933694376859262,
+      -1.964709236516246
+    ],
+    "target": [
+      0.071019764342243,
+      -0.09109867982747494,
+      1.14650947945376
+    ],
+    "triangles": 8543484,
+    "errors": [],
+    "source_scene_sha256": "9014ce9097ce7d91ef9036d5876d3cae1ed3ecca43d0f5cfeb53e7ce1d56b541",
+    "scene_sha256": "e53ea8bc09f662e35f9285b0c2ca6290e2c598fc654f4bea5c0784fa1c0f6899",
+    "before_capture": "docs/assets/baseline-comparison/baseline-sample-04-new.png",
+    "camera_policy": "same_camera_and_target_as_verified_baseline"
+  },
+  {
+    "sample": "sample-05",
+    "camera": [
+      -0.5092001905023733,
+      0.4443994544653598,
+      1.0502177671736077
+    ],
+    "target": [
+      -0.050824078025107196,
+      0.041028475485365395,
+      2.883722217082674
+    ],
+    "triangles": 8017602,
+    "errors": [],
+    "source_scene_sha256": "04cacbf030909a96ca4a41c804171712403ba412779b63dce5b3bf9a6256b7d0",
+    "scene_sha256": "921114f17a4cf8a757c76dde8e19f97301fa8d6a8b1fe2a30f781c93bca9d5f3",
+    "before_capture": "docs/assets/baseline-comparison/baseline-sample-05-new.png",
+    "camera_policy": "same_camera_and_target_as_verified_baseline"
+  },
+  {
+    "sample": "restaurant",
+    "camera": [
+      -1.412653662405421,
+      1.113538531450515,
+      -2.2214877402908035
+    ],
+    "target": [
+      -0.13069294380046903,
+      -0.014586900921843391,
+      2.9063551341290097
+    ],
+    "triangles": 94910718,
+    "errors": [],
+    "source_scene_sha256": "c7d27be695cb71241a42a7f0a550aeda2dd3a1bb3d2383fcbd312eceab76413f",
+    "scene_sha256": "fc1d52ee725ba2e8cd80af97600499a419374a6fec012e7d0a983cae52cf20da",
+    "before_capture": "docs/assets/baseline-comparison/baseline-restaurant-new.png",
+    "camera_policy": "same_camera_and_target_as_verified_baseline"
+  }
+]

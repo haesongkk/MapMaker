@@ -1,0 +1,12 @@
+{
+  "ram-filter-furniture-house-before": ".runtime/minimal-baseline/runs/45fb194b52bc4d3f9d870dbd6893d7d3",
+  "ram-filter-furniture-house-after": ".runtime/ram-qwen-filter-furniture/scenes/house",
+  "ram-filter-furniture-office-before": ".runtime/minimal-baseline/runs/8858a43fe37b412eaf45f6db5b163d80",
+  "ram-filter-furniture-office-after": ".runtime/ram-qwen-filter-furniture/scenes/office",
+  "ram-filter-furniture-sample-01-before": ".runtime/minimal-baseline/recovered/e91470e861ec48a1a60d1c687b5c7c48",
+  "ram-filter-furniture-sample-01-after": ".runtime/ram-qwen-filter-furniture/scenes/sample-01",
+  "ram-filter-furniture-sample-02-before": ".runtime/minimal-baseline/recovered/b1f6657932ef4a82a4ff9d4d083dc790",
+  "ram-filter-furniture-sample-02-after": ".runtime/ram-qwen-filter-furniture/scenes/sample-02",
+  "ram-filter-furniture-sample-04-before": ".runtime/minimal-baseline/recovered/281ac163c2bf4ed28af870f93f153b45",
+  "ram-filter-furniture-sample-04-after": ".runtime/ram-qwen-filter-furniture/scenes/sample-04"
+}

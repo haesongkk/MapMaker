@@ -18,6 +18,8 @@ class Handler(BaseHTTPRequestHandler):
             extra = docs/'assets'/name/'viewers.json'
             if extra.is_file():
                 manifest['scenes'].update(json.loads(extra.read_text(encoding='utf-8')))
+        for extra in (docs/'assets').glob('ram-qwen-filter-*/viewers.json'):
+            manifest['scenes'].update(json.loads(extra.read_text(encoding='utf-8')))
         batch = None
         if batch_file is not None:
             batch = json.loads(batch_file.read_text(encoding='utf-8'))

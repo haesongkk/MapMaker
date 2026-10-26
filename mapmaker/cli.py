@@ -9,11 +9,19 @@ app = typer.Typer(
 
 
 @app.command()
-def run(image: Path, output: Path | None = None, mode: int = typer.Option(4, min=1, max=4)):
+def run(image: Path, output: Path | None = None, mode: int = typer.Option(4, min=1, max=4),
+        background_filter: bool = False):
     """Analyze one image, reconstruct its objects and export scene.glb."""
     from .scene_pipeline import configured_pipeline, create_run
 
+    if background_filter and mode != 1:
+        raise typer.BadParameter('--background-filter requires --mode 1')
     target = create_run(image.read_bytes(), output, mode=mode)
+    if background_filter:
+        from .scene_run import read, write
+        meta = read(target / 'scene_metadata.json')
+        meta['execution']['tagger'] = 'ram++-qwen-background-v1'
+        write(target / 'scene_metadata.json', meta)
     pipeline = configured_pipeline()
     try:
         pipeline.run(target)
