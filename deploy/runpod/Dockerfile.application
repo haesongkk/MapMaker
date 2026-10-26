@@ -1,0 +1,8 @@
+# Application-only release built from main; retain the verified GPU runtime.
+# Update deploy/runpod/Dockerfile separately when runtime dependencies change.
+FROM registry.runpod.net/haesongkk-mapmaker-codex-runpod-serverless-migration-deploy-runpod-dockerfile:8a0bcaa35
+WORKDIR /opt/mapmaker
+COPY mapmaker mapmaker
+COPY scripts scripts
+COPY configs configs
+ENTRYPOINT ["/opt/mapmaker/.venv/bin/python", "-m", "mapmaker.serverless_worker"]

@@ -20,7 +20,12 @@ Browser <--- bounded HTTP artifact reads <- web/API <- S3
 ## Build and deploy
 
 The live deployment uses `configs/cloud-deployment.json`. The web image is built
-from `codex/full-serverless-web`. The GPU endpoint reuses the existing CUDA/model
+from `main`. The GPU GitHub integration also follows `main`, using
+`deploy/runpod/Dockerfile.application` to reuse the verified CUDA/model runtime.
+The GPU endpoint additionally applies the explicitly pinned application release
+recorded in `configs/cloud-deployment.json`; a main push does not automatically
+advance that application ZIP. Advance and verify the release hash when promoting
+new GPU application behavior. The GPU endpoint reuses the existing CUDA/model
 runtime image and applies a private, SHA-256-pinned application ZIP at startup
 using `scripts/bootstrap_release.py`. Its entrypoint is `/bin/bash` with arguments
 `-c` and `exec /opt/mapmaker/.venv/bin/python -c "$MAPMAKER_BOOTSTRAP"`.
@@ -32,8 +37,8 @@ and `configs`; dependencies and weights are unchanged. Worker results record the
 application hash in `metadata.deployment.application_sha256`.
 
 The full-image commands below remain the deployment path for dependency/runtime
-changes. The experimental GPU GitHub build was cancelled; pushing that branch
-starts a costly full rebuild and is not needed for this application release.
+changes. Routine main builds use the application-only Dockerfile; use the full
+GPU Dockerfile only when deliberately updating dependencies or the CUDA runtime.
 
 Build from the repository root, replacing `REGISTRY` with your registry:
 

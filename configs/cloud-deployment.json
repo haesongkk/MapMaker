@@ -4,8 +4,11 @@
   "web_url": "https://9cicue4wyc0yzh.api.runpod.ai",
   "browser_gateway_pod_id": "zlkpn4g5odgrqq",
   "browser_gateway_origin": "https://zlkpn4g5odgrqq-8080.proxy.runpod.net",
-  "gpu_branch": "codex/full-serverless-deploy",
-  "web_branch": "codex/full-serverless-web",
-  "gpu_application_sha256": "56020d732de4e5f2ce749299ce3c23db53a4a2d1fb27e7b8e358cb897d7d8b9e",
-  "gpu_application_key": "mapmaker-releases/56020d732de4e5f2ce749299ce3c23db53a4a2d1fb27e7b8e358cb897d7d8b9e/application.zip"
+  "gpu_branch": "main",
+  "web_branch": "main",
+  "gpu_dockerfile": "deploy/runpod/Dockerfile.application",
+  "web_dockerfile": "deploy/runpod/Dockerfile.web",
+  "gpu_application_commit": "ed75c32466fa422e28d081721493c32f260c0e2e",
+  "gpu_application_sha256": "052b4207602f6752165fd5f2ef867d0dd544f4841a95b205862ce68d4c99606b",
+  "gpu_application_key": "mapmaker-releases/052b4207602f6752165fd5f2ef867d0dd544f4841a95b205862ce68d4c99606b/application.zip"
 }
