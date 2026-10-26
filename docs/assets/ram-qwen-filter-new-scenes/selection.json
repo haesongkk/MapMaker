@@ -5,29 +5,6 @@
   "priority": "major furniture coverage, duplication, shape, placement; not object count",
   "samples": [
     {
-      "id": "candidate-18",
-      "source_url": "https://sivrilermobilya.com/product/konfor-koltuk-takimi/",
-      "image_url": "https://sivrilermobilya.com/sivriler/uploads/products/konfor-koltuk-takimi.webp",
-      "path": "docs/assets/ram-qwen-filter-new-scenes/candidates/candidate-18.png",
-      "size": [
-        1320,
-        730
-      ],
-      "status": "downloaded",
-      "sample": "new-living",
-      "label": "\uac70\uc2e4",
-      "image_kind": "\uc81c\ud488 \uc5f0\ucd9c \uc774\ubbf8\uc9c0 \u00b7 \uc2e4\uc0ac/\ub80c\ub354 \ubbf8\ud655\uc778",
-      "expected_major_objects": [
-        "sofa \u00d71",
-        "armchair \u00d71",
-        "coffee table \u00d71"
-      ],
-      "selection_reason": "\uc18c\ud30c\u00b7\uc548\ub77d\uc758\uc790\u00b7\ubd88\ud22c\uba85 \ud14c\uc774\ube14 \uc804\uccb4\uac00 \ubcf4\uc774\uace0 \uac00\uad6c \uc0ac\uc774\uc640 \ubc14\ub2e5 \uc811\uc810\uc774 \uad6c\ubd84\ub41c\ub2e4.",
-      "remaining_risk": "\ud14c\uc774\ube14 \uc120\ubc18\uacfc \ucc45, \ucfe0\uc158\uc774 \ubcc4\ub3c4 \uac1d\uccb4\ub85c \uc911\ubcf5 \ucd94\ucd9c\ub420 \uc218 \uc788\ub2e4.",
-      "input_path": "docs/assets/ram-qwen-filter-new-scenes/new-living-input.png",
-      "input_sha256": "2c500d7696d984e6c860cc38c7f50c039333b9e01519f8564659aa59c287e5e7"
-    },
-    {
       "id": "candidate-20",
       "source_url": "https://www.pexels.com/photo/minimalist-setup-office-27920699/",
       "image_url": "https://images.pexels.com/photos/27920699/pexels-photo-27920699.jpeg?auto=compress&cs=tinysrgb&w=1600",
@@ -38,136 +15,19 @@
       ],
       "status": "downloaded",
       "sample": "new-office",
-      "label": "\uc791\uc5c5 \uacf5\uac04",
-      "image_kind": "\ub80c\ub354 \ucd94\uc815 \u00b7 \uc5c5\ub85c\ub354\uac00 3D artist\ub85c \uc18c\uac1c",
+      "label": "작업 공간",
+      "image_kind": "렌더 추정 · 업로더가 3D artist로 소개",
       "expected_major_objects": [
-        "desk \u00d71",
-        "office chair \u00d71",
-        "drawer unit \u00d71",
-        "monitor \u00d71"
+        "desk ×1",
+        "office chair ×1",
+        "drawer unit ×1",
+        "monitor ×1"
       ],
-      "selection_reason": "\ucc45\uc0c1\u00b7\uc758\uc790\u00b7\uc11c\ub78d\uc7a5\uc774 \ud504\ub808\uc784 \uc548\uc5d0 \uc788\uace0 \uac00\uad6c \uc724\uacfd\uacfc \ubc14\ub2e5 \uc811\uc810\uc774 \ubcf4\uc778\ub2e4.",
-      "remaining_risk": "\uac80\uc740 \uc11c\ub78d\uc7a5\uacfc \ubcbd\uc758 \ub300\ube44, \ucc45\uc0c1\uacfc \uc11c\ub78d\uc7a5\uc758 \uc811\ucd09, \uc758\uc790\uc758 \uc587\uc740 \ub2e4\ub9ac\uac00 \uc5b4\ub835\ub2e4.",
+      "selection_reason": "책상·의자·서랍장이 프레임 안에 있고 가구 윤곽과 바닥 접점이 보인다.",
+      "remaining_risk": "검은 서랍장과 벽의 대비, 책상과 서랍장의 접촉, 의자의 얇은 다리가 어렵다.",
       "input_path": "docs/assets/ram-qwen-filter-new-scenes/new-office-input.png",
       "input_sha256": "a87224537ef87d00f48167cd9ca8902cdf408f32a069fa3420426562a909fa03"
-    },
-    {
-      "id": "candidate-24",
-      "source_url": "https://www.pexels.com/photo/wooden-chairs-and-table-before-tea-5991536/",
-      "image_url": "https://images.pexels.com/photos/5991536/pexels-photo-5991536.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "path": "docs/assets/ram-qwen-filter-new-scenes/candidates/candidate-24.png",
-      "size": [
-        1060,
-        1600
-      ],
-      "status": "downloaded",
-      "sample": "new-dining",
-      "label": "\uc2dd\uc0ac \uacf5\uac04",
-      "image_kind": "\uc2e4\uc0ac",
-      "expected_major_objects": [
-        "table \u00d71",
-        "chair \u00d72"
-      ],
-      "selection_reason": "\ud14c\uc774\ube14\uacfc \uc758\uc790 \ub450 \uac1c\uac00 \uc798\ub9ac\uc9c0 \uc54a\uace0 \ubd84\ub9ac\ub418\uc5b4 \ubcf4\uc774\uba70 \uc2dd\uae30\uc640 \ubc30\uacbd \uc7a5\uc2dd\uc774 \uac70\uc758 \uc5c6\ub2e4.",
-      "remaining_risk": "\uac00\uad6c\uac00 \ucc28\uc9c0\ud558\ub294 \uba74\uc801\uc774 \ube44\uad50\uc801 \uc791\uace0 \uc587\uc740 \uae08\uc18d \ub2e4\ub9ac\uc758 \ud615\uc0c1\uc774 \uc5b4\ub835\ub2e4.",
-      "input_path": "docs/assets/ram-qwen-filter-new-scenes/new-dining-input.png",
-      "input_sha256": "849b2b279668626b13f47a7cbbaab4f758f646dbb4ea29c5210282123511c6d9"
-    },
-    {
-      "id": "candidate-32",
-      "source_url": "https://www.pexels.com/photo/bedside-tables-and-ottoman-bench-in-classy-bedroom-7534540/",
-      "image_url": "https://images.pexels.com/photos/7534540/pexels-photo-7534540.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "path": "docs/assets/ram-qwen-filter-new-scenes/candidates/candidate-32.png",
-      "size": [
-        1600,
-        1068
-      ],
-      "status": "downloaded",
-      "sample": "new-bedroom",
-      "label": "\uce68\uc2e4",
-      "image_kind": "\uc2e4\uc0ac",
-      "expected_major_objects": [
-        "bed \u00d71",
-        "nightstand \u00d72",
-        "bench \u00d71",
-        "table lamp \u00d72"
-      ],
-      "selection_reason": "\uce68\ub300\uc640 \uc55e\ucabd \ubca4\uce58 \uc804\uccb4, \ub113\uc740 \ubc14\ub2e5\uc774 \ubcf4\uc774\uace0 \uc870\uba85\uc774 \ud655\uc0b0\ub418\uc5b4 \uc788\ub2e4.",
-      "remaining_risk": "\uce68\ub300\u00b7\ubca4\uce58\uac00 \uc811\ud558\uace0 \uac19\uc740 \uc0c9\uc774\ub77c \ud569\uccd0\uc9c8 \uc218 \uc788\uc73c\uba70 \ub4a4\ucabd \ud611\ud0c1\uc740 \uce68\ub300\uc5d0 \uc77c\ubd80 \uac00\ub9b0\ub2e4.",
-      "input_path": "docs/assets/ram-qwen-filter-new-scenes/new-bedroom-input.png",
-      "input_sha256": "ba0d01dc1146bc27fab099b8232678a8f6cbd27750537fde178d13428be53518"
-    },
-    {
-      "id": "candidate-07",
-      "source_url": "https://www.pexels.com/photo/wooden-chair-beside-a-side-table-6633498/",
-      "image_url": "https://images.pexels.com/photos/6633498/pexels-photo-6633498.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "path": "docs/assets/ram-qwen-filter-new-scenes/candidates/candidate-07.png",
-      "size": [
-        1067,
-        1600
-      ],
-      "status": "downloaded",
-      "sample": "new-reading",
-      "label": "\ub3c5\uc11c \ucf54\ub108",
-      "image_kind": "\uc2e4\uc0ac",
-      "expected_major_objects": [
-        "chair \u00d71",
-        "side table \u00d71"
-      ],
-      "selection_reason": "\uc758\uc790\uc640 \ud611\ud0c1\uc758 \uc724\uacfd\u00b7\ub2e4\ub9ac\u00b7\ubc14\ub2e5 \uc811\uc810\uc774 \ub69c\ub837\ud558\uace0 \ub2e8\uc21c\ud55c \ubc30\uacbd\uc774\ub2e4. \uac04\ub2e8\ud55c \ub300\uc870 \uc0ac\ub840\ub2e4.",
-      "remaining_risk": "\ub2f4\uc694\uac00 \uc88c\ud310 \uc77c\ubd80\ub97c \uac00\ub9ac\uace0 \ud654\ubcd1\uc758 \uac00\uc9c0\uc640 \uac00\ub294 \ud611\ud0c1 \uc9c0\uc9c0\ub300\ub294 \uc5b4\ub835\ub2e4.",
-      "input_path": "docs/assets/ram-qwen-filter-new-scenes/new-reading-input.png",
-      "input_sha256": "42d4213977276d5f8f79f51f64374ddbacefee05f37a2e2c9278f4179cf7a876"
-    },
-    {
-      "id": "candidate-28",
-      "source_url": "https://www.pexels.com/photo/two-lounge-chairs-by-the-wall-16153260/",
-      "image_url": "https://images.pexels.com/photos/16153260/pexels-photo-16153260.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "path": "docs/assets/ram-qwen-filter-new-scenes/candidates/candidate-28.png",
-      "size": [
-        1200,
-        1600
-      ],
-      "status": "downloaded",
-      "sample": "new-patio",
-      "label": "\uc57c\uc678 \uc88c\uc11d",
-      "image_kind": "\uc2e4\uc0ac",
-      "expected_major_objects": [
-        "lounge chair \u00d72",
-        "side table \u00d71"
-      ],
-      "selection_reason": "\ub450 \uc758\uc790\uc640 \uc791\uc740 \ud14c\uc774\ube14 \uc804\uccb4\uac00 \ubcf4\uc774\uace0 \uc11c\ub85c \uacb9\uce58\uc9c0 \uc54a\uc73c\uba70 \uac15\ud55c \uadf8\ub9bc\uc790\ub098 \uc720\ub9ac\uac00 \uc5c6\ub2e4.",
-      "remaining_risk": "\ub098\ubb34\ud310 \ud2c8\uc0c8, \ubcbd \ud45c\uc9c0\ud310, \uac00\uc7a5\uc790\ub9ac \ud654\ubd84\uc774 \ucd94\uac00 \uac1d\uccb4\ub85c \ub098\uc62c \uc218 \uc788\ub2e4.",
-      "input_path": "docs/assets/ram-qwen-filter-new-scenes/new-patio-input.png",
-      "input_sha256": "96e8f2d118127e4e01a2c6ea0b6ae30711b10719e5f6f794716b15fb770c719e"
     }
   ],
-  "other_candidates": {
-    "candidate-01": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-02": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-03": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-04": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-05": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-06": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-08": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-09": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-10": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-11": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-12": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-13": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-14": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-15": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-16": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-17": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-19": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-21": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-22": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-23": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-25": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-26": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-27": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-29": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-30": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5",
-    "candidate-31": "\ubbf8\uc120\uc815: \uc8fc\uc694 \uac00\uad6c \uc798\ub9bc\u00b7\uac00\ub9bc, \ubcf5\uc7a1\ud55c \ubc30\uacbd, \uacfc\ub3c4\ud55c \ud074\ub85c\uc988\uc5c5 \ub610\ub294 \uc120\uc815 \uc7a5\uba74\uacfc \uc911\ubcf5"
-  }
+  "archive_note": "Earlier candidate records are preserved in Git history and the local pre-cleanup backup."
 }

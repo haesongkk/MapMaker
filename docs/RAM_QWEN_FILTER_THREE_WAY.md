@@ -17,11 +17,11 @@
 
 ### 베이스라인 · RAM++
 ![베이스라인 · RAM++](assets/ram-qwen-filter-complex/present-office-c-baseline-clean.png)
-[3D 열기 ↗](http://127.0.0.1:8136/viewer?run=presentation-present-office-c-baseline)
+[3D 열기 ↗](/viewer?run=presentation-present-office-c-baseline)
 
 ### 최종 · Qwen 비전 furniture
 ![최종 · Qwen 비전 furniture](assets/ram-qwen-filter-complex/present-office-c-vision-furniture-clean.png)
-[3D 열기 ↗](http://127.0.0.1:8136/viewer?run=presentation-present-office-c-vision-furniture)
+[3D 열기 ↗](/viewer?run=presentation-present-office-c-vision-furniture)
 
 보여줄 개선: 베이스라인에서는 책장·책상 동의어와 방 관련 태그로 거대한 중복 형상이 생깁니다. 최종 결과는 desk / chair / bookcase를 각각 1개씩 생성해 주요 가구 구성이 드러납니다. 전체 생성 객체는 44개에서 22개로 줄었습니다.
 
@@ -37,11 +37,11 @@
 
 ### 베이스라인 · RAM++
 ![베이스라인 · RAM++](assets/ram-qwen-filter-presentation/present-cabinet-baseline-clean.png)
-[3D 열기 ↗](http://127.0.0.1:8136/viewer?run=presentation-present-cabinet-baseline)
+[3D 열기 ↗](/viewer?run=presentation-present-cabinet-baseline)
 
 ### 최종 · Qwen 비전 furniture
 ![최종 · Qwen 비전 furniture](assets/ram-qwen-filter-presentation/present-cabinet-vision-furniture-clean.png)
-[3D 열기 ↗](http://127.0.0.1:8136/viewer?run=presentation-present-cabinet-vision-furniture)
+[3D 열기 ↗](/viewer?run=presentation-present-cabinet-vision-furniture)
 
 보여줄 개선: 베이스라인에서는 bureau / dresser / furniture와 개별 drawer가 겹칩니다. 최종 결과는 dresser 1개로 주요 수납장 중복을 줄였습니다.
 
@@ -57,11 +57,11 @@
 
 ### 베이스라인 · RAM++
 ![베이스라인 · RAM++](assets/ram-qwen-filter-new-scenes/new-office-baseline-clean.png)
-[3D 열기 ↗](http://127.0.0.1:8136/viewer?run=new-comparison-new-office-baseline)
+[3D 열기 ↗](/viewer?run=new-comparison-new-office-baseline)
 
 ### 최종 · Qwen 비전 furniture
 ![최종 · Qwen 비전 furniture](assets/ram-qwen-filter-new-scenes/new-office-vision-furniture-clean.png)
-[3D 열기 ↗](http://127.0.0.1:8136/viewer?run=new-comparison-new-office-vision-furniture)
+[3D 열기 ↗](/viewer?run=new-comparison-new-office-vision-furniture)
 
 보여줄 개선: 장면 전체를 가리는 방·바닥·천장 관련 객체가 줄어, 개별 가구 중심의 장면을 확인할 수 있습니다.
 
@@ -76,4 +76,4 @@ Use specific, common object names, with one tag per object category.
 Return only a JSON array of strings.
 ```
 
-[전체 실험 보관본](RAM_QWEN_FILTER_FULL_COMPARISON.md)
+이전 실험과 탈락 후보는 Git 이력에 보존되어 있습니다.

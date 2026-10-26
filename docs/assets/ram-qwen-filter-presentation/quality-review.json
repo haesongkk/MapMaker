@@ -1,23 +1,13 @@
 {
-  "present-chair": {
-    "decision": "adopt",
-    "evidence": "비전은 chair, floor lamp, ottoman을 각각 1개 생성. 기본값은 10개로 chair/armchair/furniture 중복, 배경·바닥, 과도한 조명 크기가 남는다. 세 각도에서 의자 좌판·등받이·다리가 이어지고 오토만의 몸통과 받침이 유지된다.",
-    "limitations": "원본보다 밝게 표현된 색감과 조명의 세부 곡률 차이가 있다. 정밀 치수 복원은 아니다.",
-    "geometry_views": ["present-chair-geometry-0.png", "present-chair-geometry-1.png", "present-chair-geometry-2.png"],
-    "manual_geometry_edits": false
-  },
-  "present-bench": {
-    "decision": "reject",
-    "evidence": "벤치의 상판과 다리는 세 각도에서 이어지지만 white vase와 potted plant가 겹쳐 화분 두 개가 생긴다. 깔끔한 대표 화면 기준으로는 수납장·안락의자보다 약하다.",
-    "limitations": "화분 중복, 그림의 지지 벽 부재, 러그의 평면화와 색감 손실. 최종 대표 3개에서 제외.",
-    "geometry_views": ["present-bench-geometry-0.png", "present-bench-geometry-1.png", "present-bench-geometry-2.png"],
-    "manual_geometry_edits": false
-  },
   "present-cabinet": {
     "decision": "adopt_with_limitations",
     "evidence": "기본값 19개에는 bureau/dresser/furniture와 개별 drawer 5개가 겹친다. 비전은 dresser 1개로 주요 수납장 중복이 줄고, 세 각도에서 몸통·서랍 면·다리가 이어진다. 수납장과 큰 식물의 상대적 배치가 읽힌다.",
     "limitations": "작은 화병이 상판에서 떠 있으며 화병·화분 관련 중복 가능성이 남는다. 원본 나무색보다 밝게 표현됐다. 주요 가구의 개선 사례로 채택하며 완벽한 소품 배치로 주장하지 않는다.",
-    "geometry_views": ["present-cabinet-geometry-0.png", "present-cabinet-geometry-1.png", "present-cabinet-geometry-2.png"],
+    "geometry_views": [
+      "present-cabinet-geometry-0.png",
+      "present-cabinet-geometry-1.png",
+      "present-cabinet-geometry-2.png"
+    ],
     "manual_geometry_edits": false
   }
 }

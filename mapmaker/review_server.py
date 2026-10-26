@@ -14,10 +14,6 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self,head=False):
         manifest = dict(globals()['manifest'])
         manifest['scenes'] = dict(manifest['scenes'])
-        for name in ('four-way-comparison', 'baseline-comparison', 'qwen-baseline-comparison', 'qwen-baseline-v2-comparison'):
-            extra = docs/'assets'/name/'viewers.json'
-            if extra.is_file():
-                manifest['scenes'].update(json.loads(extra.read_text(encoding='utf-8')))
         for extra in (docs/'assets').glob('ram-qwen-filter-*/viewers.json'):
             manifest['scenes'].update(json.loads(extra.read_text(encoding='utf-8')))
         batch = None
@@ -65,7 +61,7 @@ class Handler(BaseHTTPRequestHandler):
             if not file.is_relative_to(base):return self.send_error(404)
             if parts[3]!='scene.glb' and not parts[3].startswith('input/'):return self.send_error(404)
         else:
-            if path=='/':base=docs;rel='FOUR_WAY_COMPARISON.html'
+            if path=='/':base=docs;rel='RAM_QWEN_FILTER_THREE_WAY.html'
             elif path=='/viewer':base=web;rel='index.html'
             elif path.startswith('/vendor/three/'):base=web/'node_modules/three';rel=path.removeprefix('/vendor/three/')
             elif path.startswith('/docs/'):base=docs;rel=path.removeprefix('/docs/')

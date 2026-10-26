@@ -1,8 +1,7 @@
-"""Freeze one presentation method and two existing scenes; preserve full comparison."""
+"""Build the three selected presentation cases from saved evidence."""
 from pathlib import Path
 import html
 import json
-import shutil
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / 'docs'
@@ -28,11 +27,6 @@ PICKS = [
 ]
 
 def main():
-    for suffix in ('html', 'md'):
-        source = DOCS / f'RAM_QWEN_FILTER_THREE_WAY.{suffix}'
-        archive = DOCS / f'RAM_QWEN_FILTER_FULL_COMPARISON.{suffix}'
-        if not archive.exists():
-            shutil.copy2(source, archive)
     records = json.loads((ASSETS / 'scene-manifest.json').read_text(encoding='utf-8'))
     inputs = {s['sample']: s for s in json.loads((ASSETS / 'selection.json').read_text(encoding='utf-8'))['samples']}
     image_roots = {name:'assets/ram-qwen-filter-new-scenes' for name in inputs}
@@ -64,7 +58,7 @@ def main():
                 filename=f'{name}-{version}-clean.png'
             src = f'{image_roots[name]}/{filename}'
             assert (DOCS/src).exists()
-            url = inputs[name]['source_url'] if version=='input' else f"http://127.0.0.1:8136/viewer?run={records[name][version]['alias']}"
+            url = inputs[name]['source_url'] if version=='input' else f"/viewer?run={records[name][version]['alias']}"
             link_label = '원본 출처' if version=='input' else '3D 열기 ↗'
             cls = ' class="final"' if version==METHOD else ''
             kind = '<br><small>상품 연출 이미지 · AI 생성 추정(원본 파일명 기준)</small>' if version=='input' and name=='present-office-c' else ''
@@ -77,9 +71,9 @@ def main():
         out.append('</section>')
         md += ['보여줄 개선: '+improvement,'','남은 한계: '+limitation,'']
     out += [f'<details><summary>확정 프롬프트와 비교 조건</summary><pre>{e(PROMPT)}</pre><p>Qwen2.5-VL-7B-Instruct · SAM3 기본값 · SAM3D seed 42 · 공식 pose. 각 장면의 베이스라인과 최종 결과는 동일 입력 이미지, 동일 카메라·시선으로 캡처했습니다. 격자는 뷰어 기준 평면입니다.</p><p>선정 결과에 맞춰 프롬프트나 모델을 변경하거나 재생성하지 않았습니다. 발표 사례를 고른 것이며 전체 입력에 대한 성공률을 뜻하지 않습니다.</p></details>',
-    '<footer><a href="RAM_QWEN_FILTER_FULL_COMPARISON.html">기존 실험 보관본</a> · <a href="PRESENTATION_CANDIDATES.html">추가 후보 검토</a> · <a href="assets/ram-qwen-filter-presentation/responses.json">추가 실행 응답 원문</a> · <a href="assets/ram-qwen-filter-new-scenes/presentation-selection.json">최종 선정 기록</a></footer></main></body></html>']
-    md += ['## 확정 프롬프트','', '```text',PROMPT,'```','', '[전체 실험 보관본](RAM_QWEN_FILTER_FULL_COMPARISON.md)']
-    document='\n'.join(out).replace('발표 최종 선정 · 식사 공간과 작업 공간','발표 최종 선정 · 대표 결과 3개').replace('비교 위의 두 결과는','위 비교의 두 결과는').replace('<footer>', '<footer><a href="COMPLEX_CANDIDATES.html">1번 교체 후보 비교</a> · ')
+    '<footer><a href="assets/ram-qwen-filter-presentation/responses.json">추가 실행 응답 원문</a> · <a href="assets/ram-qwen-filter-new-scenes/presentation-selection.json">최종 선정 기록</a></footer></main></body></html>']
+    md += ['## 확정 프롬프트','', '```text',PROMPT,'```','', '이전 실험과 탈락 후보는 Git 이력에 보존되어 있습니다.']
+    document='\n'.join(out).replace('발표 최종 선정 · 식사 공간과 작업 공간','발표 최종 선정 · 대표 결과 3개').replace('비교 위의 두 결과는','위 비교의 두 결과는')
     (DOCS/'RAM_QWEN_FILTER_THREE_WAY.html').write_text(document,encoding='utf-8')
     (DOCS/'RAM_QWEN_FILTER_THREE_WAY.md').write_text('\n'.join(md),encoding='utf-8')
     selection = dict(version=METHOD,baseline=baseline,prompt=PROMPT,samples=[dict(sample=p[0],asset_root='docs/'+image_roots[p[0]],role=p[3],reason=p[4],limitation=p[6],result=records[p[0]][METHOD]) for p in PICKS],manual_geometry_edits=False)

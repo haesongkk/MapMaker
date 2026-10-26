@@ -1,47 +1,5 @@
 [
   {
-    "sample": "present-chair",
-    "version": "baseline",
-    "scene_sha256": "cf631f48c5af9b60653eded985e3c12d859610b4518d10fe32a94b3cff4e6c15",
-    "input_sha256": "726c588f1527ac6af97c2cf8ce545ae168d7633516db1aa6bb000d10fb71fdf9",
-    "camera": [
-      -1.0831320435891878,
-      1.207933147710022,
-      -2.329218230311911
-    ],
-    "target": [
-      0.014788972882135648,
-      0.2417626532152584,
-      2.062465835573379
-    ],
-    "triangles": 5478682,
-    "errors": [],
-    "render_policy": "locked_camera_v2",
-    "grid_hidden": true,
-    "camera_policy": "same camera and target as this image baseline; verified after screenshot"
-  },
-  {
-    "sample": "present-chair",
-    "version": "vision-furniture",
-    "scene_sha256": "2079e43c0f6e93bb418862fb4ca2e250f9b7def7bd9e671c46cd07ec3c49b8c1",
-    "input_sha256": "726c588f1527ac6af97c2cf8ce545ae168d7633516db1aa6bb000d10fb71fdf9",
-    "camera": [
-      -1.0831320435891878,
-      1.207933147710022,
-      -2.329218230311911
-    ],
-    "target": [
-      0.014788972882135647,
-      0.2417626532152584,
-      2.062465835573379
-    ],
-    "triangles": 1673540,
-    "errors": [],
-    "render_policy": "locked_camera_v2",
-    "grid_hidden": true,
-    "camera_policy": "same camera and target as this image baseline; verified after screenshot"
-  },
-  {
     "sample": "present-cabinet",
     "version": "baseline",
     "scene_sha256": "5d45f651e853c02bf1ef85d535314bb7d97947c408a99b8afb9f12f8c7609be7",
@@ -78,48 +36,6 @@
       2.2341884651325197
     ],
     "triangles": 6034986,
-    "errors": [],
-    "render_policy": "locked_camera_v2",
-    "grid_hidden": true,
-    "camera_policy": "same camera and target as this image baseline; verified after screenshot"
-  },
-  {
-    "sample": "present-bench",
-    "version": "baseline",
-    "scene_sha256": "89a5f59c00da32ff0b502fc3db3140e64dcc7ee435dfae500ea618c2f8137d34",
-    "input_sha256": "8dffad5dbaaf02a6465fe726f24d893991e5790a15fcc5aa9ed74e0619825616",
-    "camera": [
-      -1.2736519893018434,
-      1.0261116604804807,
-      -2.636800468029186
-    ],
-    "target": [
-      -0.2005918176834527,
-      0.08181870945629799,
-      1.655440218444374
-    ],
-    "triangles": 3762828,
-    "errors": [],
-    "render_policy": "locked_camera_v2",
-    "grid_hidden": true,
-    "camera_policy": "same camera and target as this image baseline; verified after screenshot"
-  },
-  {
-    "sample": "present-bench",
-    "version": "vision-furniture",
-    "scene_sha256": "4f8dc4d17054944fe21e28f8c02a0e05c8643c62c0dc482efad49d457297a086",
-    "input_sha256": "8dffad5dbaaf02a6465fe726f24d893991e5790a15fcc5aa9ed74e0619825616",
-    "camera": [
-      -1.2736519893018436,
-      1.026111660480481,
-      -2.636800468029187
-    ],
-    "target": [
-      -0.2005918176834527,
-      0.08181870945629799,
-      1.655440218444374
-    ],
-    "triangles": 2960588,
     "errors": [],
     "render_policy": "locked_camera_v2",
     "grid_hidden": true,

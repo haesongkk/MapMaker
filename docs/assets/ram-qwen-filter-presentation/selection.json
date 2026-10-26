@@ -2,53 +2,24 @@
   "created_at": "2026-10-26T11:52:56.965514+00:00",
   "samples": [
     {
-      "sample": "present-chair",
-      "source_url": "https://houseofmorrison.com/products/marigold-chair",
-      "image_url": "https://houseofmorrison.com/cdn/shop/files/HOM_061923_1-263_1100x.jpg?v=1689008022",
-      "input_path": "docs/assets/ram-qwen-filter-presentation/chair-input.png",
-      "image_kind": "\uc0c1\ud488 \uc5f0\ucd9c \uc774\ubbf8\uc9c0 \u00b7 \uc2e4\uc0ac/\ub80c\ub354 \ubbf8\ud655\uc778",
-      "size": [
-        1024,
-        684
-      ],
-      "label": "\uc548\ub77d\uc758\uc790\uc640 \uc624\ud1a0\ub9cc",
-      "expected_major_objects": "chair, ottoman, floor lamp",
-      "selection_reason": "\ub450\ud23c\ud55c \uc88c\ud310\uacfc \ub3c5\ub9bd\ub41c \uc624\ud1a0\ub9cc, \uc804\uccb4 \uc724\uacfd\uc774 \ubcf4\uc784. \uc870\uba85 \uae30\ub465\uacfc \uc758\uc790\uc758 \ubd80\ubd84 \uacb9\uce68\uc740 \uc704\ud5d8.",
-      "input_sha256": "726c588f1527ac6af97c2cf8ce545ae168d7633516db1aa6bb000d10fb71fdf9"
-    },
-    {
       "sample": "present-cabinet",
       "source_url": "https://www.modernfurniture.com.au/products/hayton-tall-ideboard-70cm-white-oak",
       "image_url": "https://www.modernfurniture.com.au/cdn/shop/files/342007HaytontallsideboardLifestyle1-1000_1024x1024.jpg?v=1700990245",
       "input_path": "docs/assets/ram-qwen-filter-presentation/cabinet-input.png",
-      "image_kind": "\uc0c1\ud488 \uc5f0\ucd9c \uc774\ubbf8\uc9c0 \u00b7 \uc2e4\uc0ac/\ub80c\ub354 \ubbf8\ud655\uc778",
+      "image_kind": "상품 연출 이미지 · 실사/렌더 미확인",
       "size": [
         1024,
         1024
       ],
-      "label": "\uc218\ub0a9\uc7a5\uacfc \uc2dd\ubb3c",
+      "label": "수납장과 식물",
       "expected_major_objects": "dresser, potted plant",
-      "selection_reason": "\uc9c1\uc120\ud615 \uc218\ub0a9\uc7a5 \uc804\uccb4\uc640 \ubc14\ub2e5 \uc811\uc810\uc774 \ubcf4\uc784. \uc791\uc740 \uc7a5\uc2dd\uacfc \uc11c\ub78d \uc911\ubcf5 \ucd94\ucd9c\uc740 \uc704\ud5d8.",
+      "selection_reason": "직선형 수납장 전체와 바닥 접점이 보임. 작은 장식과 서랍 중복 추출은 위험.",
       "input_sha256": "049c70d0fa3fda5abdb395f87675984d83dffbabddfaa5e02cca2a797f7502ff"
-    },
-    {
-      "sample": "present-bench",
-      "source_url": "https://www.wayfair.com/furniture/pdp/wade-logan-linzy-modern-wood-bench-w010371284.html",
-      "image_url": "https://assets.wfcdn.com/im/48726512/resize-h800-w800%5Ecompr-r85/2664/266473401/Linzy%2BModern%2BWood%2BBench.jpg",
-      "input_path": "docs/assets/ram-qwen-filter-presentation/bench-input.png",
-      "image_kind": "\uc0c1\ud488 \uc5f0\ucd9c \uc774\ubbf8\uc9c0 \u00b7 \uc2e4\uc0ac/\ub80c\ub354 \ubbf8\ud655\uc778",
-      "size": [
-        800,
-        800
-      ],
-      "label": "\ud604\uad00 \ubca4\uce58",
-      "expected_major_objects": "bench, potted plant",
-      "selection_reason": "\ub113\uc740 \ud310\ud615 \ub2e4\ub9ac\uc640 \uc0c1\ud310\uc73c\ub85c \ud615\uc0c1\uc774 \ub2e8\uc21c\ud558\uace0 \uc8fc\uc694 \ubb3c\uccb4\uac00 \ubd84\ub9ac\ub428. \ucfe0\uc158\u00b7\ubaa8\uc790\u00b7\uc2dd\ubb3c\uc740 \ucd94\uac00 \uac1d\uccb4 \uc704\ud5d8.",
-      "input_sha256": "8dffad5dbaaf02a6465fe726f24d893991e5790a15fcc5aa9ed74e0619825616"
     }
   ],
   "policy": "Presentation curation: evaluate outputs before adopting; preserve rejected candidates. No prompt, geometry or pose edits.",
   "excluded_previous": {
     "new-dining": "User rejected table geometry; do not adopt."
-  }
+  },
+  "archive_note": "Earlier candidate records are preserved in Git history and the local pre-cleanup backup."
 }

@@ -1,6 +1,15 @@
 # MapMaker
 
-사진 한 장에서 RAM++ → SAM3 → SAM3D Objects로 장면을 생성하고 Three.js로 확인합니다.
+사진 한 장에서 객체 태그 → SAM3 → SAM3D Objects로 장면을 생성하고 Three.js로 확인합니다.
+
+발표 최종 방식은 **Qwen 비전 furniture → SAM3 → SAM3D**입니다. 비교 베이스라인은 **RAM++ 기본 태그 → SAM3 → SAM3D**이며, 대표 결과는 원목 서재·수납장과 식물·작업 공간 3개입니다. [최종 비교 문서](docs/RAM_QWEN_FILTER_THREE_WAY.md)에 프롬프트, 개선점과 남은 한계를 정리했습니다.
+
+```sh
+uv run python scripts/run_presentation.py samples/living_room.jpg
+uv run python scripts/run_presentation.py samples/living_room.jpg --baseline
+```
+
+위 명령은 새 GPU 추론을 실행합니다. 최종 방식은 mode 1에서 태그 생성기만 Qwen 비전으로 교체하고 `furniture_v1` 프롬프트를 사용합니다. 아래 1~4번 모드는 기존 실행 기능으로 유지합니다.
 
 ## 실행 모드
 
@@ -33,14 +42,15 @@ Windows의 기본 backend는 Runpod이며 Linux는 local입니다. `MAPMAKER_BAC
 
 ## 결과 확인
 
-- [이전 1번과 최소 베이스라인 비교](docs/BASELINE_COMPARISON.md)
-- [저장된 10장 × 4방식 비교](docs/FOUR_WAY_COMPARISON.md)
+- [최종 3개 사례 비교](docs/RAM_QWEN_FILTER_THREE_WAY.html)
 - `mapmaker review`: 기존 비교 문서·웹뷰어를 `http://127.0.0.1:8118`에서 제공
 - `mapmaker review --batch output/comparison/comparison.json`: 새 비교 결과의 웹뷰어 목록 제공
 - `mapmaker serve`: 업로드·생성을 위한 기존 웹/API
 - `mapmaker render SCENE_GLB`: 저장 메시 미리보기
 
-문서와 결과 이미지 40개는 저장소에 포함됩니다. GLB는 `.runtime/four-way-comparison/results/`의 기존 파일을 사용하므로 Git clone만으로 기존 웹뷰어가 복원되지는 않습니다. 모델·인증 정보·실행 산출물은 Git에 넣지 않습니다.
+최종 3개 사례의 원본·비교 이미지·다각도 이미지와 태그 응답·촬영 기록은 `docs/assets/ram-qwen-filter-{complex,presentation,new-scenes}/`에 있습니다. 각 폴더의 `viewers.json`이 로컬 `.runtime/`의 6개 원본 실행 결과를 연결합니다. GLB는 Git에 포함하지 않으므로 clone만으로 3D 뷰어가 복원되지는 않습니다. 모델·인증 정보·실행 산출물도 Git에 넣지 않습니다.
+
+문서 재생성: `uv run python scripts/report_presentation_selection.py`. 기존 페이지 주소를 유지하며, `mapmaker review`의 첫 화면에서도 최종 비교를 보여줍니다. 이전 실험 보고서·탈락 후보·일회성 실행기는 Git 이력에 보존합니다.
 
 ## 코드 구조
 

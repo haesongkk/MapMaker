@@ -1,47 +1,5 @@
 [
   {
-    "sample": "present-office-b",
-    "version": "baseline",
-    "scene_sha256": "8f072a782f43171c23175593a180d8748c7c6cb6777b2497013a6aae915a464f",
-    "input_sha256": "60d93cb1f1c870c4e592503462c9ff87c19c6ca24c833f3ba0144806cdea82e4",
-    "camera": [
-      -1.0101284432707236,
-      0.8075952051280961,
-      -1.8626330185319535
-    ],
-    "target": [
-      -0.09094610598296063,
-      -0.00128525168513427,
-      1.8140963306190954
-    ],
-    "triangles": 12885820,
-    "errors": [],
-    "render_policy": "locked_camera_v2",
-    "grid_hidden": true,
-    "camera_policy": "same camera and target as this image baseline; verified after screenshot"
-  },
-  {
-    "sample": "present-office-b",
-    "version": "vision-furniture",
-    "scene_sha256": "6735f00b6d266e27f50551318ae66123ef554d3e5a11a747e4635ba10740095a",
-    "input_sha256": "60d93cb1f1c870c4e592503462c9ff87c19c6ca24c833f3ba0144806cdea82e4",
-    "camera": [
-      -1.0101284432707236,
-      0.8075952051280962,
-      -1.862633018531954
-    ],
-    "target": [
-      -0.09094610598296064,
-      -0.00128525168513427,
-      1.8140963306190954
-    ],
-    "triangles": 5228918,
-    "errors": [],
-    "render_policy": "locked_camera_v2",
-    "grid_hidden": true,
-    "camera_policy": "same camera and target as this image baseline; verified after screenshot"
-  },
-  {
     "sample": "present-office-c",
     "version": "baseline",
     "scene_sha256": "371deaa0dc5ec129c43bad37459e1738b3fe2633e4beafc5b40e4331eecdf31e",

@@ -33,9 +33,11 @@ Runpod 전송·수집은 기존 `RemotePipeline`과 `ArtifactStore`를 공유한
 
 ## 현재 비교 문서
 
-기존 40개 결과는 리팩토링 이전에 생성된 결과이며 새 구현으로 재생성한 증거가 아니다. 입력 목록·뷰어 매핑·촬영 기록은 `docs/assets/four-way-comparison/`에 있고 GLB는 로컬 `.runtime/`에 남아 있다. `review_server`가 이를 읽어 제공한다.
+발표 최종 비교는 RAM++ 기본값과 Qwen 비전 `furniture_v1`을 사용한 세 장면이다. `scripts/run_presentation.py`가 동일한 mode 1 경로에서 태그 생성기만 선택한다. 프롬프트는 `mapmaker/qwen_tags.py`에 정의되어 있으며 SAM3 기본값·SAM3D seed 42·공식 pose를 유지한다.
 
-이미지는 각 웹뷰어의 기본 시점을 촬영했다. 장면별 자동 화면 맞춤이 적용되어 동일 원본 카메라의 정량 비교용 이미지는 아니다. 기존 결과를 새 코드의 결과로 표시하지 않는다.
+`RAM_QWEN_FILTER_THREE_WAY.html`과 `.md`는 `scripts/report_presentation_selection.py`로 생성한다. 세 자산 폴더의 `selection.json`은 입력 출처, `responses.json`은 모델 응답, `scene-manifest.json`은 실행 결과·해시, `captures-clean.json`은 동일 카메라 비교 기록, `viewers.json`은 로컬 GLB 위치를 보존한다. `ram-qwen-filter-new-scenes/presentation-selection.json`이 최종 선정 목록이다.
+
+대표 결과는 기존 실행에서 선정했으며 정리 과정에서 재생성하거나 메시·배치를 수정하지 않았다. 각 장면의 베이스라인과 최종 결과는 같은 카메라로 비교하고 확대 이미지는 별도 시점임을 명시한다. `review_server`의 기본 페이지는 최종 비교이고, `--batch`로 새로운 배치 결과도 확인할 수 있다.
 
 ## 최소 베이스라인의 대용량 조립
 
