@@ -2,7 +2,7 @@ from pathlib import Path
 import json,mimetypes,re,hashlib,html
 from urllib.parse import urlsplit,unquote
 from http.server import ThreadingHTTPServer,BaseHTTPRequestHandler
-root=Path(__file__).resolve().parents[1];docs=root/'docs';web=root/'web'
+root=Path(__file__).resolve().parents[1];artifacts=root/'artifacts';web=root/'web'
 manifest={'scenes': {}, 'existing_images': []}
 batch_file=None
 scenes=dict(manifest['scenes'])
@@ -14,7 +14,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self,head=False):
         manifest = dict(globals()['manifest'])
         manifest['scenes'] = dict(manifest['scenes'])
-        for extra in (docs/'assets').glob('ram-qwen-filter-*/viewers.json'):
+        for extra in (artifacts/'assets').glob('ram-qwen-filter-*/viewers.json'):
             manifest['scenes'].update(json.loads(extra.read_text(encoding='utf-8')))
         batch = None
         if batch_file is not None:
@@ -61,12 +61,12 @@ class Handler(BaseHTTPRequestHandler):
             if not file.is_relative_to(base):return self.send_error(404)
             if parts[3]!='scene.glb' and not parts[3].startswith('input/'):return self.send_error(404)
         else:
-            if path=='/':base=docs;rel='RAM_QWEN_FILTER_THREE_WAY.html'
+            if path=='/':base=artifacts;rel='RAM_QWEN_FILTER_THREE_WAY.html'
             elif path=='/viewer':base=web;rel='index.html'
             elif path.startswith('/vendor/three/'):base=web/'node_modules/three';rel=path.removeprefix('/vendor/three/')
-            elif path.startswith('/docs/'):base=docs;rel=path.removeprefix('/docs/')
-            elif path.startswith('/assets/'):base=docs;rel=path.lstrip('/')
-            elif (docs/path.lstrip('/')).is_file():base=docs;rel=path.lstrip('/')
+            elif path.startswith('/artifacts/'):base=artifacts;rel=path.removeprefix('/artifacts/')
+            elif path.startswith('/assets/'):base=artifacts;rel=path.lstrip('/')
+            elif (artifacts/path.lstrip('/')).is_file():base=artifacts;rel=path.lstrip('/')
             else:base=web;rel=path.lstrip('/')
             file=(base/rel).resolve()
             if not file.is_relative_to(base.resolve()):return self.send_error(404)

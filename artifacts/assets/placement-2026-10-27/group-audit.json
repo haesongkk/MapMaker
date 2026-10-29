@@ -1,0 +1,111 @@
+[
+  {
+    "scene": "holdout-bench",
+    "objects": 7,
+    "changed_from_previous": [],
+    "source_unchanged": true,
+    "binary_preserved": true,
+    "rotations_scales_preserved": true,
+    "gaps": [],
+    "absolute_depth_proxy": [],
+    "group_violations": []
+  },
+  {
+    "scene": "new-office",
+    "objects": 12,
+    "changed_from_previous": [
+      "prompt_0002_mask_0000"
+    ],
+    "source_unchanged": true,
+    "binary_preserved": true,
+    "rotations_scales_preserved": true,
+    "gaps": [
+      {
+        "child": "prompt_0002_mask_0000",
+        "parent": "prompt_0000_mask_0000",
+        "before": 0.0047081609626085374,
+        "after": 0.07951803971638308,
+        "original": 0.0795180397163831
+      }
+    ],
+    "absolute_depth_proxy": [
+      {
+        "object_id": "prompt_0002_mask_0000",
+        "before_median": 0.016419423763153626,
+        "after_median": 0.018739340199238258,
+        "method": "absolute_source_observation_to_mesh_vertex_distance_proxy"
+      }
+    ],
+    "group_violations": []
+  },
+  {
+    "scene": "present-cabinet",
+    "objects": 8,
+    "changed_from_previous": [
+      "prompt_0001_mask_0001",
+      "prompt_0004_mask_0001"
+    ],
+    "source_unchanged": true,
+    "binary_preserved": true,
+    "rotations_scales_preserved": true,
+    "gaps": [
+      {
+        "child": "prompt_0004_mask_0001",
+        "parent": "prompt_0000_mask_0000",
+        "before": 0.030380840622182825,
+        "after": 0.0,
+        "original": 0.038212749749151786
+      }
+    ],
+    "absolute_depth_proxy": [
+      {
+        "object_id": "prompt_0001_mask_0001",
+        "before_median": 0.008601324437196247,
+        "after_median": 0.013995294484309126,
+        "method": "absolute_source_observation_to_mesh_vertex_distance_proxy"
+      },
+      {
+        "object_id": "prompt_0004_mask_0001",
+        "before_median": 0.001840508662517153,
+        "after_median": 0.009525025644274446,
+        "method": "absolute_source_observation_to_mesh_vertex_distance_proxy"
+      }
+    ],
+    "group_violations": []
+  },
+  {
+    "scene": "present-office-c",
+    "objects": 22,
+    "changed_from_previous": [
+      "prompt_0005_mask_0000",
+      "prompt_0005_mask_0009"
+    ],
+    "source_unchanged": true,
+    "binary_preserved": true,
+    "rotations_scales_preserved": true,
+    "gaps": [
+      {
+        "child": "prompt_0005_mask_0000",
+        "parent": "prompt_0002_mask_0000",
+        "before": 0.04063820182749439,
+        "after": 0.033635698600399,
+        "original": 0.033635698600399
+      }
+    ],
+    "absolute_depth_proxy": [
+      {
+        "object_id": "prompt_0005_mask_0000",
+        "before_median": 0.0025150636042495936,
+        "after_median": 0.003932958763232985,
+        "method": "absolute_source_observation_to_mesh_vertex_distance_proxy"
+      },
+      {
+        "object_id": "prompt_0005_mask_0009",
+        "before_median": 0.007517507014945873,
+        "after_median": 0.008084564468241188,
+        "method": "absolute_source_observation_to_mesh_vertex_distance_proxy"
+      }
+    ],
+    "group_violations": []
+  }
+]

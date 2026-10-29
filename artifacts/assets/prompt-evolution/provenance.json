@@ -1,0 +1,32 @@
+[
+  {
+    "file": "house-three-way.png",
+    "commit": "ed75c32466fa422e28d081721493c32f260c0e2e",
+    "source": "docs/assets/ram-qwen-filter-v2/three-way-house.png",
+    "sha256": "c6368c402f7ee34408aa8edbf35d2ed6266f609f97e0d5d297fc466f9f61f777"
+  },
+  {
+    "file": "empty-before.png",
+    "commit": "ed75c32466fa422e28d081721493c32f260c0e2e",
+    "source": "docs/assets/ram-qwen-filter-movable/sample-01-before.png",
+    "sha256": "6d38b75fea9593e62cbb7c01ff32f53df727763e5ed8da749449be76ed9bafd0"
+  },
+  {
+    "file": "empty-after.png",
+    "commit": "ed75c32466fa422e28d081721493c32f260c0e2e",
+    "source": "docs/assets/ram-qwen-filter-movable/sample-01-after.png",
+    "sha256": "835bb2d3ec432911fc4230e4107546151434ea7413121b53c2c3845b17b54f81"
+  },
+  {
+    "file": "office-movable.png",
+    "commit": "ed75c32466fa422e28d081721493c32f260c0e2e",
+    "source": "docs/assets/ram-qwen-filter-vision-movable/office-after.png",
+    "sha256": "9df921aa9cd6b8c60d95976032fd67bc949d862ccfa681804c1a1a98a97cf78d"
+  },
+  {
+    "file": "office-furniture.png",
+    "commit": "ed75c32466fa422e28d081721493c32f260c0e2e",
+    "source": "docs/assets/ram-qwen-filter-vision-furniture/office-after.png",
+    "sha256": "613edd38a641757c9f6cde6c96d8d15845d24607922a975978265ab24a327f08"
+  }
+]

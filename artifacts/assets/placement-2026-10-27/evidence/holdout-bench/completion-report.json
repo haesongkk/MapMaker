@@ -1,0 +1,6 @@
+{
+  "objects": {},
+  "binary": {},
+  "source": ".runtime\\depth-floor-v3\\holdout-bench",
+  "limitation": "Observed surface reconstruction; no unseen back-side completion or global collision guarantee."
+}

@@ -1,6 +1,6 @@
 import {chromium} from '../web/node_modules/@playwright/test/index.mjs';
 import fs from 'node:fs/promises';
-const root=process.argv[2]||'docs/assets/ram-qwen-filter-presentation';
+const root=process.argv[2]||'artifacts/assets/ram-qwen-filter-presentation';
 const records=JSON.parse(await fs.readFile(`${root}/scene-manifest.json`,'utf8'));
 const only=process.argv[3];
 for(const [name,vs] of Object.entries(records)){

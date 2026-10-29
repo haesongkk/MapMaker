@@ -1,0 +1,14 @@
+{
+  "model": "Ruicheng/moge-vitl",
+  "revision": "ad326bfb61facd6c52b5a825bc1e34d7c97d9672",
+  "code_revision": "a8c37341bc0325ca99b9d57981cc3bb2bd3e255b",
+  "frame": "sam3d_pytorch3d_camera",
+  "force_projection": false,
+  "resolution_level": 9,
+  "seconds": 0.875,
+  "image_sha256": "0e5087a1d644d8790b46fbaf6d36407cba2c8425a016de3d61436787c085a235",
+  "pointmap_sha256": "86f69a59380f0df46269b82d945b203f330f46d1faa4772e2d1b5ff33a224389",
+  "device": "NVIDIA GeForce RTX 3070 Ti",
+  "metric_scale_verified": false,
+  "maximum_memory_gb": 2.457104384
+}

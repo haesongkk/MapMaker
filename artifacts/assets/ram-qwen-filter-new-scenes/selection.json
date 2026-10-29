@@ -8,7 +8,7 @@
       "id": "candidate-20",
       "source_url": "https://www.pexels.com/photo/minimalist-setup-office-27920699/",
       "image_url": "https://images.pexels.com/photos/27920699/pexels-photo-27920699.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "path": "docs/assets/ram-qwen-filter-new-scenes/candidates/candidate-20.png",
+      "path": "artifacts/assets/ram-qwen-filter-new-scenes/candidates/candidate-20.png",
       "size": [
         1600,
         1600
@@ -25,7 +25,7 @@
       ],
       "selection_reason": "책상·의자·서랍장이 프레임 안에 있고 가구 윤곽과 바닥 접점이 보인다.",
       "remaining_risk": "검은 서랍장과 벽의 대비, 책상과 서랍장의 접촉, 의자의 얇은 다리가 어렵다.",
-      "input_path": "docs/assets/ram-qwen-filter-new-scenes/new-office-input.png",
+      "input_path": "artifacts/assets/ram-qwen-filter-new-scenes/new-office-input.png",
       "input_sha256": "a87224537ef87d00f48167cd9ca8902cdf408f32a069fa3420426562a909fa03"
     }
   ],

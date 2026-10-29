@@ -5,7 +5,7 @@
       "sample": "present-cabinet",
       "source_url": "https://www.modernfurniture.com.au/products/hayton-tall-ideboard-70cm-white-oak",
       "image_url": "https://www.modernfurniture.com.au/cdn/shop/files/342007HaytontallsideboardLifestyle1-1000_1024x1024.jpg?v=1700990245",
-      "input_path": "docs/assets/ram-qwen-filter-presentation/cabinet-input.png",
+      "input_path": "artifacts/assets/ram-qwen-filter-presentation/cabinet-input.png",
       "image_kind": "상품 연출 이미지 · 실사/렌더 미확인",
       "size": [
         1024,

@@ -1,0 +1,62 @@
+[
+  {
+    "scene": "holdout-bench",
+    "objects": 7,
+    "moved": 6,
+    "unchanged": 1,
+    "floor_contacts": 4,
+    "surface_contacts": 1,
+    "carried_without_contact_certification": 1,
+    "max_floor_contact_error": 6.938893903907228e-18,
+    "raw_source_unchanged": true,
+    "binary_preserved": true,
+    "rotation_scale_only_common_floor_transform": true,
+    "object_up_averaging": false,
+    "qwen_relations": false
+  },
+  {
+    "scene": "new-office",
+    "objects": 12,
+    "moved": 5,
+    "unchanged": 7,
+    "floor_contacts": 2,
+    "surface_contacts": 3,
+    "carried_without_contact_certification": 0,
+    "max_floor_contact_error": 0.0,
+    "raw_source_unchanged": true,
+    "binary_preserved": true,
+    "rotation_scale_only_common_floor_transform": true,
+    "object_up_averaging": false,
+    "qwen_relations": false
+  },
+  {
+    "scene": "present-cabinet",
+    "objects": 8,
+    "moved": 6,
+    "unchanged": 2,
+    "floor_contacts": 3,
+    "surface_contacts": 2,
+    "carried_without_contact_certification": 1,
+    "max_floor_contact_error": 0.0,
+    "raw_source_unchanged": true,
+    "binary_preserved": true,
+    "rotation_scale_only_common_floor_transform": true,
+    "object_up_averaging": false,
+    "qwen_relations": false
+  },
+  {
+    "scene": "present-office-c",
+    "objects": 22,
+    "moved": 17,
+    "unchanged": 5,
+    "floor_contacts": 5,
+    "surface_contacts": 12,
+    "carried_without_contact_certification": 0,
+    "max_floor_contact_error": 3.469446951953614e-18,
+    "raw_source_unchanged": true,
+    "binary_preserved": true,
+    "rotation_scale_only_common_floor_transform": true,
+    "object_up_averaging": false,
+    "qwen_relations": false
+  }
+]

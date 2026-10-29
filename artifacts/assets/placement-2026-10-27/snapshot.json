@@ -1,0 +1,86 @@
+{
+  "record_date": "2026-10-27",
+  "status": "experimental_reference_not_production_default",
+  "git_head": "c2ffa7dfd05789ffb35bdec51fe3db17944d37ba",
+  "git_head_is_release": false,
+  "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "latest_recorded_tests": {
+    "passed": 488,
+    "skipped": 5
+  },
+  "scenes": [
+    {
+      "scene": "holdout-bench",
+      "object_count": 7,
+      "raw_scene_sha256": "4f8dc4d17054944fe21e28f8c02a0e05c8643c62c0dc482efad49d457297a086",
+      "final_scene_sha256": "a663a5a4513bfbce5a1fb7be16ab233d2f47b6571f98e05ee40e5a592c8c92c8",
+      "local_result": ".runtime\\depth-support-fitted\\holdout-bench\\final.glb"
+    },
+    {
+      "scene": "new-office",
+      "object_count": 12,
+      "raw_scene_sha256": "716d76c91e4e2c0a87e4d86733cef3695b4272b8802c1e6f62d1f60b0e2a5b36",
+      "final_scene_sha256": "63b45857cb9fe6d69809f33d152be6effdf29681645785e2983b6e59d642e7b4",
+      "local_result": ".runtime\\depth-support-fitted\\new-office\\final.glb"
+    },
+    {
+      "scene": "present-cabinet",
+      "object_count": 8,
+      "raw_scene_sha256": "e448cde9651539eb4892d973094e3889cb014049d8153dcd744c7f8d254c4cde",
+      "final_scene_sha256": "ed1bdd5ed75461118629890a0806d6e95f14796d4f344c6f58023771203e9773",
+      "local_result": ".runtime\\depth-support-fitted\\present-cabinet\\final.glb"
+    },
+    {
+      "scene": "present-office-c",
+      "object_count": 22,
+      "raw_scene_sha256": "b39c443532619d2a61ca7429a6e7d1af57d174123d4c428bc8019db7a62a4a2f",
+      "final_scene_sha256": "74a7347994623cf7e510bc77bf0e44337ae69e4ab9a45fca66b9c7d868b58d9d",
+      "local_result": ".runtime\\depth-support-fitted\\present-office-c\\final.glb"
+    }
+  ],
+  "code_sha256": {
+    "mapmaker/depth_floor.py": "ed50ab262d22f68b651777cce564426347263e8987096f9e588a2cba5b25ba20",
+    "mapmaker/group_placement.py": "aae26d2e72417a7ce1ec034b50e613f31daca62d3b8f03c6511b3ffbfea1e3a0",
+    "mapmaker/depth_attachment.py": "a46793097855431c43eb9a73f9b301e400c44778df5ccc7f540543489c28c289",
+    "mapmaker/scene_geometry.py": "fa9a3dc442a649c917878870316b85c17e9152321064aeb44e22d70937b5f840",
+    "mapmaker/pair_support.py": "a74bd13cb98db0046777f1d2233647e3f55a3de49943b9364424c8c39b35dd3a",
+    "mapmaker/staged_placement.py": "2aff970abcdffb74bd1033b66870e633eddbb832ab0534b01f1ddca5a7c9e18c",
+    "scripts/infer_scene_depth.py": "603225a4200aceecbe5ae117c6fb842768b744d5335ed9817f8bbfd177297246",
+    "scripts/depth_floor_placement.py": "9c12116da66e237b6232d1923cb623f0a9a9f7741a3961dcf0807f6ff7c72e35",
+    "scripts/group_depth_placement.py": "5171e69679d0e013528f3faa584589a7c2b0b70081b5e0f7bb01152eb9b13e2f",
+    "scripts/complete_depth_support.py": "6de168b195ebc66f29a0788502188ab723ed3cc99618bc71ddb2c7c95563206e",
+    "scripts/report_depth_completion.py": "e19476716d2ea364861a95828b6fe9571c217e42e019624560ef08e00af50390",
+    "tests/test_depth_floor.py": "81a3622938c410c213e615439d4e543534d82c0d616101eb08dfa512d2c38ed5",
+    "tests/test_group_placement.py": "fc3d3399208b024cab1977a4dbbca9ac50efebeab747f690bf934f3a33e48963",
+    "tests/test_depth_attachment.py": "dc6b3d6d92164198f492131e94e3af63c1935d525977736d056151ec1895eefa"
+  },
+  "assets_sha256": {
+    "books-contact.png": "f3aa6ed2dff4d4b82c9bc4b9d737dc3504f777adfcd8b7567cd976d9aa2df5a8",
+    "completion-audit.json": "5fe1aa50ef6b9c72e5aba9b9d2d1357b1316a7ca897ba1a9b037ddd3839e73f8",
+    "desk-floor.png": "52433b9ef205b9f9d919afb632fd61cd36d5f9c7f4223933f3d3012c93fe0fc9",
+    "floor-audit.json": "02f2cbe4eda69823794b70cd9578a1e0561449259265baf27770434598c935fc",
+    "group-audit.json": "11e29e96ed7c495a11ad1b5bb3b990d12598800218dde49effa7de3fee2e77cb",
+    "missing-support.png": "60fa2d0b8c3cba948ca8587f88f60ec94c9cfe4192e2275b28ae130a5c61151e",
+    "monitor-completion.json": "1497ec422e1d691af1fea0ecf7408392e1335b12a92e90b748198e8c095240f2",
+    "monitor-contact.png": "7b1473aac05e6ded9e99ed16fcc5221796ab467732d1a58746fa1866126835bb",
+    "monitor-regression.png": "aa3f5cb54c9603d836e0ee5e50df56034e7354cef53b1f6eedfd872c8aa69076",
+    "vase-contact.png": "4ae3a18e3e6d6cc0c702abeca25a225e88c8330c8bf285d141c2bdd96da8d3cd",
+    "evidence\\holdout-bench\\comparison-camera.json": "357aea45ade51e016cebe7466945a7292e2e32b3a3943d08e572fe914d9a828b",
+    "evidence\\holdout-bench\\completion-report.json": "d5454c5d193949c87d11f46d257cb7e0ab74e01e1ebb0988ef160d62ba78c9bc",
+    "evidence\\holdout-bench\\depth-provenance.json": "9cd4c2a013cacf833bfedc6099adb311b07360f6e973fdbe53e912ec52f34a32",
+    "evidence\\holdout-bench\\final-matrices.json": "739abefb3ceb3741fbb91ba3eb7dfa97d6cd483df378ab4087a7eb2c73d1ba10",
+    "evidence\\new-office\\comparison-camera.json": "d296b1352836d2a3bab6f8f05a35624fe260b0dfe1d4d9e45562eee177dd5aa7",
+    "evidence\\new-office\\completion-report.json": "1497ec422e1d691af1fea0ecf7408392e1335b12a92e90b748198e8c095240f2",
+    "evidence\\new-office\\depth-provenance.json": "c19b7b4e0eee6d887961001425e96492b1868a497bf3a898198368f915a620ae",
+    "evidence\\new-office\\final-matrices.json": "2e5a2c59be5d40dd74816272911f482dd6ee4b02cc76c704f210a70bec492c88",
+    "evidence\\present-cabinet\\comparison-camera.json": "7d3240f4027d8f86f87f1a18decf81502d7b4f74367b98177dfe1b177bfaa985",
+    "evidence\\present-cabinet\\completion-report.json": "f04f3df33ee54a5e00e430ce0fc13b6fcab38c0e6a43d3991429a60997ef6a29",
+    "evidence\\present-cabinet\\depth-provenance.json": "dcec77d0823009c152824ee5cc61aac40c30ed9eb20b48c492b0ccacc8d289fe",
+    "evidence\\present-cabinet\\final-matrices.json": "f32651e9885a77418e85679a9000c078e00873d29ac718c43d739fe2e8b0ec82",
+    "evidence\\present-office-c\\comparison-camera.json": "6457a5555dd74370e9c774e1b9b50da063239c517541a9f786e801130d7404bb",
+    "evidence\\present-office-c\\completion-report.json": "071e485907e6e623eb3d4c0fa5d7a3c6f5b3f77f1b0aa835a6e94de377087978",
+    "evidence\\present-office-c\\depth-provenance.json": "9fc6e90b8668a86bd78ab8960a517706d8aec9e3e04a066b1b1b5d4314eb0dc5",
+    "evidence\\present-office-c\\final-matrices.json": "3070c64e5fc2dafe18d099125fbef35efbafd59169ca0bb7b244db6313f9a79b"
+  },
+  "limitation": "Current working-file hashes, not a Git release. Earlier stages used earlier helper implementations. Reuse recorded intermediate artifacts for the documented final derivation; a fresh full rerun can differ. Large raw inputs, GLBs, weights and depth arrays are not bundled."
+}

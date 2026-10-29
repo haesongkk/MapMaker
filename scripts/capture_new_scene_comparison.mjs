@@ -1,6 +1,6 @@
 import {chromium} from '../web/node_modules/@playwright/test/index.mjs';
 import fs from 'node:fs/promises';
-const root=process.argv[2]||'docs/assets/ram-qwen-filter-new-scenes';
+const root=process.argv[2]||'artifacts/assets/ram-qwen-filter-new-scenes';
 const clean=process.argv.includes('--clean');
 const only=process.argv.find(a=>a.startsWith('--sample='))?.slice(9);
 const suffix=clean?'-clean':'';

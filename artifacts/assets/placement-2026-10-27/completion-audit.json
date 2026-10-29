@@ -1,0 +1,36 @@
+[
+  {
+    "scene": "holdout-bench",
+    "original_objects": 7,
+    "changed_objects": [],
+    "source_unchanged": true,
+    "original_binary_prefix_preserved": true,
+    "added_parts": 0
+  },
+  {
+    "scene": "new-office",
+    "original_objects": 12,
+    "changed_objects": [
+      "prompt_0002_mask_0000"
+    ],
+    "source_unchanged": true,
+    "original_binary_prefix_preserved": true,
+    "added_parts": 1
+  },
+  {
+    "scene": "present-cabinet",
+    "original_objects": 8,
+    "changed_objects": [],
+    "source_unchanged": true,
+    "original_binary_prefix_preserved": true,
+    "added_parts": 0
+  },
+  {
+    "scene": "present-office-c",
+    "original_objects": 22,
+    "changed_objects": [],
+    "source_unchanged": true,
+    "original_binary_prefix_preserved": true,
+    "added_parts": 0
+  }
+]

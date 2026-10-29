@@ -1,0 +1,138 @@
+{
+  "objects": {
+    "prompt_0002_mask_0000": {
+      "recovery": {
+        "reason": "observed_rgbd_bridge",
+        "pixels": 6041,
+        "middle_points": 494,
+        "upper_distance_median": 0.016050859915457506,
+        "upper_close_fraction": 0.6740088105726872,
+        "vertical_span": 0.11320114135742188,
+        "gap": 0.0795180397163831,
+        "color_continuity": {
+          "median_rgb": [
+            4.0,
+            3.0,
+            3.0
+          ],
+          "distance_limit": 80.48586832481836
+        },
+        "limitation": "Visible RGB-D surface only; unseen geometry is not reconstructed."
+      },
+      "applied": true,
+      "body_registration": {
+        "reason": "registered_observed_connection",
+        "rigid_translation": [
+          -0.06797786394866517,
+          0.018461904210601177,
+          -0.050286784955278385
+        ],
+        "max_joint_adjustment": 0.023696604396161353,
+        "max_adjustment": 0.11007126561253214,
+        "limit": 0.163591591713713,
+        "body_contact_vertices": 53,
+        "anchored_fraction": 0.9636363636363636
+      },
+      "support_center": {
+        "point": [
+          0.20693756438150362,
+          0.5499501261434114,
+          1.7779274928187365
+        ],
+        "method": "uniform_density_body_volume_centroid",
+        "limitation": "Estimated body center; attachment mass and true material densities unknown."
+      },
+      "contact": {
+        "reason": "joint_body_support_fit",
+        "lower_adjustment": [
+          -0.0012791523187519942,
+          0.0,
+          0.003088146876272057
+        ],
+        "adjustment_limit": 0.026740688737873563,
+        "contact": {
+          "reason": "observed_foot_surface_contact",
+          "shift": -0.004399709461998136,
+          "queries": 16,
+          "missing_queries": 0,
+          "offset_spread": 0.006475709858223655,
+          "tolerance": 0.0033425860922341954,
+          "load_bearing_queries": 10,
+          "support_polygon_margin": 0.0013979124138927324
+        },
+        "verification": {
+          "reason": "observed_foot_surface_contact",
+          "shift": 0.0,
+          "queries": 16,
+          "missing_queries": 0,
+          "offset_spread": 0.006475709858223655,
+          "tolerance": 0.0033425860922341954,
+          "load_bearing_queries": 10,
+          "support_polygon_margin": 0.0013979124138927324
+        },
+        "tilt_degrees": 0
+      },
+      "solved_transform": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.07041016929177643
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "relative_contact_transform": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -0.004399709461998136
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "descendants": [],
+      "added_vertices": 2312,
+      "added_triangles": 4083
+    }
+  },
+  "binary": {
+    "original_binary_prefix_bytes": 121870256,
+    "appended_bytes": 104484
+  },
+  "source": ".runtime\\depth-floor-v3\\new-office",
+  "limitation": "Observed surface reconstruction; no unseen back-side completion or global collision guarantee."
+}
