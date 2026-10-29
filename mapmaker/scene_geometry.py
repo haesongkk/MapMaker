@@ -89,7 +89,10 @@ def contact_footprint(vertices, *, grid=5, max_tilt_degrees=0.):
     band += np.tan(np.deg2rad(max_tilt_degrees))*np.linalg.norm((upper-lower)[[0,2]])
     low = vertices[vertices[:, 1] <= lower[1] + band]
     extent = np.maximum(np.ptp(low[:, [0, 2]], axis=0), 1e-9)
-    cells = np.minimum(((low[:, [0, 2]]-low[:, [0, 2]].min(axis=0))/extent*grid).astype(int), grid-1)
+    # Translation must not move a boundary vertex to an adjacent sampling cell
+    # through floating-point cancellation alone.
+    scaled = np.round((low[:, [0, 2]]-low[:, [0, 2]].min(axis=0))/extent*grid, 12)
+    cells = np.minimum(scaled.astype(int), grid-1)
     samples = []
     for cell in np.unique(cells, axis=0):
         group = low[np.all(cells == cell, axis=1)]
@@ -120,7 +123,16 @@ def inside_support_polygon(points, center, *, margin=0.):
                for a, b in zip(hull, hull[1:]+hull[:1]))
 
 
-def support_translation(vertices, faces, limit, tolerance, *, surface=None):
+def contact_polygon_margin(points):
+    """Relative inset of the actual support, not the potentially much wider body."""
+    points=np.asarray(points)
+    if len(points)<3:return 1e-9
+    _,_,axes=np.linalg.svd(points-points.mean(0),full_matrices=False)
+    widths=np.ptp((points-points.mean(0))@axes.T,axis=0)
+    return max(float(widths.min())*.01,1e-9)
+
+
+def support_translation(vertices, faces, limit, tolerance, *, surface=None, support_center=None):
     """Infer bounded vertical contact from actual feet, including open surfaces.
 
     Only actual high contacts bear load: an overhang need not have support at
@@ -142,12 +154,13 @@ def support_translation(vertices, faces, limit, tolerance, *, surface=None):
     shift = float(np.max(offsets))
     if abs(shift) > limit:
         return None, dict(reason='support_shift_out_of_bounds', shift=shift, limit=float(limit), **evidence)
-    center = (vertices.min(axis=0)+vertices.max(axis=0))[[0, 2]]/2
+    center = (vertices.min(axis=0)+vertices.max(axis=0))[[0, 2]]/2 if support_center is None else np.asarray(support_center)[[0, 2]]
     contacting = samples[offsets >= shift - tolerance][:, [0, 2]]
     evidence['load_bearing_queries'] = len(contacting)
     # Do not balance a body on one corner/edge simply because its enclosing
     # footprint was broad. Require the actual high contacts to enclose center.
-    margin = max(float(np.ptp(vertices, axis=0)[[0, 2]].max()) * .01, 1e-9)
+    margin = contact_polygon_margin(contacting)
+    evidence['support_polygon_margin']=margin
     if not inside_support_polygon(contacting, center, margin=margin):
         reason = ('missing_support_surface' if evidence['missing_queries'] else
                   'nonuniform_support_height' if spread > tolerance else 'unstable_support_polygon')
