@@ -154,25 +154,25 @@ Return only a JSON array of strings.
 
 ## 결과물
 
-아래는 최종 발표에 사용한 원본 이미지와 생성 결과입니다. 세 장면은 같은 가구 명시 프롬프트를 사용했습니다.
+아래는 최종 발표에 사용한 원본 이미지와 생성 결과의 360도 턴테이블입니다. 저장된 최종 GLB를 카메라만 회전해 렌더링했으며, 각 GIF는 약 6.4초 동안 한 바퀴 돌며 반복됩니다. 세 장면은 같은 가구 명시 프롬프트를 사용했습니다.
 
 ### 원목 서재
 
 | 원본 이미지 | 생성 결과 |
 |---|---|
-| ![원목 서재 원본](artifacts/assets/readme/slide-15-1.png) | ![원목 서재 최종 결과](artifacts/assets/readme/slide-15-2.png) |
+| ![원목 서재 원본](artifacts/assets/readme/slide-15-1.png) | ![원목 서재 최종 결과 턴테이블](artifacts/turntables/present-office-c.gif) |
 
 ### 작업 공간
 
 | 원본 이미지 | 생성 결과 |
 |---|---|
-| ![작업 공간 원본](artifacts/assets/readme/slide-16-1.png) | ![작업 공간 최종 결과](artifacts/assets/readme/slide-16-2.png) |
+| ![작업 공간 원본](artifacts/assets/readme/slide-16-1.png) | ![작업 공간 최종 결과 턴테이블](artifacts/turntables/new-office.gif) |
 
 ### 서랍장
 
 | 원본 이미지 | 생성 결과 |
 |---|---|
-| ![서랍장 원본](artifacts/assets/readme/slide-17-1.png) | ![서랍장 최종 결과](artifacts/assets/readme/slide-17-2.png) |
+| ![서랍장 원본](artifacts/assets/readme/slide-17-1.png) | ![서랍장 최종 결과 턴테이블](artifacts/turntables/present-cabinet.gif) |
 
 선정한 사례의 결과이며 모든 입력에 대한 성공률을 뜻하지 않습니다. 얇은 다리·소품·가려진 면의 형상 오류와 일부 부유·중복은 남습니다.
 
@@ -229,4 +229,4 @@ uv run mapmaker serve
 | 작업 공간 | [Pexels](https://www.pexels.com/photo/minimalist-setup-office-27920699/) |
 | 서랍장 | [Modern Furniture HAYTON](https://www.modernfurniture.com.au/products/hayton-tall-ideboard-70cm-white-oak) |
 
-README의 설명 이미지와 결과 이미지는 최종 발표 PPT v23에 포함된 원본을 추출해 사용했습니다. 이미지 재사용 시 원출처와 이용 조건을 확인합니다. 프로젝트 설명 문서는 이 README로 통일하며, PPT 원본은 내용 대조와 확인을 위해 임시 보존합니다.
+README의 정지 이미지는 최종 발표 PPT v23에 포함된 원본을 추출해 사용했고, 턴테이블 GIF는 저장된 최종 GLB에서 렌더링했습니다. 이미지 재사용 시 원출처와 이용 조건을 확인합니다. 프로젝트 설명 문서는 이 README로 통일하며, PPT 원본은 내용 대조와 확인을 위해 임시 보존합니다.
