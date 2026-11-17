@@ -39,6 +39,16 @@ class Handler(BaseHTTPRequestHandler):
             self.send_response(200);self.send_header('Content-Type','text/html; charset=utf-8');self.send_header('Content-Length',str(len(data)));self.end_headers()
             if not head:self.wfile.write(data)
             return
+        if path=='/':
+            body='<meta charset="utf-8"><title>MapMaker 결과</title><h1>저장된 결과</h1><ul>'
+            for name in sorted(manifest['scenes']):
+                run=hashlib.sha256(name.encode()).hexdigest()[:32]
+                body+=f'<li><a href="/viewer?run={run}">{html.escape(name)}</a></li>'
+            body+='</ul>'
+            data=body.encode('utf-8')
+            self.send_response(200);self.send_header('Content-Type','text/html; charset=utf-8');self.send_header('Content-Length',str(len(data)));self.end_headers()
+            if not head:self.wfile.write(data)
+            return
         if path=='/viewer':
             from urllib.parse import parse_qs
             alias=parse_qs(urlsplit(self.path).query).get('run',[''])[0]
@@ -61,8 +71,7 @@ class Handler(BaseHTTPRequestHandler):
             if not file.is_relative_to(base):return self.send_error(404)
             if parts[3]!='scene.glb' and not parts[3].startswith('input/'):return self.send_error(404)
         else:
-            if path=='/':base=artifacts;rel='RAM_QWEN_FILTER_THREE_WAY.html'
-            elif path=='/viewer':base=web;rel='index.html'
+            if path=='/viewer':base=web;rel='index.html'
             elif path.startswith('/vendor/three/'):base=web/'node_modules/three';rel=path.removeprefix('/vendor/three/')
             elif path.startswith('/artifacts/'):base=artifacts;rel=path.removeprefix('/artifacts/')
             elif path.startswith('/assets/'):base=artifacts;rel=path.lstrip('/')

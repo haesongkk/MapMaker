@@ -41,12 +41,13 @@ def test_presentation_viewer_mapping(tmp_path,monkeypatch):
     (scene/'scene.glb').write_bytes(b'glTF01234567')
     write(scene/'scene_metadata.json',dict(objects=[]))
     write(artifacts/'assets/ram-qwen-filter-presentation/viewers.json',{'baseline-house-new':str(scene)})
-    (artifacts/'RAM_QWEN_FILTER_THREE_WAY.html').write_text('Final presentation')
     server=ThreadingHTTPServer(('127.0.0.1',0),review_server.Handler)
     thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
     try:
         with urlopen(f'http://127.0.0.1:{server.server_port}/') as response:
-            assert response.read() == b'Final presentation'
+            body=response.read().decode('utf-8')
+            assert 'baseline-house-new' in body
+            assert '/viewer?run='+hashlib.sha256(b'baseline-house-new').hexdigest()[:32] in body
         run=hashlib.sha256(b'baseline-house-new').hexdigest()[:32]
         with urlopen(f'http://127.0.0.1:{server.server_port}/api/runs/{run}') as response:
             assert json.load(response)['metadata']['scene_bytes']==12
